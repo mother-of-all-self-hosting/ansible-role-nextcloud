@@ -1,0 +1,48 @@
+---
+
+- name: Fail if required Collabora App settings not defined
+  when: "vars[item] == ''"
+  ansible.builtin.fail:
+    msg: |
+      A required setting (`{{ item }}`) hasn't been defined.
+  with_items:
+    - nextcloud_collabora_app_wopi_url
+    - nextcloud_collabora_app_wopi_allowlist
+
+- name: Ensure Nextcloud is started
+  ansible.builtin.service:
+    name: "{{ nextcloud_identifier }}-server"
+    state: started
+    daemon_reload: true
+  register: nextcloud_start
+
+- name: Wait a while, so that Nextcloud can manage to start
+  ansible.builtin.pause:
+    seconds: 7
+  when: nextcloud_start.changed | bool
+
+- name: Install Nextcloud office (Collabora app)
+  ansible.builtin.shell:
+    cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings app:install richdocuments"
+  failed_when: false
+  register: collabora_install_result
+
+- name: Fail if Nextcloud office (Collabora app) failed to install
+  ansible.builtin.fail:
+    msg: "Nextcloud Office failed to install. Full error: {{ collabora_install_result }}"
+  when: "collabora_install_result.rc != 0 and collabora_install_result.stdout != 'richdocuments already installed'"
+
+- name: Check existence of Collabora network in Docker
+  ansible.builtin.command:
+    cmd: "{{ devture_systemd_docker_base_host_command_docker }} network inspect {{ collabora_online_container_network }} --format {%raw%}'{{ (index .IPAM.Config 0).Subnet }}'{%endraw%}"
+  register: collabora_online_container_network_subnet
+  changed_when: false
+
+- name: Configure Collabora app
+  ansible.builtin.shell:
+    cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:app:set richdocuments {{ item.key }} --value=\"{{ item.value }}\""
+  with_items:
+    - key: wopi_url
+      value: "{{ nextcloud_collabora_app_wopi_url }}"
+    - key: wopi_allowlist
+      value: "{{ nextcloud_collabora_app_wopi_allowlist }}"

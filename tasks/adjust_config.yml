@@ -12,7 +12,7 @@
     - name: Adjust Nextcloud configuration (set trusted_proxies)
       ansible.builtin.command:
         cmd: |-
-          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:set trusted_proxies 1 --type=string --value={{ nextcloud_reverse_proxy_container_network_subnet_result.stdout }}
+          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:set trusted_proxies 0 --type=string --value={{ nextcloud_reverse_proxy_container_network_subnet_result.stdout }}
 
 - name: Adjust Nextcloud configuration (disable bruteforce protection)
   ansible.builtin.command:

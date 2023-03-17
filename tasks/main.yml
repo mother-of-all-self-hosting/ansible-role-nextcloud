@@ -25,6 +25,12 @@
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/print_db_credentials.yml"
 
 - tags:
+    - install-nextcloud-app-collabora
+  block:
+    - when: nextcloud_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/app_install_collabora.yml"
+
+- tags:
     - setup-all
     - setup-nextcloud
   block:
