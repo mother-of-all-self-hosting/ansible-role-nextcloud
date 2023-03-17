@@ -1,0 +1,33 @@
+---
+
+- name: Check existence of Nextcloud systemd service
+  ansible.builtin.stat:
+    path: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-server.service"
+  register: nextcloud_service_stat
+
+- when: nextcloud_service_stat.stat.exists | bool
+  block:
+    - name: Ensure Nextcloud systemd services are stopped
+      ansible.builtin.service:
+        name: "{{ nextcloud_identifier }}-{{ item }}"
+        state: stopped
+        enabled: false
+        daemon_reload: true
+      with_items:
+        - server.service
+        - cron.service
+        - cron.timer
+
+    - name: Ensure Nextcloud systemd services do not exists
+      ansible.builtin.file:
+        path: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-{{ item }}"
+        state: absent
+      with_items:
+        - server.service
+        - cron.service
+        - cron.timer
+
+    - name: Ensure Nextcloud path doesn't exist
+      ansible.builtin.file:
+        path: "{{ nextcloud_base_path }}"
+        state: absent

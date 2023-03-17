@@ -1,0 +1,256 @@
+---
+
+nextcloud_enabled: true
+
+nextcloud_identifier: nextcloud
+
+nextcloud_scheme: https
+
+# The fully-qualified name of your Nextcloud server (e.g. `nextcloud.example.com`)
+nextcloud_hostname: ''
+
+nextcloud_path_prefix: /
+
+nextcloud_version: 25.0.4
+
+nextcloud_uid: ''
+nextcloud_gid: ''
+
+nextcloud_systemd_required_services_list: ['docker.service']
+
+nextcloud_base_path: "{{ nextcloud_base_path }}/nextcloud"
+nextcloud_config_path: "{{ nextcloud_base_path }}/config"
+nextcloud_data_path: "{{ nextcloud_base_path }}/data"
+nextcloud_customized_container_src_path: "{{ nextcloud_base_path }}/customized-container-src"
+
+# SVG support for imagick can be setup like this:
+# https://docs.nextcloud.com/server/24/admin_manual/configuration_server/theming.html?highlight=libmagickcore%20q16%20extra#theming-of-icons
+# However, using Imagick may have a negative effect on security, that is the reason
+# behind not installing it by default. See:
+# https://github.com/nextcloud/server/issues/13099
+# Tread wisely!
+nextcloud_container_image_customizations_php_imageick_installation_enabled: false
+nextcloud_container_image_customizations_php_imageick_installation_package: "libmagickcore-6.q16-6-extra"
+
+# nextcloud_container_image_customizations_enabled controls whether a customized Nextcloud image will be built.
+#
+# We toggle this variable to `true` when certain features which require a custom build are enabled.
+# Feel free to toggle this to `true` yourself and specify build steps in `nextcloud_container_image_customizations_dockerfile_body_custom`.
+#
+# See:
+# - `roles/nextcloud-server/templates/customizations/Dockerfile.j2`
+# - `nextcloud_container_image_customizations_dockerfile_body_custom`
+# - `nextcloud_container_image_customized`
+# - `nextcloud_container_image_final`
+nextcloud_container_image_customizations_enabled: "{{ nextcloud_container_image_customizations_php_imageick_installation_enabled }}"
+
+# nextcloud_container_image_customizations_dockerfile_body_custom contains your custom Dockerfile steps
+# for building your customized Nextcloud image based on the original (upstream) image (`nextcloud_container_image`).
+# A `FROM ...` clause is included automatically so you don't have to.
+#
+# Example:
+# nextcloud_container_image_customizations_dockerfile_body_custom: |
+#  RUN echo 'This is a custom step for building the customized container image for Nextcloud.'
+#  RUN echo 'You can override nextcloud_container_image_customizations_dockerfile_body_custom to add your own steps.'
+#  RUN echo 'You do NOT need to include a FROM clause yourself.'
+nextcloud_container_image_customizations_dockerfile_body_custom: ''
+
+nextcloud_container_image: "{{ nextcloud_container_image_registry_prefix }}nextcloud:{{ nextcloud_container_image_tag }}"
+nextcloud_container_image_tag: "{{ nextcloud_version }}-apache"
+nextcloud_container_image_force_pull: "{{ nextcloud_container_image.endswith(':latest') }}"
+nextcloud_container_image_registry_prefix: docker.io/
+
+# nextcloud_container_image_customized is the name of the locally built Nextcloud image
+# which adds various customizations on top of the original (upstream) Nextcloud image.
+# This image will be based on the upstream `nextcloud_container_image` image, only if `nextcloud_container_image_customizations_enabled: true`.
+nextcloud_container_image_customized: "localhost/nextcloud:{{ nextcloud_container_image_tag }}-customized"
+
+# nextcloud_container_image_final holds the name of the Nextcloud image to run depending on whether or not customizations are enabled.
+nextcloud_container_image_final: "{{ nextcloud_container_image_customized if nextcloud_container_image_customizations_enabled else nextcloud_container_image }} "
+
+# A list of extra arguments to pass to the container
+nextcloud_container_extra_arguments: []
+
+# Controls whether the nextcloud-apache container's memory usage
+# is limited and to what extent.
+#
+# When set, these options are passed to `docker run`
+# as `--memory=..` and `--memory-swap=..` respectively.
+#
+# Expected value format is `[integer][unit]`. E.g. 100M, 1G
+#
+# If `nextcloud_container_memory_swap_limit` is set,
+# it represents the total memory that can be used (memory + swap),
+# so it must always be at least as large as `nextcloud_container_memory_limit`.
+# To disable swapping, make it the same as `nextcloud_container_memory_limit`.
+nextcloud_container_memory_limit: ""
+nextcloud_container_memory_swap_limit: ""
+
+# Controls whether the nextcloud-apache container exposes its HTTP port (tcp/80 in the container).
+#
+# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:37150"), or empty string to not expose.
+nextcloud_container_http_host_bind_port: ""
+
+# nextcloud_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
+# See `../templates/labels.j2` for details.
+#
+# To inject your own other container labels, see `nextcloud_container_labels_additional_labels`.
+nextcloud_container_labels_traefik_enabled: true
+nextcloud_container_labels_traefik_docker_network: ''
+nextcloud_container_labels_traefik_hostname: "{{ nextcloud_hostname }}"
+# The path prefix must either be `/` or not end with a slash (e.g. `/nextcloud`).
+nextcloud_container_labels_traefik_path_prefix: "{{ nextcloud_path_prefix }}"
+# Controls whether `/.well-known/{carddav,caldav}` will be redirected to `/remote.php/dav/`
+nextcloud_container_labels_traefik_dav_redirect_regex_enabled: true
+nextcloud_container_labels_traefik_rule: "Host(`{{ nextcloud_container_labels_traefik_hostname }}`){% if nextcloud_container_labels_traefik_path_prefix != '/' %} && PathPrefix(`{{ nextcloud_container_labels_traefik_path_prefix | quote }}`){% endif %}"
+nextcloud_container_labels_traefik_priority: 0
+nextcloud_container_labels_traefik_entrypoints: web-secure
+nextcloud_container_labels_traefik_tls: "{{ nextcloud_container_labels_traefik_entrypoints != 'web' }}"
+nextcloud_container_labels_traefik_tls_certResolver: default  # noqa var-naming
+
+# Controls which additional headers to attach to all HTTP requests.
+# To add your own custom request headers, use `nextcloud_container_labels_traefik_additional_response_headers_custom`
+nextcloud_container_labels_traefik_additional_request_headers: "{{ nextcloud_container_labels_traefik_additional_request_headers_auto | combine(nextcloud_container_labels_traefik_additional_request_headers_custom) }}"
+nextcloud_container_labels_traefik_additional_request_headers_auto: |
+  {{
+    {}
+    | combine ({'Front-End-Https': 'on'} if nextcloud_scheme == 'https' else {})
+  }}
+nextcloud_container_labels_traefik_additional_request_headers_custom: {}
+
+# Controls which additional headers to attach to all HTTP responses.
+# To add your own custom response headers, use `nextcloud_container_labels_traefik_additional_response_headers_custom`
+nextcloud_container_labels_traefik_additional_response_headers: "{{ nextcloud_container_labels_traefik_additional_response_headers_auto | combine(nextcloud_container_labels_traefik_additional_response_headers_custom) }}"
+nextcloud_container_labels_traefik_additional_response_headers_auto: |
+  {{
+    {}
+    | combine ({'X-XSS-Protection': nextcloud_http_header_xss_protection} if nextcloud_http_header_xss_protection else {})
+    | combine ({'X-Frame-Options': nextcloud_http_header_frame_options} if nextcloud_http_header_frame_options else {})
+    | combine ({'X-Content-Type-Options': nextcloud_http_header_content_type_options} if nextcloud_http_header_content_type_options else {})
+    | combine ({'Content-Security-Policy': nextcloud_http_header_content_security_policy} if nextcloud_http_header_content_security_policy else {})
+    | combine ({'Permission-Policy': nextcloud_http_header_content_permission_policy} if nextcloud_http_header_content_permission_policy else {})
+    | combine ({'Strict-Transport-Security': nextcloud_http_header_strict_transport_security} if nextcloud_http_header_strict_transport_security and nextcloud_container_labels_traefik_tls else {})
+  }}
+nextcloud_container_labels_traefik_additional_response_headers_custom: {}
+
+# nextcloud_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
+# See `roles/custom/nextcloud/templates/labels.j2` for details.
+#
+# Example:
+# nextcloud_container_labels_additional_labels: |
+#   my.label=1
+#   another.label="here"
+nextcloud_container_labels_additional_labels: ''
+
+# nextcloud_container_additional_environment_variables contains a multiline string with additional environment variables to pass to the container.
+#
+# Example:
+# nextcloud_container_additional_environment_variables: |
+#   VAR=1
+#   ANOTHER=value
+nextcloud_container_additional_environment_variables: ''
+
+# A list of additional "mounts" to be mounted in the container.
+# Contains definition objects like this:
+# nextcloud_container_additional_mounts:
+# - "type=bind|volume|tmpfs,source=/outside,target=/inside,readonly,bind-propagation=slave"
+nextcloud_container_additional_mounts: []
+
+nextcloud_container_network: "{{ nextcloud_identifier }}"
+
+# A list of additional container networks that the container would be connected to.
+# The playbook does not create these networks, so make sure they already exist.
+nextcloud_container_additional_networks: []
+
+nextcloud_database_type: postgres
+nextcloud_database_hostname: ''
+nextcloud_database_port: 5432
+nextcloud_database_name: nextcloud
+nextcloud_database_username: ''
+nextcloud_database_password: ''
+
+# A list of configuration parameters for Nextcloud.
+# To define your own, we advise editing `nextcloud_config_additional_parameters`.
+nextcloud_config_parameters: "{{ nextcloud_config_default_parameters + nextcloud_config_additional_parameters }}"
+
+# Default configuration parameters to apply to Nextcloud.
+# To add your own additional parameters, use `nextcloud_config_additional_parameters`.
+# To get rid of these defaults, redefine `nextcloud_config_default_parameters` or `nextcloud_config_parameters`.
+nextcloud_config_default_parameters:
+  - key: overwriteprotocol
+    value: "https"
+    type: string
+  - key: overwrite.cli.url
+    value: "{{ nextcloud_url }}"
+    type: string
+  - key: overwritewebroot
+    value: "{{ nextcloud_path_prefix }}"
+    type: string
+  - key: htaccess.RewriteBase
+    value: "{{ nextcloud_path_prefix }}"
+    type: string
+
+# Add your custom Nextcloud configuration parameters here.
+#
+# Example:
+# nextcloud_config_additional_parameters:
+#   - key: mail_smtphost
+#     value: smtp.example.com
+#     type: string
+nextcloud_config_additional_parameters: []
+
+# nextcloud_cron_schedule contains a systemd OnCalendar definition which controls how often `cron.timer` runs
+# The default value means 'every 15 minutes'.
+# Learn more here: https://man.archlinux.org/man/systemd.time.7
+nextcloud_cron_schedule: '*:0/15:0'
+
+# Specifies the value of the `X-XSS-Protection` header
+# Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
+#
+# Learn more about it is here:
+# - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+# - https://portswigger.net/web-security/cross-site-scripting/reflected
+nextcloud_http_header_xss_protection: "1; mode=block"
+
+# Specifies the value of the `X-Frame-Options` header which controls whether framing can happen.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+nextcloud_http_header_frame_options: SAMEORIGIN
+
+# Specifies the value of the `X-Content-Type-Options` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
+nextcloud_http_header_content_type_options: nosniff
+
+# Specifies the value of the `Content-Security-Policy` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+nextcloud_http_header_content_security_policy: frame-ancestors 'self'
+
+# Specifies the value of the `Permission-Policy` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permission-Policy
+nextcloud_http_header_content_permission_policy: "{{ 'interest-cohort=()' if nextcloud_floc_optout_enabled else '' }}"
+
+# Specifies the value of the `Strict-Transport-Security` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+nextcloud_http_header_strict_transport_security: "max-age=31536000; includeSubDomains{{ '; preload' if nextcloud_hsts_preload_enabled else '' }}"
+
+# Controls whether to send a "Permissions-Policy interest-cohort=();" header along with all responses
+#
+# Learn more about what it is here:
+# - https://www.eff.org/deeplinks/2021/03/googles-floc-terrible-idea
+# - https://paramdeo.com/blog/opting-your-website-out-of-googles-floc-network
+# - https://amifloced.org/
+#
+# Of course, a better solution is to just stop using browsers (like Chrome), which participate in such tracking practices.
+# See: `nextcloud_content_permission_policy`
+nextcloud_floc_optout_enabled: true
+
+# Controls if HSTS preloading is enabled
+#
+# In its strongest and recommended form, the [HSTS policy](https://www.chromium.org/hsts) includes all subdomains, and
+# indicates a willingness to be "preloaded" into browsers:
+# `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
+# For more information visit:
+# - https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
+# - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+# - https://hstspreload.org/#opt-in
+# See: `nextcloud_http_header_strict_transport_security`
+nextcloud_hsts_preload_enabled: false

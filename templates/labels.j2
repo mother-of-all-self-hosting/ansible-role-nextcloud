@@ -1,0 +1,59 @@
+{% if nextcloud_container_labels_traefik_enabled %}
+traefik.enable=true
+
+{% if nextcloud_container_labels_traefik_docker_network %}
+traefik.docker.network={{ nextcloud_container_labels_traefik_docker_network }}
+{% endif %}
+
+{% set middlewares = [] %}
+
+{% if nextcloud_container_labels_traefik_path_prefix != '/' %}
+traefik.http.middlewares.{{ nextcloud_identifier }}-slashless-redirect.redirectregex.regex=({{ nextcloud_container_labels_traefik_path_prefix | quote }})$
+traefik.http.middlewares.{{ nextcloud_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
+{% set middlewares = middlewares + [nextcloud_identifier + '-slashless-redirect'] %}
+{% endif %}
+
+{% if nextcloud_container_labels_traefik_dav_redirect_regex_enabled %}
+traefik.http.middlewares.{{ nextcloud_identifier }}-dav-redirectregex.redirectregex.permanent=true
+traefik.http.middlewares.{{ nextcloud_identifier }}-dav-redirectregex.redirectregex.regex=^{{ nextcloud_scheme }}://{{ nextcloud_hostname | quote }}/.well-known/(?:card|cal)dav$
+traefik.http.middlewares.{{ nextcloud_identifier }}-dav-redirectregex.redirectregex.replacement={{ nextcloud_scheme }}://{{ nextcloud_hostname }}/remote.php/dav/
+{% set middlewares = middlewares + [nextcloud_identifier + '-dav-redirectregex'] %}
+{% endif %}
+
+{% if nextcloud_container_labels_traefik_path_prefix != '/' %}
+traefik.http.middlewares.{{ nextcloud_identifier }}-strip-prefix.stripprefix.prefixes={{ nextcloud_container_labels_traefik_path_prefix }}
+{% set middlewares = middlewares + [nextcloud_identifier + '-strip-prefix'] %}
+{% endif %}
+
+{% if nextcloud_container_labels_traefik_additional_request_headers.keys() | length > 0 %}
+{% for name, value in nextcloud_container_labels_traefik_additional_request_headers.items() %}
+traefik.http.middlewares.{{ nextcloud_identifier }}-add-request-headers.headers.customrequestheaders.{{ name }}={{ value }}
+{% endfor %}
+{% set middlewares = middlewares + [nextcloud_identifier + '-add-request-headers'] %}
+{% endif %}
+
+{% if nextcloud_container_labels_traefik_additional_response_headers.keys() | length > 0 %}
+{% for name, value in nextcloud_container_labels_traefik_additional_response_headers.items() %}
+traefik.http.middlewares.{{ nextcloud_identifier }}-add-response-headers.headers.customresponseheaders.{{ name }}={{ value }}
+{% endfor %}
+{% set middlewares = middlewares + [nextcloud_identifier + '-add-response-headers'] %}
+{% endif %}
+
+traefik.http.routers.{{ nextcloud_identifier }}.rule={{ nextcloud_container_labels_traefik_rule }}
+{% if nextcloud_container_labels_traefik_priority | int > 0 %}
+traefik.http.routers.{{ nextcloud_identifier }}.priority={{ nextcloud_container_labels_traefik_priority }}
+{% endif %}
+traefik.http.routers.{{ nextcloud_identifier }}.service={{ nextcloud_identifier }}
+{% if middlewares | length > 0 %}
+traefik.http.routers.{{ nextcloud_identifier }}.middlewares={{ middlewares | join(',') }}
+{% endif %}
+traefik.http.routers.{{ nextcloud_identifier }}.entrypoints={{ nextcloud_container_labels_traefik_entrypoints }}
+traefik.http.routers.{{ nextcloud_identifier }}.tls={{ nextcloud_container_labels_traefik_tls | to_json }}
+{% if nextcloud_container_labels_traefik_tls %}
+traefik.http.routers.{{ nextcloud_identifier }}.tls.certResolver={{ nextcloud_container_labels_traefik_tls_certResolver }}
+{% endif %}
+
+traefik.http.services.{{ nextcloud_identifier }}.loadbalancer.server.port=80
+{% endif %}
+
+{{ nextcloud_container_labels_additional_labels }}

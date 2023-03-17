@@ -1,0 +1,69 @@
+---
+
+- name: Ensure Nextcloud path exists
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: 0700
+    owner: "{{ nextcloud_uid }}"
+    group: "{{ nextcloud_gid }}"
+  with_items:
+    - {path: "{{ nextcloud_base_path }}", when: true}
+    - {path: "{{ nextcloud_config_path }}", when: true}
+    - {path: "{{ nextcloud_data_path }}", when: true}
+    - {path: "{{ nextcloud_customized_container_src_path }}", when: "{{ nextcloud_container_image_customizations_enabled }}"}
+  when: item.when | bool
+
+- name: Ensure Nextcloud support files installed
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/{{ item }}.j2"
+    dest: "{{ nextcloud_config_path }}/{{ item }}"
+    mode: 0640
+  with_items:
+    - env
+    - labels
+
+- name: Ensure Nextcloud container image is pulled
+  community.docker.docker_image:
+    name: "{{ nextcloud_container_image }}"
+    source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
+    force_source: "{{ nextcloud_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
+    force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else nextcloud_container_image_force_pull }}"
+  register: result
+  retries: "{{ devture_playbook_help_container_retries_count }}"
+  delay: "{{ devture_playbook_help_container_retries_delay }}"
+  until: result is not failed
+
+- when: "nextcloud_container_image_customizations_enabled | bool"
+  block:
+    - name: Ensure customizations Dockerfile is created
+      ansible.builtin.template:
+        src: "{{ role_path }}/templates/customizations/Dockerfile.j2"
+        dest: "{{ nextcloud_customized_container_src_path }}/Dockerfile"
+        owner: "{{ nextcloud_user_username }}"
+        group: "{{ nextcloud_user_username }}"
+        mode: 0640
+
+    - name: Ensure customized container image for Nextcloud is built
+      community.docker.docker_image:
+        name: "{{ nextcloud_container_image_customized }}"
+        source: build
+        build:
+          dockerfile: Dockerfile
+          path: "{{ nextcloud_customized_container_src_path }}"
+          pull: true
+
+- name: Ensure Nextcloud container network is created
+  community.general.docker_network:
+    name: "{{ nextcloud_container_network }}"
+    driver: bridge
+
+- name: Ensure Nextcloud systemd services installed
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/systemd/{{ item }}.j2"
+    dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-{{ item }}"
+    mode: 0640
+  with_items:
+    - server.service
+    - cron.service
+    - cron.timer

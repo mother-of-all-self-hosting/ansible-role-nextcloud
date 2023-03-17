@@ -1,0 +1,32 @@
+---
+
+- tags:
+    - setup-all
+    - setup-nextcloud
+    - install-all
+    - install-nextcloud
+  block:
+    - when: nextcloud_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+
+    - when: nextcloud_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
+
+- tags:
+    - adjust-nextcloud-config
+  block:
+    - when: nextcloud_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
+
+- tags:
+    - print-nextcloud-db-credentials
+  block:
+    - when: nextcloud_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/print_db_credentials.yml"
+
+- tags:
+    - setup-all
+    - setup-nextcloud
+  block:
+    - when: not nextcloud_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"

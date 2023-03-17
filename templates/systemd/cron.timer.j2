@@ -1,0 +1,9 @@
+[Unit]
+Description=Periodically launches the cronjobs for Nextcloud ({{ nextcloud_identifier }})
+
+[Timer]
+Unit={{ nextcloud_identifier }}-cron.service
+OnCalendar={{ nextcloud_cron_schedule }}
+
+[Install]
+WantedBy=timers.target

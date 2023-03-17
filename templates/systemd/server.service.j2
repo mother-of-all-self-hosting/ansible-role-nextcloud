@@ -1,0 +1,58 @@
+[Unit]
+Description=Nextcloud Server ({{ nextcloud_identifier }}-server)
+{% for service in nextcloud_systemd_required_services_list %}
+Requires={{ service }}
+After={{ service }}
+{% endfor %}
+DefaultDependencies=no
+
+[Service]
+Type=simple
+Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
+ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} kill {{ nextcloud_identifier }}-server 2>/dev/null || true'
+ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ nextcloud_identifier }}-server 2>/dev/null || true'
+
+ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
+			--rm \
+			--name={{ nextcloud_identifier }}-server \
+			--log-driver=none \
+			--network={{ nextcloud_container_network }} \
+			--user={{ nextcloud_uid }}:{{ nextcloud_gid }} \
+			--cap-drop=ALL \
+			--read-only \
+			--mount type=bind,src={{ nextcloud_data_path }},dst=/var/www/html \
+			{% for mount in nextcloud_container_additional_mounts %}
+			--mount {{ mount }} \
+			{% endfor %}
+			--tmpfs=/tmp:rw,noexec,nosuid,size=512m \
+			--tmpfs=/var/run/apache2:rw,noexec,nosuid,size=128m \
+			{% if nextcloud_container_http_host_bind_port %}
+			-p {{ nextcloud_container_http_host_bind_port }}:80 \
+			{% endif %}
+			--env-file={{ nextcloud_config_path }}/env \
+			--label-file={{ nextcloud_config_path }}/labels \
+			{% if nextcloud_container_memory_limit != '' %}
+				--memory={{ nextcloud_container_memory_limit }} \
+			{% endif %}
+			{% if nextcloud_container_memory_swap_limit != '' %}
+				--memory-swap={{ nextcloud_container_memory_swap_limit }} \
+			{% endif %}
+			{% for arg in nextcloud_container_extra_arguments %}
+			{{ arg }} \
+			{% endfor %}
+			{{ nextcloud_container_image_final }}
+
+{% for network in nextcloud_container_additional_networks %}
+ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ nextcloud_identifier }}-server
+{% endfor %}
+
+ExecStart={{ devture_systemd_docker_base_host_command_docker }} start --attach {{ nextcloud_identifier }}-server
+
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} kill {{ nextcloud_identifier }}-server 2>/dev/null || true'
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ nextcloud_identifier }}-server 2>/dev/null || true'
+Restart=always
+RestartSec=30
+SyslogIdentifier={{ nextcloud_identifier }}-server
+
+[Install]
+WantedBy=multi-user.target

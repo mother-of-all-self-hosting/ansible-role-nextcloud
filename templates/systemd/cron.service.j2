@@ -1,0 +1,6 @@
+[Unit]
+Description=Runs the cronjobs For Nextcloud ({{ nextcloud_identifier }})
+
+[Service]
+Type=oneshot
+ExecStart={{ devture_systemd_docker_base_host_command_docker }} exec {{ nextcloud_identifier }}-server php /var/www/html/cron.php
