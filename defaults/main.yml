@@ -259,3 +259,7 @@ nextcloud_hsts_preload_enabled: false
 # See the `collabora-online` role.
 nextcloud_collabora_app_wopi_url: ''
 nextcloud_collabora_app_wopi_allowlist: '10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16'
+
+# Redis intergration.
+nextcloud_redis_hostname: ''
+nextcloud_redis_port: 6379
