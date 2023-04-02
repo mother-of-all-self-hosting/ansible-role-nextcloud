@@ -40,8 +40,8 @@
       ansible.builtin.template:
         src: "{{ role_path }}/templates/customizations/Dockerfile.j2"
         dest: "{{ nextcloud_customized_container_src_path }}/Dockerfile"
-        owner: "{{ nextcloud_user_username }}"
-        group: "{{ nextcloud_user_username }}"
+        owner: "{{ nextcloud_uid }}"
+        group: "{{ nextcloud_gid }}"
         mode: 0640
 
     - name: Ensure customized container image for Nextcloud is built
