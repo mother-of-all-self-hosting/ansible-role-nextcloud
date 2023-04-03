@@ -24,6 +24,7 @@ nextcloud_systemd_required_services_list_custom: []
 nextcloud_base_path: "{{ nextcloud_base_path }}/nextcloud"
 nextcloud_config_path: "{{ nextcloud_base_path }}/config"
 nextcloud_data_path: "{{ nextcloud_base_path }}/data"
+nextcloud_redis_session_ini_path: "{{ nextcloud_base_path }}/redis-session.ini"
 nextcloud_customized_container_src_path: "{{ nextcloud_base_path }}/customized-container-src"
 
 # SVG support for imagick can be setup like this:

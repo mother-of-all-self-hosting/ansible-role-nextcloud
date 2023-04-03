@@ -12,6 +12,13 @@ Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
 ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} kill {{ nextcloud_identifier }}-server 2>/dev/null || true'
 ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ nextcloud_identifier }}-server 2>/dev/null || true'
 
+{#
+	`redis-session.ini` is mounted from the host, because the container's entrypoint tries to modify `/usr/local/etc/php/conf.d/redis-session.ini`
+	during startup when Redis is enabled and it can't do it on a `--read-only` filesystem.
+	See:
+	- https://github.com/nextcloud/docker/issues/763
+	- https://github.com/nextcloud/docker/blob/289f0bb8a3f1bd24d1633bbd01798c5476368827/26/apache/entrypoint.sh#L75-L100
+#}
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 			--rm \
 			--name={{ nextcloud_identifier }}-server \
@@ -21,6 +28,9 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 			--cap-drop=ALL \
 			--read-only \
 			--mount type=bind,src={{ nextcloud_data_path }},dst=/var/www/html \
+			{% if nextcloud_redis_is_configured %}
+			--mount type=bind,src={{ nextcloud_redis_session_ini_path }},dst=/usr/local/etc/php/conf.d/redis-session.ini \
+			{% endif %}
 			{% for mount in nextcloud_container_additional_mounts %}
 			--mount {{ mount }} \
 			{% endfor %}

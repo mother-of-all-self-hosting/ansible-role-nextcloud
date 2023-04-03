@@ -1,17 +1,28 @@
 ---
 
-- name: Ensure Nextcloud path exists
+- name: Ensure Nextcloud paths exists
   ansible.builtin.file:
     path: "{{ item.path }}"
-    state: directory
+    state: "{{ item.state }}"
     mode: 0700
     owner: "{{ nextcloud_uid }}"
     group: "{{ nextcloud_gid }}"
   with_items:
-    - {path: "{{ nextcloud_base_path }}", when: true}
-    - {path: "{{ nextcloud_config_path }}", when: true}
-    - {path: "{{ nextcloud_data_path }}", when: true}
-    - {path: "{{ nextcloud_customized_container_src_path }}", when: "{{ nextcloud_container_image_customizations_enabled }}"}
+    - path: "{{ nextcloud_base_path }}"
+      state: directory
+      when: true
+    - path: "{{ nextcloud_config_path }}"
+      state: directory
+      when: true
+    - path: "{{ nextcloud_data_path }}"
+      state: directory
+      when: true
+    - path: "{{ nextcloud_customized_container_src_path }}"
+      state: directory
+      when: "{{ nextcloud_container_image_customizations_enabled }}"
+    - path: "{{ nextcloud_redis_session_ini_path }}"
+      state: "{{ 'touch' if nextcloud_redis_is_configured else 'absent' }}"
+      when: true
   when: item.when | bool
 
 - name: Ensure Nextcloud support files installed
