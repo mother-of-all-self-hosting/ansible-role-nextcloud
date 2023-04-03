@@ -8,7 +8,7 @@ traefik.docker.network={{ nextcloud_container_labels_traefik_docker_network }}
 {% set middlewares = [] %}
 
 {% if nextcloud_container_labels_traefik_path_prefix != '/' %}
-traefik.http.middlewares.{{ nextcloud_identifier }}-slashless-redirect.redirectregex.regex=({{ nextcloud_container_labels_traefik_path_prefix | quote }})$
+traefik.http.middlewares.{{ nextcloud_identifier }}-slashless-redirect.redirectregex.regex=^({{ nextcloud_container_labels_traefik_path_prefix | quote }})$
 traefik.http.middlewares.{{ nextcloud_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
 {% set middlewares = middlewares + [nextcloud_identifier + '-slashless-redirect'] %}
 {% endif %}
