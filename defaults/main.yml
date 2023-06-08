@@ -11,7 +11,7 @@ nextcloud_hostname: ''
 
 nextcloud_path_prefix: /
 
-nextcloud_version: 26.0.1
+nextcloud_version: 26.0.2
 
 nextcloud_uid: ''
 nextcloud_gid: ''
