@@ -54,11 +54,13 @@
         owner: "{{ nextcloud_uid }}"
         group: "{{ nextcloud_gid }}"
         mode: 0640
+      register: nextcloud_container_image_customizations_dockerfile_result
 
     - name: Ensure customized container image for Nextcloud is built
       community.docker.docker_image:
         name: "{{ nextcloud_container_image_customized }}"
         source: build
+        force_source: "{{ nextcloud_container_image_customizations_dockerfile_result.changed }}"
         build:
           dockerfile: Dockerfile
           path: "{{ nextcloud_customized_container_src_path }}"
