@@ -4,3 +4,6 @@ Description=Runs the cronjobs For Nextcloud ({{ nextcloud_identifier }})
 [Service]
 Type=oneshot
 ExecStart={{ devture_systemd_docker_base_host_command_docker }} exec {{ nextcloud_identifier }}-server php /var/www/html/cron.php
+{% if nextcloud_preview_enabled %}
+ExecStart={{ nextcloud_preview_host_folder }}/preview-generator-cron.sh
+{% endif %}

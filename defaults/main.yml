@@ -36,6 +36,50 @@ nextcloud_customized_container_src_path: "{{ nextcloud_base_path }}/customized-c
 nextcloud_container_image_customizations_php_imageick_installation_enabled: false
 nextcloud_container_image_customizations_php_imageick_installation_package: "libmagickcore-6.q16-6-extra"
 
+# Preview generator setup
+#
+# Enable the variable nextcloud_preview_enabled and you are good to go.
+#
+# Some important aspects of usage:
+# - the preview generator has two stages [according to their readme](https://github.com/nextcloud/previewgenerator)
+#   - a generate-all phase, which has to be executed only a single time
+#   - a pre-generate phase, that should be run in a cronjob.
+#     That runs quite fast if the generate-all phase finishd.
+# We do not want to run the generate-all phase multiple times, so its execution has to be followed somehow.
+# This is done by creating a file on the host side and both the task that executes generate-all
+# and both the cronjob checks its existance.
+#
+# Multiple vaiables are also defined and the corresponding default values are also set.
+# These values are based on the [upstream readme](https://github.com/nextcloud/previewgenerator) and also on experience.
+# Feel free to change anything.
+#
+# Once installed, the playbook needs to be called with the adjust-nextcloud-config tag.
+# This tag sets up the variables and calls the generate-all script, that will also create the file---signalling
+# its finished state---on the host.
+# *** As this may take a long time, be sure to only call it when you have time to leave it running!!! ***
+# The playbook calls generate-all asynchronously, but it will timeout after about 27h.
+# On 60GBs, most if images, it took about 10 minutes to finish.
+# If it takes more time, you may want to start it from the host by calling
+# ```sh
+# /usr/bin/env docker exec mash-nextcloud-server php /var/www/html/occ preview:generate-all
+# ```
+#
+# If the nextcloud_preview_enabled value is set back to false, the host side files are cleaned up
+# and also the cron job is changed, not to call prevew generation again however, the database and generated
+# previews are kept intact.
+nextcloud_preview_enabled: false
+nextcloud_preview_folder_name: "preview-generator"
+nextcloud_preview_docker_folder: "/{{ nextcloud_preview_folder_name }}"
+nextcloud_preview_host_folder: "{{ nextcloud_customized_container_src_path }}/{{ nextcloud_preview_folder_name }}"
+nextcloud_preview_first_run_finished_filename: "finished-first-run.keepit"
+nextcloud_preview_squareSizes: "\"64 256 1024 2048\""
+nextcloud_preview_widthSizes: "\"64 256 1024 2048\""
+nextcloud_preview_heightSizes: "\"64 256 1024 2048\""
+nextcloud_preview_preview_max_x: 2048
+nextcloud_preview_preview_max_y: 2048
+nextcloud_preview_system_jpeg_quality: 60
+nextcloud_preview_app_jpeg_quality: "60"
+
 # nextcloud_container_image_customizations_enabled controls whether a customized Nextcloud image will be built.
 #
 # We toggle this variable to `true` when certain features which require a custom build are enabled.
