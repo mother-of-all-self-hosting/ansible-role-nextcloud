@@ -34,70 +34,59 @@
     cmd: |-
       docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ db:add-missing-indices
 
-
-
-
 - when: nextcloud_preview_enabled | bool
-  name: Setup preview generator squareSizes
-  ansible.builtin.command:
-    cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ config:app:set previewgenerator squareSizes  --value={{ nextcloud_preview_squareSizes }}
+  block:
+    - name: Adjust Nextcloud configuration values related to preview generator
+      ansible.builtin.command:
+          cmd: |-
+            docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ {{ item.appType }} {{ item.appConfig }} {{ item.configName }}  --value={{ item.value }}
+      with_items:
+        - appType: "config:app:set"
+          appConfig: "previewgenerator"
+          configName: "squareSizes"
+          value: "{{ nextcloud_preview_squareSizes }}"
+        - appType: "config:app:set"
+          appConfig: "previewgenerator"
+          configName: "widthSizes"
+          value: "{{ nextcloud_preview_widthSizes }}"
+        - appType: "config:app:set"
+          appConfig: "previewgenerator"
+          configName: "heightSizes"
+          value: "{{ nextcloud_preview_heightSizes }}"
+        - appType: "config:system:set"
+          appConfig: ""
+          configName: "preview_max_x"
+          value: "{{ nextcloud_preview_preview_max_x }}"
+        - appType: "config:system:set"
+          appConfig: ""
+          configName: "preview_max_y"
+          value: "{{ nextcloud_preview_preview_max_y }}"
+        - appType: "config:system:set"
+          appConfig: ""
+          configName: "jpeg_quality"
+          value: "{{ nextcloud_preview_system_jpeg_quality }}"
+        - appType: "config:app:set"
+          appConfig: "preview"
+          configName: "jpeg_quality"
+          value: "{{ nextcloud_preview_app_jpeg_quality }}"
 
-- when: nextcloud_preview_enabled | bool
-  name: Setup preview generator widthSizes
-  ansible.builtin.command:
-    cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ config:app:set previewgenerator widthSizes  --value={{ nextcloud_preview_widthSizes }}
+    - name: "Check if {{ nextcloud_preview_first_run_finished_filename }} exists"
+      ansible.builtin.stat:
+          path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
+      register: nextcloud_preview_file_stats
 
-- when: nextcloud_preview_enabled | bool
-  name: Setup preview generator heightSizes
-  ansible.builtin.command:
-    cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ config:app:set previewgenerator heightSizes  --value={{ nextcloud_preview_heightSizes }}
+    - when: not nextcloud_preview_file_stats.stat.exists
+      name: Start preview generate-all
+      ansible.builtin.command:
+          cmd: |-
+            docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ preview:generate-all
+      async: 100000
+      poll: 10
 
-- when: nextcloud_preview_enabled | bool
-  name: Setup preview generator preview_max_x
-  ansible.builtin.command:
-    cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ config:system:set preview_max_x --value {{ nextcloud_preview_preview_max_x }}
-
-- when: nextcloud_preview_enabled | bool
-  name: Setup preview generator preview_max_y
-  ansible.builtin.command:
-    cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ config:system:set preview_max_y --value {{ nextcloud_preview_preview_max_y }}
-
-- when: nextcloud_preview_enabled | bool
-  name: Setup preview generator config:system:set jpeg_quality
-  ansible.builtin.command:
-    cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ config:system:set jpeg_quality --value {{ nextcloud_preview_system_jpeg_quality }}
-
-- when: nextcloud_preview_enabled | bool
-  name: Setup preview generator app:set preview jpeg_quality
-  ansible.builtin.command:
-    cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ config:app:set preview jpeg_quality --value={{ nextcloud_preview_app_jpeg_quality }}
-
-- when: nextcloud_preview_enabled | bool
-  name: "Check if {{ nextcloud_preview_first_run_finished_filename }} exists"
-  ansible.builtin.stat:
-    path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
-  register: nextcloud_preview_file_stats
-
-- when: nextcloud_preview_enabled | bool and not nextcloud_preview_file_stats.stat.exists
-  name: Start preview generate-all
-  ansible.builtin.command:
-    cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ preview:generate-all
-  async: 100000
-  poll: 10
-
-- when: nextcloud_preview_enabled | bool
-  name: Create file to signal, that first run is executed
-  ansible.builtin.file:
-    path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
-    state: "touch"
-    mode: 0644
-    owner: "{{ nextcloud_uid }}"
-    group: "{{ nextcloud_gid }}"
+    - name: "Create {{ nextcloud_preview_first_run_finished_filename } to signal, that preview generate-all is finished"
+      ansible.builtin.file:
+          path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
+          state: "touch"
+          mode: 0644
+          owner: "{{ nextcloud_uid }}"
+          group: "{{ nextcloud_gid }}"
