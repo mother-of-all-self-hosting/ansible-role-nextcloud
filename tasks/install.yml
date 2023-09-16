@@ -23,6 +23,9 @@
     - path: "{{ nextcloud_redis_session_ini_path }}"
       state: "{{ 'touch' if nextcloud_redis_is_configured else 'absent' }}"
       when: true
+    - path: "{{ nextcloud_preview_host_folder }}"
+      state: "{{ 'directory' if nextcloud_preview_enabled else 'absent' }}"
+      when: true
   when: item.when | bool
 
 - name: Ensure Nextcloud support files installed
@@ -33,6 +36,15 @@
   with_items:
     - env
     - labels
+
+- when: "nextcloud_preview_enabled | bool"
+  name: Ensure Nextcloud preview generator files are present
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/preview-generator/{{ item }}.j2"
+    dest: "{{ nextcloud_preview_host_folder }}/{{ item }}"
+    mode: 0740
+  with_items:
+    - preview-generator-cron.sh
 
 - name: Ensure Nextcloud container image is pulled
   community.docker.docker_image:
