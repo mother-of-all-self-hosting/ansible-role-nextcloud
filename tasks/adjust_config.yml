@@ -83,7 +83,7 @@
       async: 100000
       poll: 10
 
-    - name: "Create {{ nextcloud_preview_first_run_finished_filename } to signal, that preview generate-all is finished"
+    - name: "Create {{ nextcloud_preview_first_run_finished_filename }} to signal, that preview generate-all is finished"
       ansible.builtin.file:
           path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
           state: "touch"
