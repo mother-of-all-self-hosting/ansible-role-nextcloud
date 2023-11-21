@@ -181,6 +181,70 @@ nextcloud_container_labels_traefik_additional_response_headers_auto: |
   }}
 nextcloud_container_labels_traefik_additional_response_headers_custom: {}
 
+# A list of middlewares to add to the service.
+# Add your own via the `nextcloud_container_labels_traefik_http_middlewares_custom` variable.
+nextcloud_container_labels_traefik_http_middlewares: "{{ nextcloud_container_labels_traefik_http_middlewares_default + nextcloud_container_labels_traefik_http_middlewares_auto + nextcloud_container_labels_traefik_http_middlewares_custom }}"
+
+nextcloud_container_labels_traefik_http_middlewares_default: |
+  {{
+    ([{
+      'priority': 1000,
+      'name': (nextcloud_identifier + '-slashless-redirect'),
+      'type': 'redirectregex',
+      'config': {
+        'regex': '^(' + nextcloud_container_labels_traefik_path_prefix | quote + ')$',
+        'replacement': '${1}/',
+      },
+    }] if nextcloud_container_labels_traefik_path_prefix != '/' else [])
+
+    +
+
+    ([{
+      'priority': 2000,
+      'name': (nextcloud_identifier + '-dav-redirectregex'),
+      'type': 'redirectregex',
+      'config': {
+        'permanent': 'true',
+        'regex': ('^' + nextcloud_scheme + '://' + nextcloud_hostname | quote + '/.well-known/(?:card|cal)dav$'),
+        'replacement': (nextcloud_scheme + '://' + nextcloud_hostname + '/remote.php/dav/'),
+      },
+    }] if nextcloud_container_labels_traefik_dav_redirect_regex_enabled else [])
+
+    +
+
+    ([{
+      'priority': 3000,
+      'name': (nextcloud_identifier + '-strip-prefix'),
+      'type': 'stripprefix',
+      'config': {
+        'prefixes': nextcloud_container_labels_traefik_path_prefix,
+      },
+    }] if nextcloud_container_labels_traefik_path_prefix != '/' else [])
+
+    +
+
+    ([{
+      'priority': 4000,
+      'name': (nextcloud_identifier + '-add-request-headers'),
+      'type': 'headers',
+      'config_key_prefix': 'customrequestheaders.',
+      'config': nextcloud_container_labels_traefik_additional_request_headers,
+    }] if nextcloud_container_labels_traefik_additional_request_headers.keys() | length > 0 else [])
+
+    +
+
+    ([{
+      'priority': 5000,
+      'name': (nextcloud_identifier + '-add-response-headers'),
+      'type': 'headers',
+      'config_key_prefix': 'customresponseheaders.',
+      'config': nextcloud_container_labels_traefik_additional_response_headers,
+    }] if nextcloud_container_labels_traefik_additional_response_headers.keys() | length > 0 else [])
+  }}
+
+nextcloud_container_labels_traefik_http_middlewares_auto: []
+nextcloud_container_labels_traefik_http_middlewares_custom: []
+
 # nextcloud_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
 # See `roles/custom/nextcloud/templates/labels.j2` for details.
 #
