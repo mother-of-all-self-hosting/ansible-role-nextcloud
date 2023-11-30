@@ -246,7 +246,7 @@ nextcloud_container_labels_traefik_http_middlewares_auto: []
 nextcloud_container_labels_traefik_http_middlewares_custom: []
 
 # nextcloud_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
-# See `roles/custom/nextcloud/templates/labels.j2` for details.
+# See `../templates/labels.j2` for details.
 #
 # Example:
 # nextcloud_container_labels_additional_labels: |
