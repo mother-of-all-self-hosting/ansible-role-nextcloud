@@ -1,14 +1,17 @@
 FROM {{ nextcloud_container_image }}
 
+{% set packages_to_install = [] %}
+
 {% if nextcloud_container_image_customizations_php_imageick_installation_enabled %}
-RUN apt -y update
-RUN apt -y install {{ nextcloud_container_image_customizations_php_imageick_installation_package }}
+{% set packages_to_install = packages_to_install + [nextcloud_container_image_customizations_php_imageick_installation_package] %}
 {% endif %}
 
-{% if nextcloud_container_image_customizations_smb_enabled %}                                                                          
-RUN apt -y update                                                                                                                        
-RUN apt -y install procps smbclient                                                                                                      
-RUN rm -rf /var/lib/apt/lists/*                                                                                                          
+{% if nextcloud_container_image_customizations_samba_enabled %}
+{% set packages_to_install = packages_to_install + ['procps', 'smbclient'] %}
+{% endif %}
+
+{% if packages_to_install | length > 0 %}                                                                          
+RUN apt -y update && apt -y install {{ packages_to_install | join(' ') }} && rm -rf /var/lib/apt/lists/*                                                                                                          
 {% endif %}
 
 {{ nextcloud_container_image_customizations_dockerfile_body_custom }}
