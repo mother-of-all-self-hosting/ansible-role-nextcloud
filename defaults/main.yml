@@ -90,7 +90,10 @@ nextcloud_preview_app_jpeg_quality: "60"
 # - `nextcloud_container_image_customizations_dockerfile_body_custom`
 # - `nextcloud_container_image_customized`
 # - `nextcloud_container_image_final`
-nextcloud_container_image_customizations_enabled: "{{ nextcloud_container_image_customizations_php_imageick_installation_enabled }}"
+nextcloud_container_image_customizations_enabled: >
+  "{{ nextcloud_container_image_customizations_php_imageick_installation_enabled 
+  or
+  nextcloud_container_image_smb_enabled }}"
 
 # nextcloud_container_image_customizations_dockerfile_body_custom contains your custom Dockerfile steps
 # for building your customized Nextcloud image based on the original (upstream) image (`nextcloud_container_image`).
