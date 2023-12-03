@@ -27,20 +27,6 @@ nextcloud_data_path: "{{ nextcloud_base_path }}/data"
 nextcloud_redis_session_ini_path: "{{ nextcloud_base_path }}/redis-session.ini"
 nextcloud_customized_container_src_path: "{{ nextcloud_base_path }}/customized-container-src"
 
-# SVG support for imagick can be setup like this:
-# https://docs.nextcloud.com/server/24/admin_manual/configuration_server/theming.html?highlight=libmagickcore%20q16%20extra#theming-of-icons
-# However, using Imagick may have a negative effect on security, that is the reason
-# behind not installing it by default. See:
-# https://github.com/nextcloud/server/issues/13099
-# Tread wisely!
-nextcloud_container_image_customizations_php_imageick_installation_enabled: false
-nextcloud_container_image_customizations_php_imageick_installation_package: "libmagickcore-6.q16-6-extra"
-
-# Samba (SMB) support for Windows fileshares can be setup using the toggle below, which 
-# installs the smbclient package per the example here https://github.com/nextcloud/docker/blob/master/.examples/dockerfiles/smb/apache/Dockerfile
-# Also see ../../templates/customizations/Dockerfile.j2
-nextcloud_container_image_customizations_samba_enabled: false
-
 # Preview generator setup
 #
 # Enable the variable nextcloud_preview_enabled and you are good to go.
@@ -103,6 +89,20 @@ nextcloud_container_image_customizations_enabled: |
       nextcloud_container_image_customizations_samba_enabled
     )
   }}
+
+# SVG support for imagick can be setup like this:
+# https://docs.nextcloud.com/server/24/admin_manual/configuration_server/theming.html?highlight=libmagickcore%20q16%20extra#theming-of-icons
+# However, using Imagick may have a negative effect on security, that is the reason
+# behind not installing it by default. See:
+# https://github.com/nextcloud/server/issues/13099
+# Tread wisely!
+nextcloud_container_image_customizations_php_imageick_installation_enabled: false
+nextcloud_container_image_customizations_php_imageick_installation_package: "libmagickcore-6.q16-6-extra"
+
+# Samba (SMB) support for Windows fileshares can be setup using the toggle below, which
+# installs the smbclient package per the example here https://github.com/nextcloud/docker/blob/master/.examples/dockerfiles/smb/apache/Dockerfile
+# Also see ../../templates/customizations/Dockerfile.j2
+nextcloud_container_image_customizations_samba_enabled: false
 
 # nextcloud_container_image_customizations_dockerfile_body_custom contains your custom Dockerfile steps
 # for building your customized Nextcloud image based on the original (upstream) image (`nextcloud_container_image`).
