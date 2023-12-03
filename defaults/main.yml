@@ -36,6 +36,11 @@ nextcloud_customized_container_src_path: "{{ nextcloud_base_path }}/customized-c
 nextcloud_container_image_customizations_php_imageick_installation_enabled: false
 nextcloud_container_image_customizations_php_imageick_installation_package: "libmagickcore-6.q16-6-extra"
 
+# Samba (SMB) support for Windows fileshares can be setup using the toggle below, which 
+# installs the smbclient package per the example here https://github.com/nextcloud/docker/blob/master/.examples/dockerfiles/smb/apache/Dockerfile
+# Also see ../../templates/customizations/Dockerfile.j2
+nextcloud_container_image_customizations_samba_enabled: false
+
 # Preview generator setup
 #
 # Enable the variable nextcloud_preview_enabled and you are good to go.
@@ -90,7 +95,14 @@ nextcloud_preview_app_jpeg_quality: "60"
 # - `nextcloud_container_image_customizations_dockerfile_body_custom`
 # - `nextcloud_container_image_customized`
 # - `nextcloud_container_image_final`
-nextcloud_container_image_customizations_enabled: "{{ nextcloud_container_image_customizations_php_imageick_installation_enabled }}"
+nextcloud_container_image_customizations_enabled: |
+  {{
+    (
+      nextcloud_container_image_customizations_php_imageick_installation_enabled
+      or
+      nextcloud_container_image_customizations_samba_enabled
+    )
+  }}
 
 # nextcloud_container_image_customizations_dockerfile_body_custom contains your custom Dockerfile steps
 # for building your customized Nextcloud image based on the original (upstream) image (`nextcloud_container_image`).
