@@ -19,9 +19,9 @@
     msg: >-
       Your configuration contains a variable, which now has a different name.
       Please change your configuration to rename the variable (`{{ item.old }}` -> `{{ item.new }}`).
-  when: "vars | dict2items | selectattr('key', 'match', item.old) | list | items2dict"
+  when: "vars | dict2items | selectattr('key', item.comparison, item.old) | list | items2dict"
   with_items:
-    - {'old': 'nextcloud_container_image_customizations_php_imageick_installation_package', 'new': '<superseded by nextcloud_container_image_customizations_php_imageick_installation_packages>'}
+    - {'comparison': 'equalto', 'old': 'nextcloud_container_image_customizations_php_imageick_installation_package', 'new': '<superseded by nextcloud_container_image_customizations_php_imageick_installation_packages>'}
 
 - when: nextcloud_container_labels_traefik_enabled | bool
   block:
