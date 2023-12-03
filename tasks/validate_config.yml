@@ -21,7 +21,8 @@
       Please change your configuration to rename the variable (`{{ item.old }}` -> `{{ item.new }}`).
   when: "vars | dict2items | selectattr('key', item.comparison, item.old) | list | items2dict"
   with_items:
-    - {'comparison': 'equalto', 'old': 'nextcloud_container_image_customizations_php_imageick_installation_package', 'new': '<superseded by nextcloud_container_image_customizations_php_imageick_installation_packages>'}
+    - {'comparison': 'equalto', 'old': 'nextcloud_container_image_customizations_php_imageick_installation_enabled', 'new': 'nextcloud_container_image_customizations_php_imagick_installation_enabled'}
+    - {'comparison': 'equalto', 'old': 'nextcloud_container_image_customizations_php_imageick_installation_package', 'new': '<superseded by nextcloud_container_image_customizations_php_imagick_installation_packages>'}
 
 - when: nextcloud_container_labels_traefik_enabled | bool
   block:

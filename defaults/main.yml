@@ -84,7 +84,7 @@ nextcloud_preview_app_jpeg_quality: "60"
 nextcloud_container_image_customizations_enabled: |
   {{
     (
-      nextcloud_container_image_customizations_php_imageick_installation_enabled
+      nextcloud_container_image_customizations_php_imagick_installation_enabled
       or
       nextcloud_container_image_customizations_samba_enabled
       or
@@ -98,8 +98,8 @@ nextcloud_container_image_customizations_enabled: |
 # behind not installing it by default. See:
 # https://github.com/nextcloud/server/issues/13099
 # Tread wisely!
-nextcloud_container_image_customizations_php_imageick_installation_enabled: false
-nextcloud_container_image_customizations_php_imageick_installation_packages: ['libmagickcore-6.q16-6-extra']
+nextcloud_container_image_customizations_php_imagick_installation_enabled: false
+nextcloud_container_image_customizations_php_imagick_installation_packages: ['libmagickcore-6.q16-6-extra']
 
 # Samba (SMB) support for Windows fileshares can be setup using the toggle below, which
 # installs the smbclient package per the example here https://github.com/nextcloud/docker/blob/master/.examples/dockerfiles/smb/apache/Dockerfile
@@ -112,7 +112,7 @@ nextcloud_container_image_customizations_samba_packages: ['procps', 'smbclient']
 nextcloud_container_image_customizations_packages_to_install: "{{ (nextcloud_container_image_customizations_packages_to_install_auto + nextcloud_container_image_customizations_packages_to_install_custom) | unique }}"
 nextcloud_container_image_customizations_packages_to_install_auto: |
   {{
-    (nextcloud_container_image_customizations_php_imageick_installation_packages if nextcloud_container_image_customizations_php_imageick_installation_enabled else [])
+    (nextcloud_container_image_customizations_php_imageick_installation_packages if nextcloud_container_image_customizations_php_imagick_installation_enabled else [])
     +
     (nextcloud_container_image_customizations_samba_packages if nextcloud_container_image_customizations_samba_enabled else [])
   }}
