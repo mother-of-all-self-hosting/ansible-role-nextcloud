@@ -140,7 +140,7 @@ nextcloud_container_image_registry_prefix: docker.io/
 nextcloud_container_image_customized: "localhost/nextcloud:{{ nextcloud_container_image_tag }}-customized"
 
 # nextcloud_container_image_final holds the name of the Nextcloud image to run depending on whether or not customizations are enabled.
-nextcloud_container_image_final: "{{ nextcloud_container_image_customized if nextcloud_container_image_customizations_enabled else nextcloud_container_image }} "
+nextcloud_container_image_final: "{{ nextcloud_container_image_customized if nextcloud_container_image_customizations_enabled else nextcloud_container_image }}"
 
 # A list of extra arguments to pass to the container
 nextcloud_container_extra_arguments: []
