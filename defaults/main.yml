@@ -324,7 +324,7 @@ nextcloud_config_default_parameters:
     value: "{{ nextcloud_url }}"
     type: string
   - key: overwritewebroot
-    value: "{{ nextcloud_path_prefix }}"
+    value: "{{ '' if nextcloud_path_prefix == '/' else nextcloud_path_prefix }}"
     type: string
   - key: htaccess.RewriteBase
     value: "{{ nextcloud_path_prefix }}"
