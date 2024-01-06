@@ -21,6 +21,11 @@ nextcloud_systemd_required_services_list_default: ['docker.service']
 nextcloud_systemd_required_services_list_auto: []
 nextcloud_systemd_required_services_list_custom: []
 
+nextcloud_systemd_wanted_services_list: "{{ nextcloud_systemd_wanted_services_list_default + nextcloud_systemd_wanted_services_list_auto + nextcloud_systemd_wanted_services_list_custom }}"
+nextcloud_systemd_wanted_services_list_default: []
+nextcloud_systemd_wanted_services_list_auto: []
+nextcloud_systemd_wanted_services_list_custom: []
+
 nextcloud_base_path: "{{ nextcloud_base_path }}/nextcloud"
 nextcloud_config_path: "{{ nextcloud_base_path }}/config"
 nextcloud_data_path: "{{ nextcloud_base_path }}/data"
