@@ -321,19 +321,113 @@ nextcloud_config_parameters: "{{ nextcloud_config_default_parameters + nextcloud
 # Default configuration parameters to apply to Nextcloud.
 # To add your own additional parameters, use `nextcloud_config_additional_parameters`.
 # To get rid of these defaults, redefine `nextcloud_config_default_parameters` or `nextcloud_config_parameters`.
-nextcloud_config_default_parameters:
-  - key: overwriteprotocol
-    value: "https"
-    type: string
-  - key: overwrite.cli.url
-    value: "{{ nextcloud_url }}"
-    type: string
-  - key: overwritewebroot
-    value: "{{ '' if nextcloud_path_prefix == '/' else nextcloud_path_prefix }}"
-    type: string
-  - key: htaccess.RewriteBase
-    value: "{{ nextcloud_path_prefix }}"
-    type: string
+nextcloud_config_default_parameters: |
+  {{
+    ([
+      {
+        'key': 'overwriteprotocol',
+        'value': 'https',
+        'type': 'string',
+      },
+      {
+        'key': 'overwrite.cli.url',
+        'value': nextcloud_url,
+        'type': 'string',
+      },
+      {
+        'key': 'overwritewebroot',
+        'value': ('' if nextcloud_path_prefix == '/' else nextcloud_path_prefix),
+        'type': 'string',
+      },
+      {
+        'key': 'htaccess.RewriteBase',
+        'value': nextcloud_path_prefix,
+        'type': 'string',
+      },
+      {
+        'key': 'auth.bruteforce.protection.enabled',
+        'value': false,
+        'type': 'boolean',
+      },
+    ])
+    +
+    ([
+      {
+        'key': 'mail_smtphost',
+        'value': nextcloud_config_parameter_mail_smtphost,
+        'type': 'string',
+      },
+    ] if nextcloud_config_parameter_mail_smtphost != '' else [])
+    +
+    ([
+      {
+        'key': 'mail_smtpport',
+        'value': nextcloud_config_parameter_mail_smtpport | int,
+        'type': 'int',
+      },
+    ] if nextcloud_config_parameter_mail_smtpport != '' else [])
+    +
+    ([
+      {
+        'key': 'mail_smtpsecure',
+        'value': nextcloud_config_parameter_mail_smtpsecure,
+        'type': 'string',
+      },
+    ] if nextcloud_config_parameter_mail_smtpsecure != '' else [])
+    +
+    ([
+      {
+        'key': 'mail_smtpauth',
+        'value': nextcloud_config_parameter_mail_smtpauth,
+        'type': 'boolean',
+      },
+    ] if nextcloud_config_parameter_mail_smtpauth else [])
+    +
+    ([
+      {
+        'key': 'mail_smtpname',
+        'value': nextcloud_config_parameter_mail_smtpname,
+        'type': 'string',
+      },
+    ] if nextcloud_config_parameter_mail_smtpname else [])
+    +
+    ([
+      {
+        'key': 'mail_smtppassword',
+        'value': nextcloud_config_parameter_mail_smtppassword,
+        'type': 'string',
+      },
+    ] if nextcloud_config_parameter_mail_smtppassword else [])
+    +
+    ([
+      {
+        'key': 'mail_from_address',
+        'value': nextcloud_config_parameter_mail_from_address,
+        'type': 'string',
+      },
+    ] if nextcloud_config_parameter_mail_from_address != '' else [])
+    +
+    ([
+      {
+        'key': 'mail_domain',
+        'value': nextcloud_config_parameter_mail_domain,
+        'type': 'string',
+      },
+    ] if nextcloud_config_parameter_mail_domain != '' else [])
+  }}
+
+nextcloud_config_parameter_mail_smtphost: ''
+nextcloud_config_parameter_mail_smtpport: ''
+nextcloud_config_parameter_mail_smtpsecure: ''
+
+nextcloud_config_parameter_mail_smtpauth: false
+nextcloud_config_parameter_mail_smtpname: ''
+nextcloud_config_parameter_mail_smtppassword: ''
+
+# nextcloud_config_parameter_mail_from_address and nextcloud_config_parameter_mail_domain
+# contain the @-separated email address of the sender (localpart@domain).
+nextcloud_config_parameter_mail_from_address: '' # localpart
+nextcloud_config_parameter_mail_domain: '' # domain
 
 # Add your custom Nextcloud configuration parameters here.
 #
