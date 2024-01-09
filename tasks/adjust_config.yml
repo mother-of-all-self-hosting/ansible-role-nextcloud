@@ -14,6 +14,11 @@
         cmd: |-
           docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:set trusted_proxies 0 --type=string --value={{ nextcloud_reverse_proxy_container_network_subnet_result.stdout }}
 
+- name: Upgrade Nextcloud applications
+      ansible.builtin.command:
+        cmd: |-
+          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings upgrade
+
 - name: Adjust Nextcloud configuration (custom parameters)
   ansible.builtin.command:
     cmd: |-
