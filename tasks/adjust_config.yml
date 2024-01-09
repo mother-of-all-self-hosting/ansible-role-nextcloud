@@ -9,6 +9,11 @@
       register: nextcloud_reverse_proxy_container_network_subnet_result
       changed_when: false
 
+- name: Upgrade Nextcloud applications
+      ansible.builtin.command:
+        cmd: |-
+          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings upgrade
+
     - name: Adjust Nextcloud configuration (set trusted_proxies)
       ansible.builtin.command:
         cmd: |-
