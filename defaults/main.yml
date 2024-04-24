@@ -1,5 +1,7 @@
 ---
 
+# Project source code URL: https://github.com/nextcloud/server
+
 nextcloud_enabled: true
 
 nextcloud_identifier: nextcloud
@@ -11,7 +13,7 @@ nextcloud_hostname: ''
 
 nextcloud_path_prefix: /
 
-nextcloud_version: 28.0.2
+nextcloud_version: 28.0.4
 
 nextcloud_uid: ''
 nextcloud_gid: ''
