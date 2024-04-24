@@ -117,7 +117,7 @@ nextcloud_container_image_customizations_samba_packages: ['procps', 'smbclient']
 nextcloud_container_image_customizations_packages_to_install: "{{ (nextcloud_container_image_customizations_packages_to_install_auto + nextcloud_container_image_customizations_packages_to_install_custom) | unique }}"
 nextcloud_container_image_customizations_packages_to_install_auto: |
   {{
-    (nextcloud_container_image_customizations_php_imageick_installation_packages if nextcloud_container_image_customizations_php_imagick_installation_enabled else [])
+    (nextcloud_container_image_customizations_php_imagick_installation_packages if nextcloud_container_image_customizations_php_imagick_installation_enabled else [])
     +
     (nextcloud_container_image_customizations_samba_packages if nextcloud_container_image_customizations_samba_enabled else [])
   }}
