@@ -17,6 +17,8 @@
         - server.service
         - cron.service
         - cron.timer
+        - app-update.service
+        - app-update.timer
 
     - name: Ensure Nextcloud systemd services do not exists
       ansible.builtin.file:
@@ -26,6 +28,8 @@
         - server.service
         - cron.service
         - cron.timer
+        - app-update.service
+        - app-update.timer
 
     - name: Ensure Nextcloud path doesn't exist
       ansible.builtin.file:
