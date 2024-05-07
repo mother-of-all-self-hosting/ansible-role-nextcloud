@@ -447,7 +447,7 @@ nextcloud_cron_schedule: '*:0/15:0'
 
 #enable auto updates for nextcloud apps
 nextcloud_auto_app_update_enabled: false
-# nextcloud_cauto_app_update_schedule contains a systemd OnCalendar definition which controls how often `app-update.timer` runs
+# nextcloud_auto_app_update_schedule contains a systemd OnCalendar definition which controls how often `app-update.timer` runs
 # The default value means 'every day at 00:00'.
 # Learn more here: https://man.archlinux.org/man/systemd.time.7
 nextcloud_auto_app_update_schedule: '*-*-* 00:00:00'
