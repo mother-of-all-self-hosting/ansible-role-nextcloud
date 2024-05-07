@@ -92,3 +92,15 @@
     - server.service
     - cron.service
     - cron.timer
+
+- when: "nextcloud_auto_app_update_enabled | bool"
+  block:
+    name: Ensure Nextcloud app update systemd services installed
+    ansible.builtin.template:
+      src: "{{ role_path }}/templates/systemd/{{ item }}.j2"
+      dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-{{ item }}"
+      mode: 0640
+    with_items:
+      - app-update.service
+      - app-update.timer
+
