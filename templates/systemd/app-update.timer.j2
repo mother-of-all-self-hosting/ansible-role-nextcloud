@@ -1,0 +1,9 @@
+[Unit]
+Description=Periodically update the apps for Nextcloud ({{ nextcloud_identifier }})
+
+[Timer]
+Unit={{ nextcloud_identifier }}-app-update.service
+OnCalendar={{ nextcloud_auto_app_update_schedule }}
+
+[Install]
+WantedBy=timers.target
