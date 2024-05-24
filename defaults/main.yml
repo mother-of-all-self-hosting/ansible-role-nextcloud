@@ -13,7 +13,7 @@ nextcloud_hostname: ''
 
 nextcloud_path_prefix: /
 
-nextcloud_version: 28.0.5
+nextcloud_version: 29.0.0
 
 nextcloud_uid: ''
 nextcloud_gid: ''
