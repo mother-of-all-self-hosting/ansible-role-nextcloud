@@ -70,9 +70,8 @@ nextcloud_preview_folder_name: "preview-generator"
 nextcloud_preview_docker_folder: "/{{ nextcloud_preview_folder_name }}"
 nextcloud_preview_host_folder: "{{ nextcloud_customized_container_src_path }}/{{ nextcloud_preview_folder_name }}"
 nextcloud_preview_first_run_finished_filename: "finished-first-run.keepit"
-## Unsetting the preview_max variables will set them null in the config.yml (which is the dafult according to the docs).
-# nextcloud_preview_preview_max_x: 4096
-# nextcloud_preview_preview_max_y: 4096
+nextcloud_preview_preview_max_x: null
+nextcloud_preview_preview_max_y: null
 nextcloud_preview_system_jpeg_quality: 80
 
 # nextcloud_container_image_customizations_enabled controls whether a customized Nextcloud image will be built.
