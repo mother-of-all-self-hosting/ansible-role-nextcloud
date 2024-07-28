@@ -42,7 +42,7 @@
           configName: "preview_max_y"
           type: "string"
           value: "{{ nextcloud_preview_preview_max_y }}"
-        - appType: "config:system:set"
+        - appType: "config:app:set"
           appConfig: ""
           configName: "jpeg_quality"
           type: int
