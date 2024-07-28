@@ -14,6 +14,17 @@
     - nextcloud_database_username
     - nextcloud_database_password
 
+- name: Fail if deprecated Nextcloud settings are still defined
+  ansible.builtin.fail:
+    msg: >-
+      You need to drop setting (`{{ item }}`) as it is not used anymore in the Nextcloud role.
+  when: "item in vars"
+  with_items:
+    - nextcloud_preview_squareSizes
+    - nextcloud_preview_widthSizes
+    - nextcloud_preview_heightSizes
+    - nextcloud_preview_app_jpeg_quality
+
 - name: (Deprecation) Catch and report renamed Nextcloud variables
   ansible.builtin.fail:
     msg: >-
