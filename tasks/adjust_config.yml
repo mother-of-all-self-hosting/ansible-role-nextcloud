@@ -32,40 +32,20 @@
           cmd: |-
             docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ {{ item.appType }} --type={{ item.type }} --value={{ item.value }} -- {{ item.appConfig }} {{ item.configName }}
       with_items:
-        - appType: "config:app:set"
-          appConfig: "previewgenerator"
-          configName: "squareSizes"
-          type: string
-          value: "{{ nextcloud_preview_squareSizes }}"
-        - appType: "config:app:set"
-          appConfig: "previewgenerator"
-          configName: "widthSizes"
-          type: string
-          value: "{{ nextcloud_preview_widthSizes }}"
-        - appType: "config:app:set"
-          appConfig: "previewgenerator"
-          configName: "heightSizes"
-          type: string
-          value: "{{ nextcloud_preview_heightSizes }}"
         - appType: "config:system:set"
           appConfig: ""
           configName: "preview_max_x"
-          type: int
+          type: "string"
           value: "{{ nextcloud_preview_preview_max_x }}"
         - appType: "config:system:set"
           appConfig: ""
           configName: "preview_max_y"
-          type: int
+          type: "string"
           value: "{{ nextcloud_preview_preview_max_y }}"
-        - appType: "config:system:set"
+        - appType: "config:app:set"
           appConfig: ""
           configName: "jpeg_quality"
           type: int
-          value: "{{ nextcloud_preview_system_jpeg_quality }}"
-        - appType: "config:app:set"
-          appConfig: "preview"
-          configName: "jpeg_quality"
-          type: string
           value: "{{ nextcloud_preview_app_jpeg_quality }}"
 
     - name: "Check if {{ nextcloud_preview_first_run_finished_filename }} exists"
