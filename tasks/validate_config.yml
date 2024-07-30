@@ -23,7 +23,7 @@
     - nextcloud_preview_squareSizes
     - nextcloud_preview_widthSizes
     - nextcloud_preview_heightSizes
-    - nextcloud_preview_app_jpeg_quality
+    - nextcloud_preview_system_jpeg_quality
 
 - name: (Deprecation) Catch and report renamed Nextcloud variables
   ansible.builtin.fail:

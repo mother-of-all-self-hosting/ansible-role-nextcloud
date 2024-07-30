@@ -46,7 +46,7 @@
           appConfig: ""
           configName: "jpeg_quality"
           type: int
-          value: "{{ nextcloud_preview_system_jpeg_quality }}"
+          value: "{{ nextcloud_preview_app_jpeg_quality }}"
 
     - name: "Check if {{ nextcloud_preview_first_run_finished_filename }} exists"
       ansible.builtin.stat:
