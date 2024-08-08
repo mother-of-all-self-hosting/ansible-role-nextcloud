@@ -312,6 +312,10 @@ nextcloud_database_name: nextcloud
 nextcloud_database_username: ''
 nextcloud_database_password: ''
 
+# Controls the maintenance_window_start configuration parameter.
+# See: https://docs.nextcloud.com/server/29/admin_manual/configuration_server/background_jobs_configuration.html
+nextcloud_config_parameter_maintenance_window_start: 1
+
 # A list of configuration parameters for Nextcloud.
 # To define your own, we advise editing `nextcloud_config_additional_parameters`.
 nextcloud_config_parameters: "{{ nextcloud_config_default_parameters + nextcloud_config_additional_parameters }}"
@@ -346,6 +350,11 @@ nextcloud_config_default_parameters: |
         'key': 'auth.bruteforce.protection.enabled',
         'value': false,
         'type': 'boolean',
+      },
+      {
+        'key': 'maintenance_window_start',
+        'value': nextcloud_config_parameter_maintenance_window_start,
+        'type': 'integer',
       },
     ])
     +
