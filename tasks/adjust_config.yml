@@ -30,22 +30,19 @@
     - name: Adjust Nextcloud configuration values related to preview generator
       ansible.builtin.command:
           cmd: |-
-            docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ {{ item.appType }} --type={{ item.type }} --value={{ item.value }} -- {{ item.appConfig }} {{ item.configName }}
+            docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ {{ item.appType }} --value={{ item.value }} -- {{ item.appConfig }} {{ item.configName }}
       with_items:
         - appType: "config:system:set"
           appConfig: ""
           configName: "preview_max_x"
-          type: "string"
           value: "{{ nextcloud_preview_preview_max_x }}"
         - appType: "config:system:set"
           appConfig: ""
           configName: "preview_max_y"
-          type: "string"
           value: "{{ nextcloud_preview_preview_max_y }}"
         - appType: "config:app:set"
           appConfig: "preview"
           configName: "jpeg_quality"
-          type: int
           value: "{{ nextcloud_preview_app_jpeg_quality }}"
 
     - name: "Check if {{ nextcloud_preview_first_run_finished_filename }} exists"
