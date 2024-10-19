@@ -8,19 +8,20 @@
 - when: nextcloud_service_stat.stat.exists | bool
   block:
     - name: Ensure Nextcloud systemd services are stopped
+      when: item.when | bool
       ansible.builtin.service:
-        name: "{{ nextcloud_identifier }}-{{ item }}"
+        name: "{{ nextcloud_identifier }}-{{ item.service }}"
         state: stopped
         enabled: false
         daemon_reload: true
       with_items:
-        - server.service
-        - cron.service
-        - cron.timer
-        - app-update.service
-        - app-update.timer
+        - {'service': server.service, 'when': true}
+        - {'service': cron.service, 'when': true}
+        - {'service': cron.timer, 'when': true}
+        - {'service': app-update.service, 'when': "{{ nextcloud_auto_app_update_enabled }}"}
+        - {'service': app-update.timer, 'when': "{{ nextcloud_auto_app_update_enabled }}"}
 
-    - name: Ensure Nextcloud systemd services do not exists
+    - name: Ensure Nextcloud systemd services do not exist
       ansible.builtin.file:
         path: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-{{ item }}"
         state: absent
