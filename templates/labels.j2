@@ -6,9 +6,11 @@ traefik.docker.network={{ nextcloud_container_labels_traefik_docker_network }}
 {% endif %}
 
 {% for middleware in nextcloud_container_labels_traefik_http_middlewares | sort (attribute='priority,name') %}
+{% if middleware.config | default({}) | items() | length > 0 %}
 {% for key, value in middleware.config.items() %}
 traefik.http.middlewares.{{ middleware.name }}.{{ middleware.type }}.{{ middleware.config_key_prefix | default('') }}{{ key }}={{ value }}
 {% endfor %}
+{% endif %}
 {% endfor %}
 
 traefik.http.routers.{{ nextcloud_identifier }}.rule={{ nextcloud_container_labels_traefik_rule }}

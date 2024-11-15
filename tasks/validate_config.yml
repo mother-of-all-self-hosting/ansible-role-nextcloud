@@ -3,16 +3,17 @@
 - name: Fail if required Nextcloud settings not defined
   ansible.builtin.fail:
     msg: >-
-      You need to define a required configuration setting (`{{ item }}`) for using this role.
-  when: "vars[item] == ''"
+      You need to define a required configuration setting (`{{ item.name }}`).
+  when: "item.when | bool and vars[item.name] | length == 0"
   with_items:
-    - nextcloud_hostname
-    - nextcloud_uid
-    - nextcloud_gid
-    - nextcloud_database_hostname
-    - nextcloud_database_name
-    - nextcloud_database_username
-    - nextcloud_database_password
+    - {'name': 'nextcloud_hostname', when: true}
+    - {'name': 'nextcloud_uid', when: true}
+    - {'name': 'nextcloud_gid', when: true}
+    - {'name': 'nextcloud_database_hostname', when: true}
+    - {'name': 'nextcloud_database_name', when: true}
+    - {'name': 'nextcloud_database_username', when: true}
+    - {'name': 'nextcloud_database_password', when: true}
+    - {'name': 'nextcloud_container_labels_traefik_compression_middleware_name', when: "{{ nextcloud_container_labels_traefik_compression_middleware_enabled }}"}
 
 - name: Fail if deprecated Nextcloud settings are still defined
   ansible.builtin.fail:
