@@ -37,7 +37,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 			{% for mount in nextcloud_container_additional_mounts %}
 			--mount {{ mount }} \
 			{% endfor %}
-			--tmpfs=/tmp:rw,noexec,nosuid,size=512m \
+			--tmpfs=/tmp:rw,noexec,nosuid,size=1024m \
 			--tmpfs=/var/run/apache2:rw,noexec,nosuid,size=128m \
 			{% if nextcloud_container_http_host_bind_port %}
 			-p {{ nextcloud_container_http_host_bind_port }}:80 \
