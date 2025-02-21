@@ -80,8 +80,10 @@
 
 - name: Ensure Nextcloud container network is created
   community.general.docker_network:
+    enable_ipv6: "{{ devture_systemd_docker_base_ipv6_enabled }}"
     name: "{{ nextcloud_container_network }}"
     driver: bridge
+    driver_options: "{{ devture_systemd_docker_base_container_networks_driver_options }}"
 
 - name: Ensure Nextcloud systemd services installed
   ansible.builtin.template:
@@ -113,4 +115,3 @@
       with_items:
         - app-update.service
         - app-update.timer
-
