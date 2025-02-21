@@ -19,7 +19,7 @@ nextcloud_uid: ''
 nextcloud_gid: ''
 
 nextcloud_systemd_required_services_list: "{{ nextcloud_systemd_required_services_list_default + nextcloud_systemd_required_services_list_auto + nextcloud_systemd_required_services_list_custom }}"
-nextcloud_systemd_required_services_list_default: ['docker.service']
+nextcloud_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
 nextcloud_systemd_required_services_list_auto: []
 nextcloud_systemd_required_services_list_custom: []
 
