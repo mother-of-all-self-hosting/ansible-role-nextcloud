@@ -28,6 +28,7 @@
     - { "old": "nextcloud_preview_system_jpeg_quality", "new": "<removed>" }
     - { "old": "nextcloud_container_image_customizations_php_imageick_installation_enabled", "new": "nextcloud_container_image_customizations_php_imagick_installation_enabled" }
     - { "old": "nextcloud_container_image_customizations_php_imageick_installation_package", "new": "nextcloud_container_image_customizations_php_imagick_installation_packages" }
+    - { "old": "nextcloud_container_additional_environment_variables", "new": "nextcloud_environment_variables_additional_variables" }
 
 - when: nextcloud_container_labels_traefik_enabled | bool
   block:

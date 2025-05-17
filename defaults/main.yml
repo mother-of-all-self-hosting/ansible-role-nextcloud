@@ -295,13 +295,13 @@ nextcloud_container_labels_traefik_http_middlewares_custom: []
 #   another.label="here"
 nextcloud_container_labels_additional_labels: ''
 
-# nextcloud_container_additional_environment_variables contains a multiline string with additional environment variables to pass to the container.
+# nextcloud_environment_variables_additional_variables contains a multiline string with additional environment variables to pass to the container.
 #
 # Example:
-# nextcloud_container_additional_environment_variables: |
+# nextcloud_environment_variables_additional_variables: |
 #   VAR=1
 #   ANOTHER=value
-nextcloud_container_additional_environment_variables: ''
+nextcloud_environment_variables_additional_variables: ''
 
 # A list of additional "mounts" to be mounted in the container.
 # Contains definition objects like this:
