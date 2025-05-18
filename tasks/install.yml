@@ -108,7 +108,7 @@
 
 - when: "not nextcloud_auto_app_update_enabled | bool"
   block:
-    - name: Ensure Nextcloud systemd app update services do not exists
+    - name: Ensure Nextcloud systemd app update services do not exist
       ansible.builtin.file:
         path: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-{{ item }}"
         state: absent
