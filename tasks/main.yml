@@ -1,38 +1,42 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 ---
 
-- tags:
-    - setup-all
-    - setup-nextcloud
-    - install-all
-    - install-nextcloud
-  block:
+- block:
     - when: nextcloud_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
 
     - when: nextcloud_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
-
-- tags:
-    - adjust-nextcloud-config
-  block:
-    - when: nextcloud_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
-
-- tags:
-    - print-nextcloud-db-credentials
-  block:
-    - when: nextcloud_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/print_db_credentials.yml"
-
-- tags:
-    - install-nextcloud-app-collabora
-  block:
-    - when: nextcloud_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/app_install_collabora.yml"
-
-- tags:
+  tags:
     - setup-all
     - setup-nextcloud
-  block:
+    - install-all
+    - install-nextcloud
+
+- block:
+    - when: nextcloud_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
+  tags:
+    - adjust-nextcloud-config
+
+- block:
+    - when: nextcloud_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/print_db_credentials.yml"
+  tags:
+    - print-nextcloud-db-credentials
+
+- block:
+    - when: nextcloud_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/app_install_collabora.yml"
+  tags:
+    - install-nextcloud-app-collabora
+
+- block:
     - when: not nextcloud_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
+  tags:
+    - setup-all
+    - setup-nextcloud
