@@ -4,11 +4,14 @@
 
 ---
 
-- block:
-    - when: nextcloud_enabled | bool
+- name: Perform Nextcloud installation tasks
+  block:
+    - name: Validate Nextcloud configuration
+      when: nextcloud_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
 
-    - when: nextcloud_enabled | bool
+    - name: Install Nextcloud
+      when: nextcloud_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
   tags:
     - setup-all
@@ -16,26 +19,34 @@
     - install-all
     - install-nextcloud
 
-- block:
-    - when: nextcloud_enabled | bool
+- name: Perform Nextcloud configuration adjustment tasks
+  block:
+    - name: Adjust Nextcloud configuration
+      when: nextcloud_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
   tags:
     - adjust-nextcloud-config
 
-- block:
-    - when: nextcloud_enabled | bool
+- name: Perform tasks to print database credentials for Nextcloud
+  block:
+    - name: Print database credentials for Nextcloud
+      when: nextcloud_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/print_db_credentials.yml"
   tags:
     - print-nextcloud-db-credentials
 
-- block:
-    - when: nextcloud_enabled | bool
+- name: Perform Collabora Online installation tasks for Nextcloud
+  block:
+    - name: Install Collabola Online as Office application on Nextcloud
+      when: nextcloud_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/app_install_collabora.yml"
   tags:
     - install-nextcloud-app-collabora
 
-- block:
-    - when: not nextcloud_enabled | bool
+- name: Perform Nextcloud uninstallation tasks
+  block:
+    - name: Uninstall Nextcloud
+      when: not nextcloud_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
   tags:
     - setup-all
