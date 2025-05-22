@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023 - 2024 Slavi Pantaleev
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 ---
 
 - name: Check existence of Nextcloud systemd service
@@ -32,7 +36,7 @@
         - app-update.service
         - app-update.timer
 
-    - name: Ensure Nextcloud path doesn't exist
+    - name: Ensure Nextcloud path does not exist
       ansible.builtin.file:
         path: "{{ nextcloud_base_path }}"
         state: absent
