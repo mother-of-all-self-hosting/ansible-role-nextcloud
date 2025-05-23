@@ -35,7 +35,7 @@
   tags:
     - print-nextcloud-db-credentials
 
-- name: Perform Collabora Online installation tasks for Nextcloud
+- name: Perform Collabora Online Development Edition installation tasks for Nextcloud
   block:
     - name: Install Collabola Online as Office application on Nextcloud
       when: nextcloud_enabled | bool
