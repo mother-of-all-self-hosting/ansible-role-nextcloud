@@ -14,7 +14,7 @@ nextcloud_hostname: ''
 nextcloud_path_prefix: /
 
 # renovate: datasource=docker depName=nextcloud
-nextcloud_version: 31.0.2
+nextcloud_version: 31.0.5
 
 nextcloud_uid: ''
 nextcloud_gid: ''
