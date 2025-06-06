@@ -1,6 +1,6 @@
 # show help by default
 default:
-    @just --list --justfile {{ justfile() }}
+    @{{ just_executable() }} --list --justfile {{ justfile() }}
 
 lint:
     ansible-lint .
