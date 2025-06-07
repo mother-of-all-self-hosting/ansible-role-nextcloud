@@ -91,7 +91,7 @@
     driver: bridge
     driver_options: "{{ devture_systemd_docker_base_container_networks_driver_options }}"
 
-- name: Ensure Nextcloud systemd service are present
+- name: Ensure Nextcloud systemd services are present
   ansible.builtin.template:
     src: "{{ role_path }}/templates/systemd/{{ item }}.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-{{ item }}"
@@ -101,9 +101,10 @@
     - cron.service
     - cron.timer
 
-- when: "nextcloud_auto_app_update_enabled | bool"
+- name: Run if auto update for Nextcloud apps is enabled
+  when: "nextcloud_auto_app_update_enabled | bool"
   block:
-    - name: Ensure Nextcloud app update systemd service are present
+    - name: Ensure Nextcloud app update systemd services are present
       ansible.builtin.template:
         src: "{{ role_path }}/templates/systemd/{{ item }}.j2"
         dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-{{ item }}"
@@ -112,7 +113,8 @@
         - app-update.service
         - app-update.timer
 
-- when: "not nextcloud_auto_app_update_enabled | bool"
+- name: Run if auto update for Nextcloud apps is not enabled
+  when: "not nextcloud_auto_app_update_enabled | bool"
   block:
     - name: Ensure Nextcloud systemd app update services do not exist
       ansible.builtin.file:
