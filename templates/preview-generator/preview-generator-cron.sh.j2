@@ -2,8 +2,8 @@
 
 if [ -f {{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }} ]
 then
-	echo "Preview scan is finished, regeneration starts"
-	docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ preview:pre-generate
+  echo "Preview scan is finished, regeneration starts"
+  docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ preview:pre-generate
 else
-	echo "Preview scan hasn't finished, regeneration skipped"
+  echo "Preview scan hasn't finished, regeneration skipped"
 fi
