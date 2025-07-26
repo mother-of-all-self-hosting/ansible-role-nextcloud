@@ -1,7 +1,7 @@
 ---
 
 - name: Fail if required Collabora App settings not defined
-  when: "vars[item] == ''"
+  when: "lookup('vars', item, default='') | string | length == 0"
   ansible.builtin.fail:
     msg: |
       A required setting (`{{ item }}`) hasn't been defined.
