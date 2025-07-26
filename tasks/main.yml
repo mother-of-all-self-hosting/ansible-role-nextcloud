@@ -3,51 +3,48 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: Perform Nextcloud installation tasks
-  block:
-    - name: Validate Nextcloud configuration
-      when: nextcloud_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
-
-    - name: Install Nextcloud
-      when: nextcloud_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
+  when: nextcloud_enabled | bool
   tags:
     - setup-all
     - setup-nextcloud
     - install-all
     - install-nextcloud
+  block:
+    - name: Validate Nextcloud configuration
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+    - name: Install Nextcloud
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
 - name: Perform Nextcloud configuration adjustment tasks
-  block:
-    - name: Adjust Nextcloud configuration
-      when: nextcloud_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
+  when: nextcloud_enabled | bool
   tags:
     - adjust-nextcloud-config
+  block:
+    - name: Adjust Nextcloud configuration
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
 
 - name: Perform tasks to print database credentials for Nextcloud
-  block:
-    - name: Print database credentials for Nextcloud
-      when: nextcloud_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/print_db_credentials.yml"
+  when: nextcloud_enabled | bool
   tags:
     - print-nextcloud-db-credentials
+  block:
+    - name: Print database credentials for Nextcloud
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/print_db_credentials.yml"
 
 - name: Perform Collabora Online Development Edition installation tasks for Nextcloud
-  block:
-    - name: Install Collabola Online as Office application on Nextcloud
-      when: nextcloud_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/app_install_collabora.yml"
+  when: nextcloud_enabled | bool
   tags:
     - install-nextcloud-app-collabora
+  block:
+    - name: Install Collabola Online as Office application on Nextcloud
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/app_install_collabora.yml"
 
 - name: Perform Nextcloud uninstallation tasks
-  block:
-    - name: Uninstall Nextcloud
-      when: not nextcloud_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
+  when: not nextcloud_enabled | bool
   tags:
     - setup-all
     - setup-nextcloud
+  block:
+    - name: Uninstall Nextcloud
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
