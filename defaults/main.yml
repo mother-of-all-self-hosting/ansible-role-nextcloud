@@ -50,12 +50,12 @@ nextcloud_customized_container_src_path: "{{ nextcloud_base_path }}/customized-c
 # - the preview generator has two stages [according to their readme](https://github.com/nextcloud/previewgenerator)
 #   - a generate-all phase, which has to be executed only a single time
 #   - a pre-generate phase, that should be run in a cronjob.
-#     That runs quite fast if the generate-all phase finishd.
+#     That runs quite fast if the generate-all phase finished.
 # We do not want to run the generate-all phase multiple times, so its execution has to be followed somehow.
 # This is done by creating a file on the host side and both the task that executes generate-all
-# and both the cronjob checks its existance.
+# and both the cronjob checks its existence.
 #
-# Multiple vaiables are also defined and the corresponding default values are also set.
+# Multiple variables are also defined and the corresponding default values are also set.
 # These values are based on the [upstream readme](https://github.com/nextcloud/previewgenerator) and also on experience.
 # Feel free to change anything.
 #
@@ -71,7 +71,7 @@ nextcloud_customized_container_src_path: "{{ nextcloud_base_path }}/customized-c
 # ```
 #
 # If the nextcloud_preview_enabled value is set back to false, the host side files are cleaned up
-# and also the cron job is changed, not to call prevew generation again however, the database and generated
+# and also the cron job is changed, not to call preview generation again however, the database and generated
 # previews are kept intact.
 nextcloud_preview_enabled: false
 nextcloud_preview_folder_name: "preview-generator"
@@ -108,7 +108,7 @@ nextcloud_container_image_customizations_enabled: |
 # However, using Imagick may have a negative effect on security, that is the reason
 # behind not installing it by default. See:
 # https://github.com/nextcloud/server/issues/13099
-# Tread wisely!
+# Treat wisely!
 nextcloud_container_image_customizations_php_imagick_installation_enabled: false
 nextcloud_container_image_customizations_php_imagick_installation_packages: ['libmagickcore-6.q16-6-extra']
 
@@ -528,6 +528,6 @@ nextcloud_hsts_preload_enabled: false
 nextcloud_collabora_app_wopi_url: ''
 nextcloud_collabora_app_wopi_allowlist: '10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16'
 
-# Redis intergration.
+# Redis integration.
 nextcloud_redis_hostname: ''
 nextcloud_redis_port: 6379
