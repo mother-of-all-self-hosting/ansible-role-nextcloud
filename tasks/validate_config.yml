@@ -4,7 +4,7 @@
   ansible.builtin.fail:
     msg: >-
       You need to define a required configuration setting (`{{ item.name }}`).
-  when: "item.when | bool and vars[item.name] | length == 0"
+  when: "lookup('ansible.builtin.varnames', ('^' + item.old), wantlist=True) | length > 0"
   with_items:
     - {'name': 'nextcloud_hostname', when: true}
     - {'name': 'nextcloud_uid', when: true}
@@ -15,26 +15,19 @@
     - {'name': 'nextcloud_database_password', when: true}
     - {'name': 'nextcloud_container_labels_traefik_compression_middleware_name', when: "{{ nextcloud_container_labels_traefik_compression_middleware_enabled }}"}
 
-- name: Fail if deprecated Nextcloud settings are still defined
-  ansible.builtin.fail:
-    msg: >-
-      You need to drop setting (`{{ item }}`) as it is not used anymore in the Nextcloud role.
-  when: "item in vars"
-  with_items:
-    - nextcloud_preview_squareSizes
-    - nextcloud_preview_widthSizes
-    - nextcloud_preview_heightSizes
-    - nextcloud_preview_system_jpeg_quality
-
-- name: (Deprecation) Catch and report renamed Nextcloud variables
+- name: (Deprecation) Catch and report renamed Nextcloud settings
   ansible.builtin.fail:
     msg: >-
       Your configuration contains a variable, which now has a different name.
       Please change your configuration to rename the variable (`{{ item.old }}` -> `{{ item.new }}`).
-  when: "vars | dict2items | selectattr('key', item.comparison, item.old) | list | items2dict"
+  when: "lookup('ansible.builtin.varnames', ('^' + item.old + '$'), wantlist=True) | length > 0"
   with_items:
-    - {'comparison': 'equalto', 'old': 'nextcloud_container_image_customizations_php_imageick_installation_enabled', 'new': 'nextcloud_container_image_customizations_php_imagick_installation_enabled'}
-    - {'comparison': 'equalto', 'old': 'nextcloud_container_image_customizations_php_imageick_installation_package', 'new': '<superseded by nextcloud_container_image_customizations_php_imagick_installation_packages>'}
+    - { "old": "nextcloud_preview_squareSizes", "new": "<removed>" }
+    - { "old": "nextcloud_preview_widthSizes", "new": "<removed>" }
+    - { "old": "nextcloud_preview_heightSizes", "new": "<removed>" }
+    - { "old": "nextcloud_preview_system_jpeg_quality", "new": "<removed>" }
+    - { "old": "nextcloud_container_image_customizations_php_imageick_installation_enabled", "new": "nextcloud_container_image_customizations_php_imagick_installation_enabled" }
+    - { "old": "nextcloud_container_image_customizations_php_imageick_installation_package", "new": "nextcloud_container_image_customizations_php_imagick_installation_packages" }
 
 - when: nextcloud_container_labels_traefik_enabled | bool
   block:
