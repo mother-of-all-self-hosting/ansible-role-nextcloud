@@ -1,20 +1,5 @@
 ---
 
-- name: Fail if required Nextcloud settings not defined
-  ansible.builtin.fail:
-    msg: >-
-      You need to define a required configuration setting (`{{ item.name }}`).
-  when: "lookup('ansible.builtin.varnames', ('^' + item.name), wantlist=True) | length == 0"
-  with_items:
-    - {'name': 'nextcloud_hostname', when: true}
-    - {'name': 'nextcloud_uid', when: true}
-    - {'name': 'nextcloud_gid', when: true}
-    - {'name': 'nextcloud_database_hostname', when: true}
-    - {'name': 'nextcloud_database_name', when: true}
-    - {'name': 'nextcloud_database_username', when: true}
-    - {'name': 'nextcloud_database_password', when: true}
-    - {'name': 'nextcloud_container_labels_traefik_compression_middleware_name', when: "{{ nextcloud_container_labels_traefik_compression_middleware_enabled }}"}
-
 - name: (Deprecation) Catch and report renamed Nextcloud settings
   ansible.builtin.fail:
     msg: >-
@@ -29,6 +14,21 @@
     - { "old": "nextcloud_container_image_customizations_php_imageick_installation_enabled", "new": "nextcloud_container_image_customizations_php_imagick_installation_enabled" }
     - { "old": "nextcloud_container_image_customizations_php_imageick_installation_package", "new": "nextcloud_container_image_customizations_php_imagick_installation_packages" }
     - { "old": "nextcloud_container_additional_environment_variables", "new": "nextcloud_environment_variables_additional_variables" }
+
+- name: Fail if required Nextcloud settings not defined
+  ansible.builtin.fail:
+    msg: >-
+      You need to define a required configuration setting (`{{ item.name }}`).
+  when: "lookup('ansible.builtin.varnames', ('^' + item.name), wantlist=True) | length == 0"
+  with_items:
+    - {'name': 'nextcloud_hostname', when: true}
+    - {'name': 'nextcloud_uid', when: true}
+    - {'name': 'nextcloud_gid', when: true}
+    - {'name': 'nextcloud_database_hostname', when: true}
+    - {'name': 'nextcloud_database_name', when: true}
+    - {'name': 'nextcloud_database_username', when: true}
+    - {'name': 'nextcloud_database_password', when: true}
+    - {'name': 'nextcloud_container_labels_traefik_compression_middleware_name', when: "{{ nextcloud_container_labels_traefik_compression_middleware_enabled }}"}
 
 - when: nextcloud_container_labels_traefik_enabled | bool
   block:
