@@ -4,7 +4,7 @@
   ansible.builtin.fail:
     msg: >-
       You need to define a required configuration setting (`{{ item.name }}`).
-  when: "lookup('ansible.builtin.varnames', ('^' + item.old), wantlist=True) | length > 0"
+  when: "lookup('ansible.builtin.varnames', ('^' + item.name), wantlist=True) | length == 0"
   with_items:
     - {'name': 'nextcloud_hostname', when: true}
     - {'name': 'nextcloud_uid', when: true}
