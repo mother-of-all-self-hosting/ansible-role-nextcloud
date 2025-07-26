@@ -5,9 +5,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
-- when: nextcloud_container_labels_traefik_enabled | bool
-  name: Ensure trusted_proxies is correctly set when reverse-proxying via Traefik
+- name: Ensure trusted_proxies is correctly set when reverse-proxying via Traefik
+  when: nextcloud_container_labels_traefik_enabled | bool
   block:
     - name: Determine Nextcloud container network subnet
       ansible.builtin.command:
@@ -35,8 +34,8 @@
   block:
     - name: Adjust Nextcloud configuration values related to preview generator
       ansible.builtin.command:
-          cmd: |-
-            docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ {{ item.appType }} --value={{ item.value }} -- {{ item.appConfig }} {{ item.configName }}
+        cmd: |-
+          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ {{ item.appType }} --value={{ item.value }} -- {{ item.appConfig }} {{ item.configName }}
       with_items:
         - appType: "config:system:set"
           appConfig: ""
@@ -53,21 +52,21 @@
 
     - name: "Check if {{ nextcloud_preview_first_run_finished_filename }} exists"
       ansible.builtin.stat:
-          path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
+        path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
       register: nextcloud_preview_file_stats
 
-    - when: not nextcloud_preview_file_stats.stat.exists
-      name: Start preview generate-all
+    - name: Start preview generate-all
+      when: not nextcloud_preview_file_stats.stat.exists
       ansible.builtin.command:
-          cmd: |-
-            docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ preview:generate-all
+        cmd: |-
+          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ preview:generate-all
       async: 100000
       poll: 10
 
     - name: "Create {{ nextcloud_preview_first_run_finished_filename }} to signal, that preview generate-all is finished"
       ansible.builtin.file:
-          path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
-          state: "touch"
-          mode: 0644
-          owner: "{{ nextcloud_uid }}"
-          group: "{{ nextcloud_gid }}"
+        path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
+        state: "touch"
+        mode: "0644"
+        owner: "{{ nextcloud_uid }}"
+        group: "{{ nextcloud_gid }}"

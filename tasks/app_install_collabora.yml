@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: Fail if required Collabora App settings not defined
   when: "lookup('vars', item, default='') | string | length == 0"
   ansible.builtin.fail:
@@ -26,7 +25,7 @@
   when: nextcloud_start.changed | bool
 
 - name: Install Nextcloud office (Collabora app)
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings app:install richdocuments"
   failed_when: false
   register: collabora_install_result
@@ -43,7 +42,7 @@
   changed_when: false
 
 - name: Configure Collabora app
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:app:set richdocuments {{ item.key }} --value=\"{{ item.value }}\""
   with_items:
     - key: wopi_url

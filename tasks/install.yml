@@ -5,12 +5,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: Ensure Nextcloud paths exist
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: "{{ item.state }}"
-    mode: 0700
+    mode: "0700"
     owner: "{{ nextcloud_uid }}"
     group: "{{ nextcloud_gid }}"
   with_items:
@@ -38,17 +37,17 @@
   ansible.builtin.template:
     src: "{{ role_path }}/templates/{{ item }}.j2"
     dest: "{{ nextcloud_config_path }}/{{ item }}"
-    mode: 0640
+    mode: "0640"
   with_items:
     - env
     - labels
 
-- when: "nextcloud_preview_enabled | bool"
-  name: Ensure Nextcloud preview generator files are present
+- name: Ensure Nextcloud preview generator files are present
+  when: "nextcloud_preview_enabled | bool"
   ansible.builtin.template:
     src: "{{ role_path }}/templates/preview-generator/{{ item }}.j2"
     dest: "{{ nextcloud_preview_host_folder }}/{{ item }}"
-    mode: 0740
+    mode: "0740"
   with_items:
     - preview-generator-cron.sh
 
@@ -82,7 +81,7 @@
         dest: "{{ nextcloud_customized_container_src_path }}/Dockerfile"
         owner: "{{ nextcloud_uid }}"
         group: "{{ nextcloud_gid }}"
-        mode: 0640
+        mode: "0640"
       register: nextcloud_container_image_customizations_dockerfile_result
 
     - name: Ensure customized container image for Nextcloud is built
@@ -119,7 +118,7 @@
   ansible.builtin.template:
     src: "{{ role_path }}/templates/systemd/{{ item }}.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-{{ item }}"
-    mode: 0644
+    mode: "0644"
   with_items:
     - server.service
     - cron.service
@@ -132,7 +131,7 @@
       ansible.builtin.template:
         src: "{{ role_path }}/templates/systemd/{{ item }}.j2"
         dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-{{ item }}"
-        mode: 0640
+        mode: "0640"
       with_items:
         - app-update.service
         - app-update.timer

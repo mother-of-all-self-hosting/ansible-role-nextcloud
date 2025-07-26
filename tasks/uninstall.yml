@@ -4,7 +4,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: Check existence of Nextcloud systemd service
   ansible.builtin.stat:
     path: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-server.service"
@@ -20,11 +19,11 @@
         enabled: false
         daemon_reload: true
       with_items:
-        - {'service': server.service, 'when': true}
-        - {'service': cron.service, 'when': true}
-        - {'service': cron.timer, 'when': true}
-        - {'service': app-update.service, 'when': "{{ nextcloud_auto_app_update_enabled }}"}
-        - {'service': app-update.timer, 'when': "{{ nextcloud_auto_app_update_enabled }}"}
+        - { "service": server.service, "when": true }
+        - { "service": cron.service, "when": true }
+        - { "service": cron.timer, "when": true }
+        - { "service": app-update.service, "when": "{{ nextcloud_auto_app_update_enabled }}" }
+        - { "service": app-update.timer, "when": "{{ nextcloud_auto_app_update_enabled }}" }
 
     - name: Ensure Nextcloud systemd services do not exist
       ansible.builtin.file:
