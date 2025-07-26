@@ -9,7 +9,8 @@
     path: "{{ devture_systemd_docker_base_systemd_path }}/{{ nextcloud_identifier }}-server.service"
   register: nextcloud_service_stat
 
-- when: nextcloud_service_stat.stat.exists | bool
+- name: Uninstall Nextcloud systemd services and files
+  when: nextcloud_service_stat.stat.exists | bool
   block:
     - name: Ensure Nextcloud systemd services are stopped
       when: item.when | bool

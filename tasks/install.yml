@@ -73,7 +73,8 @@
   until: result is not failed
   changed_when: "'Downloaded newer image' in result.stdout"
 
-- when: "nextcloud_container_image_customizations_enabled | bool"
+- name: Run if container image customizations are enabled
+  when: "nextcloud_container_image_customizations_enabled | bool"
   block:
     - name: Ensure customizations Dockerfile is created
       ansible.builtin.template:
