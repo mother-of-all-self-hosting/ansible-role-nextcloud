@@ -31,8 +31,6 @@
     - { "name": "nextcloud_uid", when: true }
     - { "name": "nextcloud_gid", when: true }
     - { "name": "nextcloud_database_hostname", when: true }
-    - { "name": "nextcloud_database_name", when: true }
-    - { "name": "nextcloud_database_username", when: true }
     - { "name": "nextcloud_database_password", when: true }
     - "name": "nextcloud_container_labels_traefik_compression_middleware_name"
       when: "{{ nextcloud_container_labels_traefik_compression_middleware_enabled }}"

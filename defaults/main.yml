@@ -328,7 +328,7 @@ nextcloud_database_type: postgres
 nextcloud_database_hostname: ''
 nextcloud_database_port: 5432
 nextcloud_database_name: nextcloud
-nextcloud_database_username: ''
+nextcloud_database_username: nextcloud
 nextcloud_database_password: ''
 
 # Controls the maintenance_window_start configuration parameter.
