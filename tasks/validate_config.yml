@@ -1,5 +1,7 @@
+# SPDX-FileCopyrightText: 2023 Julian-Samuel Gebühr
 # SPDX-FileCopyrightText: 2023 Gergely Horváth
 # SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -34,6 +36,16 @@
     - { "name": "nextcloud_database_password", when: true }
     - "name": "nextcloud_container_labels_traefik_compression_middleware_name"
       when: "{{ nextcloud_container_labels_traefik_compression_middleware_enabled }}"
+
+- name: Fail if SMTP settings are missing (and SMTP is enabled by setting host)
+  ansible.builtin.fail:
+    msg: >-
+      You need to define a required configuration setting (`{{ item }}`) to correctly set up email via SMTP.
+  when: "nextcloud_config_parameter_mail_smtphost != '' and lookup('vars', item, default='') | string | length == 0"
+  with_items:
+    - nextcloud_config_parameter_mail_smtpport
+    - nextcloud_config_parameter_mail_from_address
+    - nextcloud_config_parameter_mail_domain
 
 - name: Run if Traefik is enabled
   when: nextcloud_container_labels_traefik_enabled | bool
