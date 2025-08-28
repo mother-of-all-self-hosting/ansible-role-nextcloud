@@ -176,6 +176,9 @@ nextcloud_container_memory_swap_limit: ""
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:37150"), or empty string to not expose.
 nextcloud_container_http_host_bind_port: ""
 
+# The port number in the container
+nextcloud_container_http_port: 80
+
 # nextcloud_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `../templates/labels.j2` for details.
 #

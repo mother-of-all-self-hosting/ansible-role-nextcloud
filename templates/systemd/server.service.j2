@@ -46,7 +46,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --tmpfs=/tmp:rw,noexec,nosuid,size=1024m \
       --tmpfs=/var/run/apache2:rw,noexec,nosuid,size=128m \
       {% if nextcloud_container_http_host_bind_port %}
-      -p {{ nextcloud_container_http_host_bind_port }}:80 \
+      -p {{ nextcloud_container_http_host_bind_port }}:{{ nextcloud_container_http_port }} \
       {% endif %}
       --env-file={{ nextcloud_config_path }}/env \
       --label-file={{ nextcloud_config_path }}/labels \

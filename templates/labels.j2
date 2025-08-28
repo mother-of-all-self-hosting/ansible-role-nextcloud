@@ -33,7 +33,7 @@ traefik.http.routers.{{ nextcloud_identifier }}.tls={{ nextcloud_container_label
 traefik.http.routers.{{ nextcloud_identifier }}.tls.certResolver={{ nextcloud_container_labels_traefik_tls_certResolver }}
 {% endif %}
 
-traefik.http.services.{{ nextcloud_identifier }}.loadbalancer.server.port=80
+traefik.http.services.{{ nextcloud_identifier }}.loadbalancer.server.port={{ nextcloud_container_http_port }}
 {% endif %}
 
 {{ nextcloud_container_labels_additional_labels }}
