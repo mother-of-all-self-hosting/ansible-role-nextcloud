@@ -341,13 +341,13 @@ nextcloud_container_memory_swap_limit: ""
 nextcloud_config_parameter_maintenance_window_start: 1
 
 # A list of configuration parameters for Nextcloud.
-# To define your own, we advise editing `nextcloud_config_additional_parameters`.
-nextcloud_config_parameters: "{{ nextcloud_config_default_parameters + nextcloud_config_additional_parameters }}"
+# To define your own, we advise editing `nextcloud_config_parameters_custom`.
+nextcloud_config_parameters: "{{ nextcloud_config_parameters_default + nextcloud_config_parameters_custom }}"
 
 # Default configuration parameters to apply to Nextcloud.
-# To add your own additional parameters, use `nextcloud_config_additional_parameters`.
-# To get rid of these defaults, redefine `nextcloud_config_default_parameters` or `nextcloud_config_parameters`.
-nextcloud_config_default_parameters: |
+# To add your own additional parameters, use `nextcloud_config_parameters_custom`.
+# To get rid of these defaults, redefine `nextcloud_config_parameters_default` or `nextcloud_config_parameters`.
+nextcloud_config_parameters_default: |
   {{
     ([
       {
@@ -463,11 +463,11 @@ nextcloud_config_parameter_mail_domain: '' # domain
 # Add your custom Nextcloud configuration parameters here.
 #
 # Example:
-# nextcloud_config_additional_parameters:
+# nextcloud_config_parameters_custom:
 #   - key: mail_smtphost
 #     value: smtp.example.com
 #     type: string
-nextcloud_config_additional_parameters: []
+nextcloud_config_parameters_custom: []
 
 # nextcloud_cron_schedule contains a systemd OnCalendar definition which controls how often `cron.timer` runs
 # The default value means 'every 15 minutes'.

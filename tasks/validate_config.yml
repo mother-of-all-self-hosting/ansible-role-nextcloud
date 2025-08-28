@@ -23,6 +23,8 @@
     - "old": "nextcloud_container_image_customizations_php_imageick_installation_package"
       "new": "nextcloud_container_image_customizations_php_imagick_installation_packages"
     - { "old": "nextcloud_container_additional_environment_variables", "new": "nextcloud_environment_variables_additional_variables" }
+    - { "old": "nextcloud_config_default_parameters", "new": "nextcloud_config_parameters_default" }
+    - { "old": "nextcloud_config_additional_parameters", "new": "nextcloud_config_parameters_custom" }
 
 - name: Fail if required Nextcloud settings not defined
   ansible.builtin.fail:
