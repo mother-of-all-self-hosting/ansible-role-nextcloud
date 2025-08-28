@@ -32,10 +32,15 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --rm \
       --name={{ nextcloud_identifier }}-server \
       --log-driver=none \
-      --network={{ nextcloud_container_network }} \
       --user={{ nextcloud_uid }}:{{ nextcloud_gid }} \
       --cap-drop=ALL \
       --read-only \
+      --network={{ nextcloud_container_network }} \
+      {% if nextcloud_container_http_host_bind_port %}
+      -p {{ nextcloud_container_http_host_bind_port }}:{{ nextcloud_container_http_port }} \
+      {% endif %}
+      --env-file={{ nextcloud_config_path }}/env \
+      --label-file={{ nextcloud_config_path }}/labels \
       --mount type=bind,src={{ nextcloud_data_path }},dst=/var/www/html \
       {% if nextcloud_redis_is_configured %}
       --mount type=bind,src={{ nextcloud_redis_session_ini_path }},dst=/usr/local/etc/php/conf.d/redis-session.ini \
@@ -45,16 +50,11 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% endfor %}
       --tmpfs=/tmp:rw,noexec,nosuid,size=1024m \
       --tmpfs=/var/run/apache2:rw,noexec,nosuid,size=128m \
-      {% if nextcloud_container_http_host_bind_port %}
-      -p {{ nextcloud_container_http_host_bind_port }}:{{ nextcloud_container_http_port }} \
-      {% endif %}
-      --env-file={{ nextcloud_config_path }}/env \
-      --label-file={{ nextcloud_config_path }}/labels \
       {% if nextcloud_container_memory_limit != '' %}
-        --memory={{ nextcloud_container_memory_limit }} \
+      --memory={{ nextcloud_container_memory_limit }} \
       {% endif %}
       {% if nextcloud_container_memory_swap_limit != '' %}
-        --memory-swap={{ nextcloud_container_memory_swap_limit }} \
+      --memory-swap={{ nextcloud_container_memory_swap_limit }} \
       {% endif %}
       {% for arg in nextcloud_container_extra_arguments %}
       {{ arg }} \
