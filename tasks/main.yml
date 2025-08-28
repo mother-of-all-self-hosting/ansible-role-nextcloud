@@ -24,14 +24,6 @@
     - name: Adjust Nextcloud configuration
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
 
-- name: Perform tasks to print database credentials for Nextcloud
-  when: nextcloud_enabled | bool
-  tags:
-    - print-nextcloud-db-credentials
-  block:
-    - name: Print database credentials for Nextcloud
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/print_db_credentials.yml"
-
 - name: Perform Collabora Online Development Edition installation tasks for Nextcloud
   when: nextcloud_enabled | bool
   tags:
