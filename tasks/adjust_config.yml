@@ -30,7 +30,8 @@
     cmd: |-
       docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ db:add-missing-indices
 
-- when: nextcloud_preview_enabled | bool
+- name: Run if preview generator is enabled
+  when: nextcloud_preview_enabled | bool
   block:
     - name: Adjust Nextcloud configuration values related to preview generator
       ansible.builtin.command:
@@ -50,7 +51,7 @@
           configName: "jpeg_quality"
           value: "{{ nextcloud_preview_app_jpeg_quality }}"
 
-    - name: "Check if {{ nextcloud_preview_first_run_finished_filename }} exists"
+    - name: "Check if the file created after the first run exists"
       ansible.builtin.stat:
         path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
       register: nextcloud_preview_file_stats
@@ -63,7 +64,7 @@
       async: 100000
       poll: 10
 
-    - name: "Create {{ nextcloud_preview_first_run_finished_filename }} to signal, that preview generate-all is finished"
+    - name: "Create the file created after the first run exist to signal that preview generate-all is finished"
       ansible.builtin.file:
         path: "{{ nextcloud_preview_host_folder }}/{{ nextcloud_preview_first_run_finished_filename }}"
         state: "touch"
