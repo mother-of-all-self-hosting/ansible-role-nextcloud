@@ -25,6 +25,14 @@
     - { "old": "nextcloud_container_additional_environment_variables", "new": "nextcloud_environment_variables_additional_variables" }
     - { "old": "nextcloud_config_default_parameters", "new": "nextcloud_config_parameters_default" }
     - { "old": "nextcloud_config_additional_parameters", "new": "nextcloud_config_parameters_custom" }
+    - { "old": "nextcloud_config_parameter_mail_smtphost", "new": "nextcloud_environment_variables_smtp_host" }
+    - { "old": "nextcloud_config_parameter_mail_smtpport", "new": "nextcloud_environment_variables_smtp_port" }
+    - { "old": "nextcloud_config_parameter_mail_smtpsecure", "new": "nextcloud_environment_variables_smtp_secure" }
+    - { "old": "nextcloud_config_parameter_mail_smtpauth", "new": "nextcloud_environment_variables_smtp_authtype" }
+    - { "old": "nextcloud_config_parameter_mail_smtpname", "new": "nextcloud_environment_variables_smtp_name" }
+    - { "old": "nextcloud_config_parameter_mail_smtppassword", "new": "nextcloud_environment_variables_smtp_password" }
+    - { "old": "nextcloud_config_parameter_mail_from_address", "new": "nextcloud_environment_variables_mail_from_address" }
+    - { "old": "nextcloud_config_parameter_mail_domain", "new": "nextcloud_environment_variables_mail_domain" }
 
 - name: Fail if required Nextcloud settings not defined
   ansible.builtin.fail:
@@ -68,11 +76,11 @@
   ansible.builtin.fail:
     msg: >-
       You need to define a required configuration setting (`{{ item }}`) to correctly set up email via SMTP.
-  when: "nextcloud_config_parameter_mail_smtphost != '' and lookup('vars', item, default='') | string | length == 0"
+  when: "nextcloud_environment_variables_smtp_host != '' and lookup('vars', item, default='') | string | length == 0"
   with_items:
-    - nextcloud_config_parameter_mail_smtpport
-    - nextcloud_config_parameter_mail_from_address
-    - nextcloud_config_parameter_mail_domain
+    - nextcloud_environment_variables_smtp_host
+    - nextcloud_environment_variables_mail_from_address
+    - nextcloud_environment_variables_mail_domain
 
 - name: Run if Traefik is enabled
   when: nextcloud_container_labels_traefik_enabled | bool

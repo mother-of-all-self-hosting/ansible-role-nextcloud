@@ -381,84 +381,7 @@ nextcloud_config_parameters_default: |
         'type': 'integer',
       },
     ])
-    +
-    ([
-      {
-        'key': 'mail_smtphost',
-        'value': nextcloud_config_parameter_mail_smtphost,
-        'type': 'string',
-      },
-    ] if nextcloud_config_parameter_mail_smtphost != '' else [])
-    +
-    ([
-      {
-        'key': 'mail_smtpport',
-        'value': nextcloud_config_parameter_mail_smtpport | int,
-        'type': 'int',
-      },
-    ] if nextcloud_config_parameter_mail_smtpport != '' else [])
-    +
-    ([
-      {
-        'key': 'mail_smtpsecure',
-        'value': nextcloud_config_parameter_mail_smtpsecure,
-        'type': 'string',
-      },
-    ] if nextcloud_config_parameter_mail_smtpsecure != '' else [])
-    +
-    ([
-      {
-        'key': 'mail_smtpauth',
-        'value': nextcloud_config_parameter_mail_smtpauth,
-        'type': 'boolean',
-      },
-    ] if nextcloud_config_parameter_mail_smtpauth else [])
-    +
-    ([
-      {
-        'key': 'mail_smtpname',
-        'value': nextcloud_config_parameter_mail_smtpname,
-        'type': 'string',
-      },
-    ] if nextcloud_config_parameter_mail_smtpname else [])
-    +
-    ([
-      {
-        'key': 'mail_smtppassword',
-        'value': nextcloud_config_parameter_mail_smtppassword,
-        'type': 'string',
-      },
-    ] if nextcloud_config_parameter_mail_smtppassword else [])
-    +
-    ([
-      {
-        'key': 'mail_from_address',
-        'value': nextcloud_config_parameter_mail_from_address,
-        'type': 'string',
-      },
-    ] if nextcloud_config_parameter_mail_from_address != '' else [])
-    +
-    ([
-      {
-        'key': 'mail_domain',
-        'value': nextcloud_config_parameter_mail_domain,
-        'type': 'string',
-      },
-    ] if nextcloud_config_parameter_mail_domain != '' else [])
   }}
-
-nextcloud_config_parameter_mail_smtphost: ''
-nextcloud_config_parameter_mail_smtpport: ''
-nextcloud_config_parameter_mail_smtpsecure: ''
-
-nextcloud_config_parameter_mail_smtpauth: false
-nextcloud_config_parameter_mail_smtpname: ''
-nextcloud_config_parameter_mail_smtppassword: ''
-
-# nextcloud_config_parameter_mail_from_address and nextcloud_config_parameter_mail_domain
-# contain the @-separated email address of the sender (localpart@domain).
-nextcloud_config_parameter_mail_from_address: '' # localpart
-nextcloud_config_parameter_mail_domain: '' # domain
 
 # Add your custom Nextcloud configuration parameters here.
 #
@@ -506,6 +429,25 @@ nextcloud_collabora_app_wopi_allowlist: '10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/
 nextcloud_redis_hostname: ''
 nextcloud_redis_port: 6379
 nextcloud_redis_password: ''
+
+nextcloud_environment_variables_smtp_host: ''
+nextcloud_environment_variables_smtp_port: 587
+
+# Specify the localpart of the sender (localpart@domain)
+nextcloud_environment_variables_mail_from_address: ''
+
+# Specify the domain for the external SMTP server if it is different from the domain where Nextcloud is installed
+nextcloud_environment_variables_mail_domain: ''
+
+nextcloud_environment_variables_smtp_name: ''
+nextcloud_environment_variables_smtp_password: ''
+
+# Valid values: ssl, tls
+nextcloud_environment_variables_smtp_secure: ''
+
+# Specify the method used for authentication. Set PLAIN if no authentication is required.
+# Valid values: LOGIN, PLAIN
+nextcloud_environment_variables_smtp_authtype: LOGIN
 
 # Preview generator setup
 #
