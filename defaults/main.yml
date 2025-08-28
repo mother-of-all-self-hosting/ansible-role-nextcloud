@@ -527,8 +527,8 @@ nextcloud_floc_optout_enabled: true
 # See: `nextcloud_http_header_strict_transport_security`
 nextcloud_hsts_preload_enabled: false
 
-# Collabora Online integration.
-# See the `collabora-online` role.
+# Specify a WOPI (Web Application Open Platform Interface) host to connect
+# Required for integrating Collabora Online Development Edition (CODE)
 nextcloud_collabora_app_wopi_url: ''
 nextcloud_collabora_app_wopi_allowlist: '10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16'
 
