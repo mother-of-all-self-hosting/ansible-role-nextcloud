@@ -40,6 +40,30 @@
     - "name": "nextcloud_container_labels_traefik_compression_middleware_name"
       when: "{{ nextcloud_container_labels_traefik_compression_middleware_enabled }}"
 
+- name: Fail if Nextcloud database type is invalid
+  ansible.builtin.fail:
+    msg: >-
+      nextcloud_database_type must be 'mysql', 'postgres' or 'sqlite'
+  when: "nextcloud_database_type not in ['mysql', 'postgres', 'sqlite']"
+
+- name: Fail if required Nextcloud + MySQL integration settings not defined
+  ansible.builtin.fail:
+    msg: >-
+      You need to define a required configuration setting (`{{ item }}`) when `nextcloud_database_type` is `mysql`
+  when: "nextcloud_database_type == 'mysql' and lookup('vars', item, default='') | string | length == 0"
+  with_items:
+    - nextcloud_database_mysql_hostname
+    - nextcloud_database_mysql_password
+
+- name: Fail if required Nextcloud + Postgres integration settings not defined
+  ansible.builtin.fail:
+    msg: >-
+      You need to define a required configuration setting (`{{ item }}`) when `nextcloud_database_type` is `postgres`
+  when: "nextcloud_database_type == 'postgres' and lookup('vars', item, default='') | string | length == 0"
+  with_items:
+    - nextcloud_database_hostname
+    - nextcloud_database_password
+
 - name: Fail if SMTP settings are missing (and SMTP is enabled by setting host)
   ansible.builtin.fail:
     msg: >-

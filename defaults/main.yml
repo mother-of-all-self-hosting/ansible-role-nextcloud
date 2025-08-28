@@ -485,11 +485,17 @@ nextcloud_auto_app_update_schedule: '*-*-* 00:00:00'
 # Valid values: mysql, postgres, sqlite
 nextcloud_database_type: postgres
 
+nextcloud_database_mysql_hostname: ''
+nextcloud_database_mysql_port: 3306
+nextcloud_database_mysql_username: nextcloud
+nextcloud_database_mysql_password: ''
+
 nextcloud_database_hostname: ''
 nextcloud_database_port: 5432
-nextcloud_database_name: nextcloud
 nextcloud_database_username: nextcloud
 nextcloud_database_password: ''
+
+nextcloud_database_name: nextcloud
 
 # Specify a WOPI (Web Application Open Platform Interface) host to connect
 # Required for integrating Collabora Online Development Edition (CODE)
