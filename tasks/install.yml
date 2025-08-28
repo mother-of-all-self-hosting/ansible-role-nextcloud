@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2023 Gergely Horváth
 # SPDX-FileCopyrightText: 2023 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2024 MASH project contributors
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -14,9 +15,6 @@
     group: "{{ nextcloud_gid }}"
   with_items:
     - path: "{{ nextcloud_base_path }}"
-      state: directory
-      when: true
-    - path: "{{ nextcloud_config_path }}"
       state: directory
       when: true
     - path: "{{ nextcloud_data_path }}"
@@ -36,7 +34,7 @@
 - name: Ensure Nextcloud support files installed
   ansible.builtin.template:
     src: "{{ role_path }}/templates/{{ item }}.j2"
-    dest: "{{ nextcloud_config_path }}/{{ item }}"
+    dest: "{{ nextcloud_base_path }}/{{ item }}"
     mode: "0640"
   with_items:
     - env

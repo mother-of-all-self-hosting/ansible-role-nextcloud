@@ -1,5 +1,6 @@
 {#
 SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+SPDX-FileCopyrightText: 2025 Suguru Hirahara
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 #}
@@ -39,8 +40,8 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% if nextcloud_container_http_host_bind_port %}
       -p {{ nextcloud_container_http_host_bind_port }}:{{ nextcloud_container_http_port }} \
       {% endif %}
-      --env-file={{ nextcloud_config_path }}/env \
-      --label-file={{ nextcloud_config_path }}/labels \
+      --env-file={{ nextcloud_base_path }}/env \
+      --label-file={{ nextcloud_base_path }}/labels \
       --mount type=bind,src={{ nextcloud_data_path }},dst=/var/www/html \
       {% if nextcloud_redis_is_configured %}
       --mount type=bind,src={{ nextcloud_redis_session_ini_path }},dst=/usr/local/etc/php/conf.d/redis-session.ini \

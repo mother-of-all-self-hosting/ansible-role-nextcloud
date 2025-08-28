@@ -14,7 +14,6 @@ nextcloud_enabled: true
 
 nextcloud_identifier: nextcloud
 nextcloud_base_path: "{{ nextcloud_base_path }}/nextcloud"
-nextcloud_config_path: "{{ nextcloud_base_path }}/config"
 nextcloud_data_path: "{{ nextcloud_base_path }}/data"
 nextcloud_redis_session_ini_path: "{{ nextcloud_base_path }}/redis-session.ini"
 
