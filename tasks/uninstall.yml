@@ -37,6 +37,25 @@
         - app-update.service
         - app-update.timer
 
+    - name: Ensure Nextcloud support files do not exist
+      ansible.builtin.file:
+        path: "{{ nextcloud_base_path }}/{{ item }}"
+        state: absent
+      with_items:
+        - env
+        - labels
+
+    - name: Ensure Nextcloud image source files path does not exist
+      ansible.builtin.file:
+        path: "{{ nextcloud_customized_container_src_path }}"
+        state: absent
+
+    - name: Ensure Nextcloud Redis session ini file do not exist
+      when: nextcloud_redis_is_configured | bool
+      ansible.builtin.file:
+        path: "{{ nextcloud_redis_session_ini_path }}"
+        state: absent
+
     - name: Ensure Nextcloud container network does not exist via community.docker.docker_network
       when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
       community.docker.docker_network:
@@ -52,7 +71,20 @@
       register: network_deletion_result
       changed_when: nextcloud_container_network in network_deletion_result.stdout
 
-    - name: Ensure Nextcloud path does not exist
-      ansible.builtin.file:
-        path: "{{ nextcloud_base_path }}"
-        state: absent
+- name: Check existence of Nextcloud local data path
+  ansible.builtin.stat:
+    path: "{{ nextcloud_data_path }}"
+  register: nextcloud_data_path_stat
+
+# We just want to notify the user. Deleting data is too destructive.
+- name: Notify if Nextcloud local data remains
+  when: nextcloud_data_path_stat.stat.exists | bool
+  ansible.builtin.set_fact:
+    devture_playbook_runtime_messages_list: |
+      {{
+        devture_playbook_runtime_messages_list | default([])
+        +
+        [
+          "Note: As the local Nextcloud instance has been removed, some old data remains in `" + nextcloud_data_path + "`. Feel free to delete it."
+        ]
+      }}
