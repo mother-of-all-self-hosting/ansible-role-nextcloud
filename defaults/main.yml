@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2023 Gergely Horváth
 # SPDX-FileCopyrightText: 2024 Philipp Homann
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -534,3 +535,4 @@ nextcloud_collabora_app_wopi_allowlist: '10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/
 # Redis integration.
 nextcloud_redis_hostname: ''
 nextcloud_redis_port: 6379
+nextcloud_redis_password: ''
