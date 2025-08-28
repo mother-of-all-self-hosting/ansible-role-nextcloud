@@ -547,6 +547,15 @@ nextcloud_preview_preview_max_x: null
 nextcloud_preview_preview_max_y: null
 nextcloud_preview_app_jpeg_quality: 80
 
+# Specify username and password of the admin user
+# Note these settings are effective only if a group of values for the database are specified before the first run.
+# Changing those values after creating the user does not update the login credential.
+nextcloud_environment_variables_nextcloud_admin_user: ''
+nextcloud_environment_variables_nextcloud_admin_password: ''
+
+# Specify trusted domains in space-separated list
+nextcloud_environment_variables_nextcloud_trusted_domains: "{{ nextcloud_hostname }}"
+
 # nextcloud_environment_variables_additional_variables contains a multiline string with additional environment variables to pass to the container.
 #
 # Example:
