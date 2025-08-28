@@ -34,7 +34,9 @@ nextcloud_path_prefix: /
 nextcloud_container_image: "{{ nextcloud_container_image_registry_prefix }}nextcloud:{{ nextcloud_container_image_tag }}"
 nextcloud_container_image_tag: "{{ nextcloud_version }}-apache"
 nextcloud_container_image_force_pull: "{{ nextcloud_container_image.endswith(':latest') }}"
-nextcloud_container_image_registry_prefix: docker.io/
+nextcloud_container_image_registry_prefix: "{{ nextcloud_container_image_registry_prefix_upstream }}"
+nextcloud_container_image_registry_prefix_upstream: "{{ nextcloud_container_image_registry_prefix_upstream_default }}"
+nextcloud_container_image_registry_prefix_upstream_default: docker.io/
 
 # nextcloud_container_image_customizations_enabled controls whether a customized Nextcloud image will be built.
 #
