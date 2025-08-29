@@ -74,7 +74,7 @@ nextcloud_database_type: mysql
 
 Set `mysql` for MySQL compatible database or `sqlite` for SQLite, respectively.
 
-For other settings, check variables such as `nextcloud_database_mysql_*` and `nextcloud_database_*` on [`defaults/main.yml`](../defaults/main.yml) .
+For other settings, check variables such as `nextcloud_database_mysql_*` and `nextcloud_database_*` on [`defaults/main.yml`](../defaults/main.yml).
 
 >[!NOTE]
 > It is possible to convert a SQLite database to a MySQL, MariaDB or PostgreSQL database with the Nextcloud command line tool. See [this page](docs.nextcloud.com/server/latest/admin_manual/configuration_database/db_conversion.html) on the documentation for details.
