@@ -406,7 +406,7 @@ nextcloud_auto_app_update_schedule: '*-*-* 00:00:00'
 
 # Specify database to use
 # Valid values: mysql, postgres, sqlite
-nextcloud_database_type: sqlite
+nextcloud_database_type: postgres
 
 nextcloud_database_mysql_hostname: ''
 nextcloud_database_mysql_port: 3306
