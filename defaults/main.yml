@@ -20,14 +20,14 @@ nextcloud_redis_session_ini_path: "{{ nextcloud_base_path }}/redis-session.ini"
 # renovate: datasource=docker depName=nextcloud
 nextcloud_version: 31.0.8
 
-nextcloud_uid: ''
-nextcloud_gid: ''
+nextcloud_uid: ""
+nextcloud_gid: ""
 
 # Specify URI scheme
 nextcloud_scheme: https
 
 # The fully-qualified name of your Nextcloud server (e.g. `nextcloud.example.com`)
-nextcloud_hostname: ''
+nextcloud_hostname: ""
 
 # The path at which Nextcloud is exposed.
 nextcloud_path_prefix: /
@@ -67,13 +67,12 @@ nextcloud_container_image_customizations_enabled: |
 # https://github.com/nextcloud/server/issues/13099
 # Treat wisely!
 nextcloud_container_image_customizations_php_imagick_installation_enabled: false
-nextcloud_container_image_customizations_php_imagick_installation_packages: ['libmagickcore-6.q16-6-extra']
-
+nextcloud_container_image_customizations_php_imagick_installation_packages: ["libmagickcore-6.q16-6-extra"]
 # Samba (SMB) support for Windows fileshares can be setup using the toggle below, which
 # installs the smbclient package per the example here https://github.com/nextcloud/docker/blob/master/.examples/dockerfiles/smb/apache/Dockerfile
 # Also see ../../templates/customizations/Dockerfile.j2
 nextcloud_container_image_customizations_samba_enabled: false
-nextcloud_container_image_customizations_samba_packages: ['procps', 'smbclient']
+nextcloud_container_image_customizations_samba_packages: ["procps", "smbclient"]
 
 # A list of packages to install in the customized Nextcloud container image.
 # To add your own, use `nextcloud_container_image_customizations_packages_to_install_custom`
@@ -95,7 +94,7 @@ nextcloud_container_image_customizations_packages_to_install_custom: []
 #  RUN echo 'This is a custom step for building the customized container image for Nextcloud.'
 #  RUN echo 'You can override nextcloud_container_image_customizations_dockerfile_body_custom to add your own steps.'
 #  RUN echo 'You do NOT need to include a FROM clause yourself.'
-nextcloud_container_image_customizations_dockerfile_body_custom: ''
+nextcloud_container_image_customizations_dockerfile_body_custom: ""
 
 # nextcloud_container_image_customized is the name of the locally built Nextcloud image
 # which adds various customizations on top of the original (upstream) Nextcloud image.
@@ -138,7 +137,7 @@ nextcloud_container_additional_volumes_custom: []
 #
 # To inject your own other container labels, see `nextcloud_container_labels_additional_labels`.
 nextcloud_container_labels_traefik_enabled: true
-nextcloud_container_labels_traefik_docker_network: ''
+nextcloud_container_labels_traefik_docker_network: ""
 nextcloud_container_labels_traefik_hostname: "{{ nextcloud_hostname }}"
 # The path prefix must either be `/` or not end with a slash (e.g. `/nextcloud`).
 nextcloud_container_labels_traefik_path_prefix: "{{ nextcloud_path_prefix }}"
@@ -148,7 +147,7 @@ nextcloud_container_labels_traefik_rule: "Host(`{{ nextcloud_container_labels_tr
 nextcloud_container_labels_traefik_priority: 0
 nextcloud_container_labels_traefik_entrypoints: web-secure
 nextcloud_container_labels_traefik_tls: "{{ nextcloud_container_labels_traefik_entrypoints != 'web' }}"
-nextcloud_container_labels_traefik_tls_certResolver: default  # noqa var-naming
+nextcloud_container_labels_traefik_tls_certResolver: default # noqa var-naming
 
 # Controls whether a compression middleware will be injected into the middlewares list.
 # This compression middleware is supposed to be defined elsewhere (using labels or a File provider, etc.) and is merely referenced by this router.
@@ -257,7 +256,7 @@ nextcloud_container_labels_traefik_http_middlewares_custom: []
 # nextcloud_container_labels_additional_labels: |
 #   my.label=1
 #   another.label="here"
-nextcloud_container_labels_additional_labels: ''
+nextcloud_container_labels_additional_labels: ""
 
 # A list of extra arguments to pass to the container (`docker run` command)
 nextcloud_container_extra_arguments: []
@@ -395,55 +394,55 @@ nextcloud_config_parameters_custom: []
 # nextcloud_cron_schedule contains a systemd OnCalendar definition which controls how often `cron.timer` runs
 # The default value means 'every 15 minutes'.
 # Learn more here: https://man.archlinux.org/man/systemd.time.7
-nextcloud_cron_schedule: '*:0/15:0'
+nextcloud_cron_schedule: "*:0/15:0"
 
 # Enable auto updates for Nextcloud apps
 nextcloud_auto_app_update_enabled: false
 # nextcloud_auto_app_update_schedule contains a systemd OnCalendar definition which controls how often `app-update.timer` runs
 # The default value means 'every day at 00:00'.
 # Learn more here: https://man.archlinux.org/man/systemd.time.7
-nextcloud_auto_app_update_schedule: '*-*-* 00:00:00'
+nextcloud_auto_app_update_schedule: "*-*-* 00:00:00"
 
 # Specify database to use
 # Valid values: mysql, postgres, sqlite
 nextcloud_database_type: postgres
 
-nextcloud_database_mysql_hostname: ''
+nextcloud_database_mysql_hostname: ""
 nextcloud_database_mysql_port: 3306
 nextcloud_database_mysql_username: nextcloud
-nextcloud_database_mysql_password: ''
+nextcloud_database_mysql_password: ""
 
-nextcloud_database_hostname: ''
+nextcloud_database_hostname: ""
 nextcloud_database_port: 5432
 nextcloud_database_username: nextcloud
-nextcloud_database_password: ''
+nextcloud_database_password: ""
 
 nextcloud_database_name: nextcloud
 
 # Specify a WOPI (Web Application Open Platform Interface) host to connect
 # Required for integrating Collabora Online Development Edition (CODE)
-nextcloud_collabora_app_wopi_url: ''
-nextcloud_collabora_app_wopi_allowlist: '10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16'
+nextcloud_collabora_app_wopi_url: ""
+nextcloud_collabora_app_wopi_allowlist: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16"
 
 # Redis integration.
-nextcloud_redis_hostname: ''
+nextcloud_redis_hostname: ""
 nextcloud_redis_port: 6379
-nextcloud_redis_password: ''
+nextcloud_redis_password: ""
 
-nextcloud_environment_variables_smtp_host: ''
+nextcloud_environment_variables_smtp_host: ""
 nextcloud_environment_variables_smtp_port: 587
 
 # Specify the localpart of the sender (localpart@domain)
-nextcloud_environment_variables_mail_from_address: ''
+nextcloud_environment_variables_mail_from_address: ""
 
 # Specify the domain for the external SMTP server if it is different from the domain where Nextcloud is installed
-nextcloud_environment_variables_mail_domain: ''
+nextcloud_environment_variables_mail_domain: ""
 
-nextcloud_environment_variables_smtp_name: ''
-nextcloud_environment_variables_smtp_password: ''
+nextcloud_environment_variables_smtp_name: ""
+nextcloud_environment_variables_smtp_password: ""
 
 # Valid values: ssl, tls
-nextcloud_environment_variables_smtp_secure: ''
+nextcloud_environment_variables_smtp_secure: ""
 
 # Specify the method used for authentication. Set PLAIN if no authentication is required.
 # Valid values: LOGIN, PLAIN
@@ -485,15 +484,15 @@ nextcloud_preview_folder_name: "preview-generator"
 nextcloud_preview_docker_folder: "/{{ nextcloud_preview_folder_name }}"
 nextcloud_preview_host_folder: "{{ nextcloud_customized_container_src_path }}/{{ nextcloud_preview_folder_name }}"
 nextcloud_preview_first_run_finished_filename: "finished-first-run.keepit"
-nextcloud_preview_preview_max_x: null
-nextcloud_preview_preview_max_y: null
+nextcloud_preview_preview_max_x:
+nextcloud_preview_preview_max_y:
 nextcloud_preview_app_jpeg_quality: 80
 
 # Specify username and password of the admin user
 # Note these settings are effective only if a group of values for the database are specified before the first run.
 # Changing those values after creating the user does not update the login credential.
-nextcloud_environment_variables_nextcloud_admin_user: ''
-nextcloud_environment_variables_nextcloud_admin_password: ''
+nextcloud_environment_variables_nextcloud_admin_user: ""
+nextcloud_environment_variables_nextcloud_admin_password: ""
 
 # Specify trusted domains in space-separated list
 nextcloud_environment_variables_nextcloud_trusted_domains: "{{ nextcloud_hostname }}"
@@ -504,4 +503,4 @@ nextcloud_environment_variables_nextcloud_trusted_domains: "{{ nextcloud_hostnam
 # nextcloud_environment_variables_additional_variables: |
 #   VAR=1
 #   ANOTHER=value
-nextcloud_environment_variables_additional_variables: ''
+nextcloud_environment_variables_additional_variables: ""
