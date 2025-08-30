@@ -224,3 +224,13 @@ ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
 ### Check the service's logs
 
 You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu nextcloud-server` (or how you/your playbook named the service, e.g. `mash-nextcloud-server`).
+
+#### Increase logging verbosity
+
+If you want to increase the verbosity, add the following configuration to your `vars.yml` file:
+
+```yaml
+nextcloud_config_parameter_loglevel: 0
+
+nextcloud_config_parameter_loglevel_frontend: 0
+```

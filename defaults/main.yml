@@ -336,6 +336,16 @@ nextcloud_systemd_wanted_services_list_custom: []
 nextcloud_container_memory_limit: ""
 nextcloud_container_memory_swap_limit: ""
 
+# Specify loglevel
+# Valid values: 0, 1, 2, 3, 4
+# See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#loglevel
+nextcloud_config_parameter_loglevel: 2
+
+# Specify loglevel used by the frontend
+# Valid values: 0, 1, 2, 3, 4
+# See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#loglevel-frontend
+nextcloud_config_parameter_loglevel_frontend: 2
+
 # Controls the maintenance_window_start configuration parameter.
 # See: https://docs.nextcloud.com/server/29/admin_manual/configuration_server/background_jobs_configuration.html
 nextcloud_config_parameter_maintenance_window_start: 1
@@ -350,6 +360,16 @@ nextcloud_config_parameters: "{{ nextcloud_config_parameters_default + nextcloud
 nextcloud_config_parameters_default: |
   {{
     ([
+      {
+        'key': 'loglevel',
+        'value': nextcloud_config_parameter_loglevel,
+        'type': 'integer',
+      },
+      {
+        'key': 'loglevel_frontend',
+        'value': nextcloud_config_parameter_loglevel_frontend,
+        'type': 'integer',
+      },
       {
         'key': 'overwriteprotocol',
         'value': 'https',
