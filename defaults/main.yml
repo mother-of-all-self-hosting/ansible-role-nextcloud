@@ -336,6 +336,11 @@ nextcloud_systemd_wanted_services_list_custom: []
 nextcloud_container_memory_limit: ""
 nextcloud_container_memory_swap_limit: ""
 
+# Specify the default language
+# Valid values: ISO_639-1 language codes
+# See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#default-language
+nextcloud_config_parameter_default_language: en
+
 # Specify loglevel
 # Valid values: 0, 1, 2, 3, 4
 # See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#loglevel
@@ -360,6 +365,11 @@ nextcloud_config_parameters: "{{ nextcloud_config_parameters_default + nextcloud
 nextcloud_config_parameters_default: |
   {{
     ([
+      {
+        'key': 'default_language',
+        'value': nextcloud_config_parameter_default_language,
+        'type': 'string',
+      },
       {
         'key': 'auth.bruteforce.protection.enabled',
         'value': false,

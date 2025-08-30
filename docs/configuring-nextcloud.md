@@ -79,6 +79,16 @@ For other settings, check variables such as `nextcloud_database_mysql_*` and `ne
 >[!NOTE]
 > It is possible to convert a SQLite database to a MySQL, MariaDB or PostgreSQL database with the Nextcloud command line tool. See [this page](docs.nextcloud.com/server/latest/admin_manual/configuration_database/db_conversion.html) on the documentation for details.
 
+### Configure the default language (optional)
+
+You can set the default language on your Nextcloud instance with ISO_639-1 language codes as below:
+
+```yml
+nextcloud_config_parameter_default_language: de
+```
+
+By default it is set to English.
+
 ### Configure the mailer (optional)
 
 You can configure a SMTP mailer by adding the following configuration to your `vars.yml` file as below (adapt to your needs):
