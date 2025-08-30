@@ -245,6 +245,20 @@ ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
 
 You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu nextcloud-server` (or how you/your playbook named the service, e.g. `mash-nextcloud-server`).
 
+#### Enable debug mode
+
+You can enable debuigging mode for Nextcloud by adding the following configuration to your `vars.yml` file:
+
+```yml
+nextcloud_config_parameter_debug: true
+```
+
+Make sure to run the command below to reflect the configuration:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
+```
+
 #### Increase logging verbosity
 
 If you want to increase the verbosity, add the following configuration to your `vars.yml` file:

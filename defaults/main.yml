@@ -360,6 +360,10 @@ nextcloud_config_parameter_loglevel_frontend: 2
 # See: https://docs.nextcloud.com/server/29/admin_manual/configuration_server/background_jobs_configuration.html
 nextcloud_config_parameter_maintenance_window_start: 1
 
+# Controls if debugging mode is enabled
+# See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#debug
+nextcloud_config_parameter_debug: false
+
 # A list of configuration parameters for Nextcloud.
 # To define your own, we advise editing `nextcloud_config_parameters_custom`.
 nextcloud_config_parameters: "{{ nextcloud_config_parameters_default + nextcloud_config_parameters_custom }}"
@@ -419,6 +423,11 @@ nextcloud_config_parameters_default: |
         'key': 'maintenance_window_start',
         'value': nextcloud_config_parameter_maintenance_window_start,
         'type': 'integer',
+      },
+      {
+        'key': 'debug',
+        'value': nextcloud_config_parameter_debug,
+        'type': 'boolean',
       },
     ])
   }}
