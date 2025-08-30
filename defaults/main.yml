@@ -361,23 +361,13 @@ nextcloud_config_parameters_default: |
   {{
     ([
       {
-        'key': 'loglevel',
-        'value': nextcloud_config_parameter_loglevel,
-        'type': 'integer',
-      },
-      {
-        'key': 'loglevel_frontend',
-        'value': nextcloud_config_parameter_loglevel_frontend,
-        'type': 'integer',
+        'key': 'auth.bruteforce.protection.enabled',
+        'value': false,
+        'type': 'boolean',
       },
       {
         'key': 'overwriteprotocol',
         'value': 'https',
-        'type': 'string',
-      },
-      {
-        'key': 'overwrite.cli.url',
-        'value': nextcloud_url,
         'type': 'string',
       },
       {
@@ -386,14 +376,24 @@ nextcloud_config_parameters_default: |
         'type': 'string',
       },
       {
+        'key': 'overwrite.cli.url',
+        'value': nextcloud_url,
+        'type': 'string',
+      },
+      {
         'key': 'htaccess.RewriteBase',
         'value': nextcloud_path_prefix,
         'type': 'string',
       },
       {
-        'key': 'auth.bruteforce.protection.enabled',
-        'value': false,
-        'type': 'boolean',
+        'key': 'loglevel',
+        'value': nextcloud_config_parameter_loglevel,
+        'type': 'integer',
+      },
+      {
+        'key': 'loglevel_frontend',
+        'value': nextcloud_config_parameter_loglevel_frontend,
+        'type': 'integer',
       },
       {
         'key': 'maintenance_window_start',
