@@ -30,10 +30,10 @@
     cmd: |-
       docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ db:add-missing-indices
 
-- name: Run if preview generator is enabled
+- name: Run if Preview Generator is enabled
   when: nextcloud_preview_enabled | bool
   block:
-    - name: Adjust Nextcloud configuration values related to preview generator
+    - name: Adjust Nextcloud configuration values related to Preview Generator
       ansible.builtin.command:
         cmd: |-
           docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ {{ item.appType }} --value={{ item.value }} -- {{ item.appConfig }} {{ item.configName }}

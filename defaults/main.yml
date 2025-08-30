@@ -505,7 +505,7 @@ nextcloud_redis_port: 6379
 # Enable the variable nextcloud_preview_enabled and you are good to go.
 #
 # Some important aspects of usage:
-# - the preview generator has two stages [according to their readme](https://github.com/nextcloud/previewgenerator)
+# - the Preview Generator has two stages [according to their readme](https://github.com/nextcloud/previewgenerator)
 #   - a generate-all phase, which has to be executed only a single time
 #   - a pre-generate phase, that should be run in a cronjob.
 #     That runs quite fast if the generate-all phase finished.

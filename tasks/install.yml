@@ -40,7 +40,7 @@
     - env
     - labels
 
-- name: Ensure Nextcloud preview generator files are present
+- name: Ensure Nextcloud Preview Generator files are present
   when: "nextcloud_preview_enabled | bool"
   ansible.builtin.template:
     src: "{{ role_path }}/templates/preview-generator/{{ item }}.j2"

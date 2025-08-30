@@ -259,7 +259,7 @@ Check `defaults/main.yml` for Nextcloud for other options.
 
 #### Install the app on Nextcloud and run the command for config adjustment
 
-Next, install the preview generator app (<https://apps.nextcloud.com/apps/previewgenerator>) from the Settings/Application menu in your Nextcloud instance.
+Next, install the Preview Generator app (<https://apps.nextcloud.com/apps/previewgenerator>) from the Settings/Application menu in your Nextcloud instance.
 
 After it is installed, run the command below against your server, so that initial preview-generation is started and periodic generation of new images on your server is enabled:
 
