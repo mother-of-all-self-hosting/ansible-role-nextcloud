@@ -48,6 +48,12 @@
     - "name": "nextcloud_container_labels_traefik_compression_middleware_name"
       when: "{{ nextcloud_container_labels_traefik_compression_middleware_enabled }}"
 
+- name: Fail if Nextcloud log type is invalid
+  ansible.builtin.fail:
+    msg: >-
+      nextcloud_config_parameter_log_type must be 'file', 'syslog', 'errorlog', or 'systemd'
+  when: "nextcloud_config_parameter_log_type not in ['file', 'syslog', 'errorlog', 'systemd']"
+
 - name: Fail if Nextcloud database type is invalid
   ansible.builtin.fail:
     msg: >-

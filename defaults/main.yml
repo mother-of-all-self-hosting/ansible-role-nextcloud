@@ -352,6 +352,11 @@ nextcloud_config_parameter_default_phone_region:
 # See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#default-timezone
 nextcloud_config_parameter_default_timezone: UTC
 
+# Specify the log type
+# Valid values: file, syslog, errorlog, systemd
+# See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#log-type
+nextcloud_config_parameter_log_type: file
+
 # Specify loglevel
 # Valid values: 0, 1, 2, 3, 4
 # See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#loglevel
@@ -418,6 +423,11 @@ nextcloud_config_parameters_default: |
       {
         'key': 'htaccess.RewriteBase',
         'value': nextcloud_path_prefix,
+        'type': 'string',
+      },
+      {
+        'key': 'log_type',
+        'value': nextcloud_config_parameter_log_type,
         'type': 'string',
       },
       {
