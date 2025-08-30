@@ -290,7 +290,7 @@ You can enable debuigging mode for Nextcloud by adding the following configurati
 nextcloud_config_parameter_debug: true
 ```
 
-Make sure to run the command below to reflect the configuration:
+Make sure to run the command below to update the configuration:
 
 ```sh
 ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
