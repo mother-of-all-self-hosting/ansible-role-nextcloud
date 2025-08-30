@@ -284,7 +284,7 @@ You can find the logs in [systemd-journald](https://www.freedesktop.org/software
 
 #### Enable debug mode
 
-You can enable debuigging mode for Nextcloud by adding the following configuration to your `vars.yml` file:
+You can enable debugging mode for Nextcloud by adding the following configuration to your `vars.yml` file:
 
 ```yml
 nextcloud_config_parameter_debug: true
