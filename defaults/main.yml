@@ -500,25 +500,6 @@ nextcloud_redis_hostname: ""
 nextcloud_redis_port: 6379
 nextcloud_redis_password: ""
 
-nextcloud_environment_variables_smtp_host: ""
-nextcloud_environment_variables_smtp_port: 587
-
-# Specify the localpart of the sender (localpart@domain)
-nextcloud_environment_variables_mail_from_address: ""
-
-# Specify the domain for the external SMTP server if it is different from the domain where Nextcloud is installed
-nextcloud_environment_variables_mail_domain: ""
-
-nextcloud_environment_variables_smtp_name: ""
-nextcloud_environment_variables_smtp_password: ""
-
-# Valid values: ssl, tls
-nextcloud_environment_variables_smtp_secure: ""
-
-# Specify the method used for authentication. Set PLAIN if no authentication is required.
-# Valid values: LOGIN, PLAIN
-nextcloud_environment_variables_smtp_authtype: LOGIN
-
 # Preview generator setup
 #
 # Enable the variable nextcloud_preview_enabled and you are good to go.
@@ -558,6 +539,25 @@ nextcloud_preview_first_run_finished_filename: "finished-first-run.keepit"
 nextcloud_preview_preview_max_x:
 nextcloud_preview_preview_max_y:
 nextcloud_preview_app_jpeg_quality: 80
+
+nextcloud_environment_variables_smtp_host: ""
+nextcloud_environment_variables_smtp_port: 587
+
+# Specify the localpart of the sender (localpart@domain)
+nextcloud_environment_variables_mail_from_address: ""
+
+# Specify the domain for the external SMTP server if it is different from the domain where Nextcloud is installed
+nextcloud_environment_variables_mail_domain: ""
+
+nextcloud_environment_variables_smtp_name: ""
+nextcloud_environment_variables_smtp_password: ""
+
+# Valid values: ssl, tls
+nextcloud_environment_variables_smtp_secure: ""
+
+# Specify the method used for authentication. Set PLAIN if no authentication is required.
+# Valid values: LOGIN, PLAIN
+nextcloud_environment_variables_smtp_authtype: LOGIN
 
 # Specify username and password of the admin user
 # Note these settings are effective only if a group of values for the database are specified before the first run.
