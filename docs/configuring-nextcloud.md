@@ -89,6 +89,16 @@ nextcloud_config_parameter_default_language: de
 
 By default it is set to English.
 
+### Configure the default phone region (optional)
+
+You can set the default region for phone numbers on your Nextcloud instance with ISO 3166-1 country codes as below:
+
+```yml
+nextcloud_config_parameter_default_phone_region: GB
+```
+
+It is not set by default.
+
 ### Configure the mailer (optional)
 
 You can configure a SMTP mailer by adding the following configuration to your `vars.yml` file as below (adapt to your needs):
