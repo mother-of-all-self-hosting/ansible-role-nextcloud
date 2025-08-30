@@ -62,6 +62,9 @@ nextcloud_hostname: "example.com"
 
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
+>[!NOTE]
+> Changing the hostname after the first installation is currently not supported by Nextcloud. See [this page](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/domain_change.html) on the documentation as well.
+
 ### Configure database
 
 By default Nextcloud is configured to use Postgres, but you can choose other databases such as MySQL (MariaDB) and SQLite.

@@ -27,6 +27,8 @@ nextcloud_gid: ""
 nextcloud_scheme: https
 
 # The fully-qualified name of your Nextcloud server (e.g. `nextcloud.example.com`)
+# Changing the hostname after the first installation is currently not supported.
+# See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/domain_change.html
 nextcloud_hostname: ""
 
 # The path at which Nextcloud is exposed.
