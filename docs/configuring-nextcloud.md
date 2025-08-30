@@ -102,6 +102,16 @@ nextcloud_config_parameter_default_phone_region: GB
 
 It is not set by default.
 
+### Configure the default timezone (optional)
+
+It is also possible to set the default timezone with IANA identifiers such as `Europe/Berlin` as below:
+
+```yml
+nextcloud_config_parameter_default_timezone: Europe/Berlin
+```
+
+By default it is set to UTC.
+
 ### Configure the mailer (optional)
 
 You can configure a SMTP mailer by adding the following configuration to your `vars.yml` file as below (adapt to your needs):

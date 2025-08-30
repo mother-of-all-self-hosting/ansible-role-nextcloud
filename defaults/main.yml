@@ -348,6 +348,10 @@ nextcloud_config_parameter_default_language: en
 # See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#default-phone-region
 nextcloud_config_parameter_default_phone_region:
 
+# Specify the default timezone
+# See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#default-timezone
+nextcloud_config_parameter_default_timezone: UTC
+
 # Specify loglevel
 # Valid values: 0, 1, 2, 3, 4
 # See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#loglevel
@@ -384,6 +388,11 @@ nextcloud_config_parameters_default: |
       {
         'key': 'default_phone_region',
         'value': nextcloud_config_parameter_default_phone_region,
+        'type': 'string',
+      },
+      {
+        'key': 'default_timezone',
+        'value': nextcloud_config_parameter_default_timezone,
         'type': 'string',
       },
       {
