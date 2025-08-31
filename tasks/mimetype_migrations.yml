@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Ensure Nextcloud is started
+  ansible.builtin.service:
+    name: "{{ nextcloud_identifier }}-server"
+    state: started
+    daemon_reload: true
+  register: nextcloud_start
+
+- name: Wait a while, so that Nextcloud can manage to start
+  when: nextcloud_start.changed | bool
+  ansible.builtin.pause:
+    seconds: 7
+
+- name: Run mimetype migrations by running a command for repairing the installation
+  ansible.builtin.command:
+    cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ maintenance:repair --include-expensive"
+  failed_when: false
+  register: mimetype_migrations_result
+
+- name: Fail if mimetype migrations were unsuccessful
+  when: "mimetype_migrations_result.rc != 0"
+  ansible.builtin.fail:
+    msg: "Mimetype migrations were unsuccessful. Full error: {{ mimetype_migrations_result }}"

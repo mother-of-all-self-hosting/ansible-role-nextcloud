@@ -24,6 +24,14 @@
     - name: Adjust Nextcloud configuration
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
 
+- name: Perform mimetype migration tasks for Nextcloud
+  when: nextcloud_enabled | bool
+  tags:
+    - mimetype-migrations-nextcloud
+  block:
+    - name: Run mimetype migrations on Nextcloud
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
+
 - name: Perform Collabora Online Development Edition installation tasks for Nextcloud
   when: nextcloud_enabled | bool
   tags:

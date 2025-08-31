@@ -242,6 +242,16 @@ ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
 
 You can open the URL with a web browser to log in to the instance. See [this official guide](https://docs.nextcloud.com/server/latest/admin_manual/contents.html) to get started.
 
+### Run mimetype migrations
+
+After the initial installation or upgrading the instance, there might appear a warning on the administration overview page at `https://example.com/settings/admin/overview` about mimetype migrations.
+
+The command below is available for the migrations:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=mimetype-migrations-nextcloud
+```
+
 ### Integrate Collabora Online Development Edition (optional)
 
 It is possible to integrate the Collabora Online Development Edition (CODE) instance to Nextcloud.
