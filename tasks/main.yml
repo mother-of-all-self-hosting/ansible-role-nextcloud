@@ -24,6 +24,14 @@
     - name: Adjust Nextcloud configuration
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
 
+- name: Perform Nextcloud server status query tasks
+  when: nextcloud_enabled | bool
+  tags:
+    - query-status-nextcloud
+  block:
+    - name: Query the Nextcloud server status
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/query_status.yml"
+
 - name: Perform mimetype migration tasks for Nextcloud
   when: nextcloud_enabled | bool
   tags:

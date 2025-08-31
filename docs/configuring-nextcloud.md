@@ -342,6 +342,14 @@ Running it sets up the variables and calls the generate-all script, that will al
 
 You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu nextcloud-server` (or how you/your playbook named the service, e.g. `mash-nextcloud-server`).
 
+### Query the server status
+
+Run the command below to query the Nextcloud server status:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=query-status-nextcloud
+```
+
 #### Enable debug mode
 
 You can enable debugging mode for Nextcloud by adding the following configuration to your `vars.yml` file:

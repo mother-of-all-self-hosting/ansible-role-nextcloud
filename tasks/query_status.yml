@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Ensure Nextcloud is started
+  ansible.builtin.service:
+    name: "{{ nextcloud_identifier }}-server"
+    state: started
+    daemon_reload: true
+  register: nextcloud_start
+
+- name: Wait a while, so that Nextcloud can manage to start
+  ansible.builtin.pause:
+    seconds: 7
+  when: nextcloud_start.changed | bool
+
+- name: Query the Nextcloud server status
+  ansible.builtin.command:
+    cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ status"
+  failed_when: false
+  register: status
+
+- name: Display the Nextcloud server status
+  ansible.builtin.debug:
+    msg: "Nextcloud server status: {{ status }}"
