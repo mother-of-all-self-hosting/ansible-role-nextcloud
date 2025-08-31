@@ -9,8 +9,8 @@
     msg: |
       A required setting (`{{ item }}`) hasn't been defined.
   with_items:
-    - nextcloud_collabora_app_wopi_url
-    - nextcloud_collabora_app_wopi_allowlist
+    - nextcloud_app_collabora_wopi_url
+    - nextcloud_app_collabora_wopi_allowlist
 
 - name: Ensure Nextcloud is started
   ansible.builtin.service:
@@ -46,6 +46,6 @@
     cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:app:set richdocuments {{ item.key }} --value=\"{{ item.value }}\""
   with_items:
     - key: wopi_url
-      value: "{{ nextcloud_collabora_app_wopi_url }}"
+      value: "{{ nextcloud_app_collabora_wopi_url }}"
     - key: wopi_allowlist
-      value: "{{ nextcloud_collabora_app_wopi_allowlist }}"
+      value: "{{ nextcloud_app_collabora_wopi_allowlist }}"

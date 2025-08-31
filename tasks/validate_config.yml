@@ -33,6 +33,8 @@
     - { "old": "nextcloud_config_parameter_mail_smtppassword", "new": "nextcloud_environment_variables_smtp_password" }
     - { "old": "nextcloud_config_parameter_mail_from_address", "new": "nextcloud_environment_variables_mail_from_address" }
     - { "old": "nextcloud_config_parameter_mail_domain", "new": "nextcloud_environment_variables_mail_domain" }
+    - { "old": "nextcloud_collabora_app_wopi_url", "new": "nextcloud_app_collabora_wopi_url" }
+    - { "old": "nextcloud_collabora_app_wopi_allowlist", "new": "nextcloud_app_collabora_wopi_allowlist" }
 
 - name: Fail if required Nextcloud settings not defined
   ansible.builtin.fail:

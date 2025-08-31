@@ -492,8 +492,8 @@ nextcloud_database_name: nextcloud
 
 # Specify a WOPI (Web Application Open Platform Interface) host to connect
 # Required for integrating Collabora Online Development Edition (CODE)
-nextcloud_collabora_app_wopi_url: ""
-nextcloud_collabora_app_wopi_allowlist: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16"
+nextcloud_app_collabora_wopi_url: ""
+nextcloud_app_collabora_wopi_allowlist: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16"
 
 # Redis integration.
 nextcloud_redis_hostname: ""
