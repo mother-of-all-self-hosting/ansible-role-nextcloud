@@ -239,9 +239,11 @@ You can open the URL with a web browser to log in to the instance. See [this off
 
 ### Collabora Online Development Edition
 
-On Nextcloud it is possible to integrate the Collabora Online Development Edition (CODE) office suite.
+It is possible to integrate the Collabora Online Development Edition (CODE) instance to Nextcloud.
 
-After installing CODE, add the following configuration for Nextcloud to your `vars.yml` file:
+If you are looking for an Ansible role for CODE, you can check out [ansible-role-collabora-online](https://github.com/mother-of-all-self-hosting/ansible-role-collabora-online) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
+
+After installing CODE and [defining an allowed WOPI (Web Application Open Platform Interface) host](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#how-to-configure-docker-image) to the `aliasgroup1` environment variable for the CODE instance, add the following configuration for Nextcloud to your `vars.yml` file:
 
 ```yaml
 nextcloud_collabora_app_wopi_url: YOUR_CODE_INSTANCE_URL_HERE
