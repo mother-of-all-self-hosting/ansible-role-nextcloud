@@ -475,6 +475,11 @@ nextcloud_app_autoupdate_enabled: false
 # Learn more here: https://man.archlinux.org/man/systemd.time.7
 nextcloud_app_autoupdate_schedule: "*-*-* 00:00:00"
 
+# Specify a WOPI (Web Application Open Platform Interface) host to connect
+# Required for integrating Collabora Online Development Edition (CODE)
+nextcloud_app_collabora_wopi_url: ""
+nextcloud_app_collabora_wopi_allowlist: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16"
+
 # Specify database to use
 # Valid values: mysql, postgres, sqlite
 nextcloud_database_type: postgres
@@ -490,11 +495,6 @@ nextcloud_database_username: nextcloud
 nextcloud_database_password: ""
 
 nextcloud_database_name: nextcloud
-
-# Specify a WOPI (Web Application Open Platform Interface) host to connect
-# Required for integrating Collabora Online Development Edition (CODE)
-nextcloud_app_collabora_wopi_url: ""
-nextcloud_app_collabora_wopi_allowlist: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16"
 
 # Redis integration.
 nextcloud_redis_hostname: ""
