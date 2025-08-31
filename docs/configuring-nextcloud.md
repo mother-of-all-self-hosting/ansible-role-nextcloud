@@ -168,6 +168,30 @@ nextcloud_environment_variables_smtp_authtype: LOGIN
 
 ⚠️ **Note**: without setting an authentication method such as DKIM, SPF, and DMARC for your hostname, emails are most likely to be quarantined as spam at recipient's mail servers. If you have set up a mail server with the [MASH project's exim-relay Ansible role](https://github.com/mother-of-all-self-hosting/ansible-role-exim-relay), you can enable DKIM signing with it. Refer [its documentation](https://github.com/mother-of-all-self-hosting/ansible-role-exim-relay/blob/main/docs/configuring-exim-relay.md#enable-dkim-support-optional) for details.
 
+### Configure object storages as primary storage (optional)
+
+>[!WARNING]
+> Configuring an object storage on an existing Nextcloud instance as the primary one will make **all existing files on the instance inaccessible**!
+>
+> Before proceeding, please have a look at [this page](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/primary_storage.html) to know differences between the primary storage and an external storage. Also make sure to understand important implications of using the primary object storage, such as the one that *your files on the primary storage will ONLY be able to be retrieved through the Nextcloud instance, making it necessary to take it into consideration when planning a data backup strategy.*
+
+It is possible to configure object storages such as OpenStack Swift or Amazon S3 or any compatible S3-implementation as the primary storage.
+
+Since required settings are different among implementations, the role does not set default configurations for them. You can check [this section](https://github.com/docker-library/docs/blob/master/nextcloud/README.md#auto-configuration-via-environment-variables) to see what needs configuring for your storage provider. Consult the documentation by the provider as well.
+
+To use a S3 compatible object storage as the primary storage, check `OBJECTSTORE_S3_*` environment variables. For OpenStack Swift, you can use `OBJECTSTORE_SWIFT_*` environment variables.
+
+For example, you can have the Nextcloud instance use the bucket named `example` on Storj (a S3 compatible storage) as the primary storage by adding the following configuration to your `vars.yml` file:
+
+```yaml
+nextcloud_environment_variables_additional_variables: |
+  OBJECTSTORE_S3_BUCKET=example
+  OBJECTSTORE_S3_HOST=gateway.storjshare.io
+  OBJECTSTORE_S3_KEY=YOUR_ACCESS_KEY_HERE
+  OBJECTSTORE_S3_SECRET=YOUR_SECRET_KEY_HERE
+  OBJECTSTORE_S3_USEPATH_STYLE=true
+```
+
 ### Enable Samba (optional)
 
 To enable [Samba](https://www.samba.org/) external Windows fileshares using [smbclient](https://www.samba.org/samba/docs/current/man-html/smbclient.1.html), add the following configuration to your `vars.yml` file:
