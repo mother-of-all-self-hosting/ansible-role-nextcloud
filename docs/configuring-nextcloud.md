@@ -1,6 +1,6 @@
 <!--
 SPDX-FileCopyrightText: 2020 - 2024 MDAD project contributors
-SPDX-FileCopyrightText: 2020 - 2024 Slavi Pantaleev
+SPDX-FileCopyrightText: 2020 - 2025 Slavi Pantaleev
 SPDX-FileCopyrightText: 2020 Aaron Raimist
 SPDX-FileCopyrightText: 2020 Chris van Dijk
 SPDX-FileCopyrightText: 2020 Dominik Zajac
@@ -8,10 +8,13 @@ SPDX-FileCopyrightText: 2020 Mickaël Cornière
 SPDX-FileCopyrightText: 2022 François Darveau
 SPDX-FileCopyrightText: 2022 Julian Foad
 SPDX-FileCopyrightText: 2022 Warren Bailey
+SPDX-FileCopyrightText: 2023 - 2024 MASH project contributors
 SPDX-FileCopyrightText: 2023 Antonis Christofides
 SPDX-FileCopyrightText: 2023 Felix Stupp
+SPDX-FileCopyrightText: 2023 Gergely Horváth
 SPDX-FileCopyrightText: 2023 Pierre 'McFly' Marty
 SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
+SPDX-FileCopyrightText: 2024 Philipp Homann
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
@@ -266,6 +269,13 @@ You should then be able to open any document (`.doc`, `.odt`, `.pdf`, etc.) and 
 
 It is also possible to set up preview generation by following the steps below.
 
+The Preview Generator has two stages, [according to its README](https://github.com/nextcloud/previewgenerator).
+
+- a generate-all phase — this has to be executed only a single time
+- a pre-generate phase — this should be run in a cronjob. That runs quite fast if the generate-all phase finished.
+
+As we do not want to run the generate-all phase multiple times, its execution timing is decided based on existence of the file created on the host side.
+
 #### Enable preview on `vars.yml`
 
 First, add the following configuration to `vars.yml` and run the playbook.
@@ -274,14 +284,19 @@ First, add the following configuration to `vars.yml` and run the playbook.
 nextcloud_preview_enabled: true
 ```
 
-Other supported variables:
+>[!NOTE]
+> If it is set back to `false`, the host side files are cleaned up, and also the cron job is changed, not to call preview generation again. Note that the database and generated previews are kept intact thereafter.
 
-- `nextcloud_preview_preview_max_x` and `nextcloud_preview_preview_max_y`
-  - Set the maximum size of the preview in pixels. The default value on this playbook is `null`. Setting a numeric value configures the corresponding nextcloud variable and the size of the preview images. See the [documentation](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/previews_configuration.html) for details.
-- `nextcloud_preview_app_jpeg_quality`
-  - JPEG quality for preview images. The default value is 80, based on the value by the upstream project.
+You can edit other settings by adding the following configuration to your `vars.yml` file:
 
-Check `defaults/main.yml` for Nextcloud for other options.
+```yaml
+# Specify the maximum size of the preview in pixels
+nextcloud_preview_preview_max_x: MAX_HORIZONTAL_SIZE_HERE
+nextcloud_preview_preview_max_y: MAX_VERTICAL_SIZE_HERE
+
+# Specify JPEG quality for preview images
+nextcloud_preview_app_jpeg_quality: MAX_QUALITY_VALUE_HERE
+```
 
 #### Install the app on Nextcloud and run the command for config adjustment
 
@@ -292,6 +307,8 @@ After it is installed, run the command below against your server, so that initia
 ```sh
 ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
 ```
+
+Running it sets up the variables and calls the generate-all script, that will also create the file —— signalling its finished state —— on the host.
 
 **Notes**:
 

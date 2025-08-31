@@ -516,28 +516,19 @@ nextcloud_redis_port: 6379
 # Multiple variables are also defined and the corresponding default values are also set.
 # These values are based on the [upstream readme](https://github.com/nextcloud/previewgenerator) and also on experience.
 # Feel free to change anything.
-#
-# Once installed, the playbook needs to be called with the adjust-nextcloud-config tag.
-# This tag sets up the variables and calls the generate-all script, that will also create the file---signalling
-# its finished state---on the host.
-# *** As this may take a long time, be sure to only call it when you have time to leave it running!!! ***
-# The playbook calls generate-all asynchronously, but it will timeout after about 27h.
-# On 60GBs, most if images, it took about 10 minutes to finish.
-# If it takes more time, you may want to start it from the host by calling
-# ```sh
-# /usr/bin/env docker exec mash-nextcloud-server php /var/www/html/occ preview:generate-all
-# ```
-#
-# If the nextcloud_preview_enabled value is set back to false, the host side files are cleaned up
-# and also the cron job is changed, not to call preview generation again however, the database and generated
-# previews are kept intact.
 nextcloud_preview_enabled: false
 nextcloud_preview_folder_name: "preview-generator"
 nextcloud_preview_docker_folder: "/{{ nextcloud_preview_folder_name }}"
 nextcloud_preview_host_folder: "{{ nextcloud_customized_container_src_path }}/{{ nextcloud_preview_folder_name }}"
 nextcloud_preview_first_run_finished_filename: "finished-first-run.keepit"
+
+# Specify the maximum size of the preview in pixels.
+# Setting a numeric value configures the corresponding Nextcloud variable and the size of the preview images.
+# Also see: https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/previews_configuration.html
 nextcloud_preview_preview_max_x:
 nextcloud_preview_preview_max_y:
+
+# Specify JPEG quality for preview images. The value is 80, based on the one by the upstream project.
 nextcloud_preview_app_jpeg_quality: 80
 
 nextcloud_environment_variables_smtp_host: ""
