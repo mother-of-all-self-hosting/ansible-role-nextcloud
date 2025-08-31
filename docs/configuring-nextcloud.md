@@ -229,6 +229,8 @@ If you use the MASH playbook, the shortcut commands with the [`just` program](ht
 
 After running the command for installation, the Nextcloud instance becomes available at the URL specified with `nextcloud_hostname` and `nextcloud_path_prefix`. With the configuration above, the service is hosted at `https://example.com`.
 
+### Update configuration
+
 Before logging in to the instance, update the configuration (URL paths, trusted reverse-proxies, etc.) by running the command below:
 
 ```sh
@@ -240,7 +242,7 @@ ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
 
 You can open the URL with a web browser to log in to the instance. See [this official guide](https://docs.nextcloud.com/server/latest/admin_manual/contents.html) to get started.
 
-### Collabora Online Development Edition
+### Integrate Collabora Online Development Edition (optional)
 
 It is possible to integrate the Collabora Online Development Edition (CODE) instance to Nextcloud.
 
@@ -265,7 +267,7 @@ You should then be able to open any document (`.doc`, `.odt`, `.pdf`, etc.) and 
 >[!NOTE]
 > By default, various private IPv4 networks are whitelisted to connect to the WOPI API (document serving API). If your CODE instance does not live on the same server as Nextcloud, you may need to adjust the list of networks. If necessary, redefine the `nextcloud_collabora_app_wopi_allowlist` environment variable on `vars.yml`.
 
-### Preview Generator
+### Enable Preview Generator app (optional)
 
 It is also possible to set up preview generation by following the steps below.
 
@@ -298,9 +300,11 @@ nextcloud_preview_preview_max_y: MAX_VERTICAL_SIZE_HERE
 nextcloud_preview_app_jpeg_quality: MAX_QUALITY_VALUE_HERE
 ```
 
-#### Install the app on Nextcloud and run the command for config adjustment
+#### Install the app on Nextcloud
 
 Next, install the Preview Generator app (<https://apps.nextcloud.com/apps/previewgenerator>) from the Settings/Application menu in your Nextcloud instance.
+
+#### Run the command for config adjustment
 
 After it is installed, run the command below against your server, so that initial preview-generation is started and periodic generation of new images on your server is enabled:
 
