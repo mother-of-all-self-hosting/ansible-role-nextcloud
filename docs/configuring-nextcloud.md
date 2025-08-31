@@ -118,6 +118,9 @@ nextcloud_config_parameter_default_timezone: Europe/Berlin
 
 By default it is set to UTC.
 
+>[!NOTE]
+> Setting a proper timezone is important for some instances such as using Nextcloud applications like [Calendar](https://apps.nextcloud.com/apps/calendar) and [Forms](https://apps.nextcloud.com/apps/forms) where it is possible to set an expiration date to a form.
+
 ### Configure memory caching (optional)
 
 Nextcloud recommends to set up memory caching for improving performance and preventing file locking problems. You can use [APCu](https://pecl.php.net/package/APCu), [Memcached](https://www.memcached.org/), and [Redis](https://redis.io/).
