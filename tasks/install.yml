@@ -145,3 +145,14 @@
       with_items:
         - app-update.service
         - app-update.timer
+
+- name: Notify to run the task for Nextcloud configurations adjustment
+  ansible.builtin.set_fact:
+    devture_playbook_runtime_messages_list: |
+      {{
+        devture_playbook_runtime_messages_list | default([])
+        +
+        [
+          "Note: make sure to run the playbook with the `adjust-nextcloud-config` tag to update configurations for your Nextcloud instance."
+        ]
+      }}
