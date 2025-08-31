@@ -124,7 +124,7 @@
     - cron.timer
 
 - name: Run if auto update for Nextcloud apps is enabled
-  when: "nextcloud_auto_app_update_enabled | bool"
+  when: "nextcloud_app_autoupdate_enabled | bool"
   block:
     - name: Ensure Nextcloud app update systemd services are present
       ansible.builtin.template:
@@ -136,7 +136,7 @@
         - app-update.timer
 
 - name: Run if auto update for Nextcloud apps is not enabled
-  when: "not nextcloud_auto_app_update_enabled | bool"
+  when: "not nextcloud_app_autoupdate_enabled | bool"
   block:
     - name: Ensure Nextcloud systemd app update services do not exist
       ansible.builtin.file:

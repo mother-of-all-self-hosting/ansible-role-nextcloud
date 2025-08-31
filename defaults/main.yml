@@ -468,11 +468,12 @@ nextcloud_config_parameters_custom: []
 nextcloud_cron_schedule: "*:0/15:0"
 
 # Enable auto updates for Nextcloud apps
-nextcloud_auto_app_update_enabled: false
-# nextcloud_auto_app_update_schedule contains a systemd OnCalendar definition which controls how often `app-update.timer` runs
+nextcloud_app_autoupdate_enabled: false
+
+# nextcloud_app_autoupdate_schedule contains a systemd OnCalendar definition which controls how often `app-update.timer` runs
 # The default value means 'every day at 00:00'.
 # Learn more here: https://man.archlinux.org/man/systemd.time.7
-nextcloud_auto_app_update_schedule: "*-*-* 00:00:00"
+nextcloud_app_autoupdate_schedule: "*-*-* 00:00:00"
 
 # Specify database to use
 # Valid values: mysql, postgres, sqlite

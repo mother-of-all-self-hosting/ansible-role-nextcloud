@@ -23,8 +23,8 @@
         - { "service": server.service, "when": true }
         - { "service": cron.service, "when": true }
         - { "service": cron.timer, "when": true }
-        - { "service": app-update.service, "when": "{{ nextcloud_auto_app_update_enabled }}" }
-        - { "service": app-update.timer, "when": "{{ nextcloud_auto_app_update_enabled }}" }
+        - { "service": app-update.service, "when": "{{ nextcloud_app_autoupdate_enabled }}" }
+        - { "service": app-update.timer, "when": "{{ nextcloud_app_autoupdate_enabled }}" }
 
     - name: Ensure Nextcloud systemd services do not exist
       ansible.builtin.file:
