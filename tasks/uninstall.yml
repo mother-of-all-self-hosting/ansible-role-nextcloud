@@ -50,7 +50,7 @@
         path: "{{ nextcloud_customized_container_src_path }}"
         state: absent
 
-    - name: Ensure Nextcloud Redis session ini file do not exist
+    - name: Ensure Nextcloud Redis session ini file does not exist
       when: nextcloud_redis_is_configured | bool
       ansible.builtin.file:
         path: "{{ nextcloud_redis_session_ini_path }}"
