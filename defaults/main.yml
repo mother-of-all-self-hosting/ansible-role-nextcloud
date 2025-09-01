@@ -69,7 +69,7 @@ nextcloud_container_image_customizations_enabled: |
 # https://github.com/nextcloud/server/issues/13099
 # Treat wisely!
 nextcloud_container_image_customizations_php_imagick_installation_enabled: false
-nextcloud_container_image_customizations_php_imagick_installation_packages: ["libmagickcore-6.q16-6-extra"]
+nextcloud_container_image_customizations_php_imagick_installation_packages: ["libmagickcore-7.q16-10-extra"]
 
 # Samba (SMB) support for Windows fileshares can be setup using the toggle below, which
 # installs the smbclient package per the example here https://github.com/nextcloud/docker/blob/master/.examples/dockerfiles/smb/apache/Dockerfile
