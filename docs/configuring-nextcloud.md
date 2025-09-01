@@ -338,6 +338,16 @@ The command below is available for the migrations:
 ansible-playbook -i inventory/hosts setup.yml --tags=mimetype-migrations-nextcloud
 ```
 
+### Upgrading Nextcloud
+
+It should be noted Nextcloud must be upgraded step by step and **you cannot skip major releases**.
+
+For example, if you want to upgrade from version 29 to 31, you will have to upgrade from version 29 to 30, then from 30 to 31, by editing the `nextcloud_version` variable manually.
+
+Also, **wait for background migrations to finish after major upgrades**. They are scheduled to run as a cronjob, and the schedule is defined by the `nextcloud_cron_schedule` variable.
+
+See [this section](https://github.com/docker-library/docs/blob/master/nextcloud/README.md#update-to-a-newer-version) on the documentation of the Docker image, as well as [this page](https://docs.nextcloud.com/server/latest/admin_manual/maintenance/upgrade.html#approaching-upgrades) on the documentation for details.
+
 ## Troubleshooting
 
 ### Check the service's logs
