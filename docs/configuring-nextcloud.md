@@ -88,7 +88,11 @@ For other settings, check variables such as `nextcloud_database_mysql_*` and `ne
 >[!NOTE]
 > It is possible to convert a SQLite database to a MySQL, MariaDB or PostgreSQL database with the Nextcloud command line tool. See [this page](docs.nextcloud.com/server/latest/admin_manual/configuration_database/db_conversion.html) on the documentation for details.
 
-### Configure the default language (optional)
+### Editing default configuration parameters (optional)
+
+Some configuration parameters are specified with variables starting with `nextcloud_config_parameter_default_*`. See below for details.
+
+#### Configure the default language
 
 You can set the default language on your Nextcloud instance with ISO_639-1 language codes as below:
 
@@ -98,7 +102,7 @@ nextcloud_config_parameter_default_language: de
 
 By default it is set to English.
 
-### Configure the default phone region (optional)
+#### Configure the default phone region
 
 You can set the default region for phone numbers on your Nextcloud instance with ISO 3166-1 country codes as below:
 
@@ -108,7 +112,7 @@ nextcloud_config_parameter_default_phone_region: GB
 
 It is not set by default.
 
-### Configure the default timezone (optional)
+#### Configure the default timezone
 
 It is also possible to set the default timezone with IANA identifiers such as `Europe/Berlin` as below:
 
@@ -120,6 +124,12 @@ By default it is set to UTC.
 
 >[!NOTE]
 > Setting a proper timezone is important for some instances such as using Nextcloud applications like [Calendar](https://apps.nextcloud.com/apps/calendar) and [Forms](https://apps.nextcloud.com/apps/forms) where it is possible to set an expiration date to a form.
+
+#### Defining configuration parameters by yourself
+
+Configuration parameters (and their values) can be overridden by defining `nextcloud_config_parameters_default` by yourself. Your custom ones can be added to `nextcloud_config_parameters_custom`.
+
+Refer to [this page](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html) of the Nextcloud documentation for details.
 
 ### Configure memory caching (optional)
 
