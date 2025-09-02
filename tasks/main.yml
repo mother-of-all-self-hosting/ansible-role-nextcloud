@@ -24,6 +24,14 @@
     - name: Adjust Nextcloud configuration
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
 
+- name: Perform Nextcloud occ command tasks
+  when: nextcloud_enabled | bool
+  tags:
+    - occ-nextcloud
+  block:
+    - name: Run Nextcloud occ command
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/occ.yml"
+
 - name: Perform Nextcloud server status query tasks
   when: nextcloud_enabled | bool
   tags:

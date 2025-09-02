@@ -336,6 +336,18 @@ Running it sets up the variables and calls the generate-all script, that will al
     /usr/bin/env docker exec mash-nextcloud-server php /var/www/html/occ preview:generate-all
     ```
 
+### Using the occ command
+
+It is possible to run occ command, Nextcloud's command line interface, by running the `occ-nextcloud` tag, setting the `command` extra variable.
+
+For example, you can install (and enable) [Forms](https://apps.nextcloud.com/apps/forms) by running the command as below:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=occ-nextcloud -e command="'app:install forms'"
+```
+
+See [this page](https://docs.nextcloud.com/server/latest/admin_manual/occ_command.html) for the list of available commands.
+
 ## Maintenance
 
 ### Running mimetype migrations

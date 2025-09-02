@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Fail if playbook called incorrectly
+  ansible.builtin.fail:
+    msg: "The `command` variable needs to be provided via --extra-vars"
+  when: "command is not defined"
+
+- name: Ensure Nextcloud is started
+  ansible.builtin.service:
+    name: "{{ nextcloud_identifier }}-server"
+    state: started
+    daemon_reload: true
+  register: nextcloud_start
+
+- name: Wait a while, so that Nextcloud can manage to start
+  ansible.builtin.pause:
+    seconds: 7
+  when: nextcloud_start.changed | bool
+
+- name: Run Nextcloud occ command
+  ansible.builtin.command:
+    cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ {{ command }}"
+  failed_when: false
+  register: result
+
+- name: Display the Nextcloud occ command result
+  ansible.builtin.debug:
+    msg: "Nextcloud occ command result: {{ result }}"
