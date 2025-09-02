@@ -30,6 +30,9 @@
     cmd: |-
       docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ db:add-missing-indices
 
+- name: Run mimetype migrations on Nextcloud
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
+
 - name: Run if Preview Generator is enabled
   when: nextcloud_preview_enabled | bool
   block:
