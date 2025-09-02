@@ -313,13 +313,9 @@ nextcloud_preview_preview_max_y: MAX_VERTICAL_SIZE_HERE
 nextcloud_preview_app_jpeg_quality: MAX_QUALITY_VALUE_HERE
 ```
 
-#### Install the app on Nextcloud
-
-Next, install the Preview Generator app (<https://apps.nextcloud.com/apps/previewgenerator>) from the Settings/Application menu in your Nextcloud instance.
-
 #### Run the command for config adjustment
 
-After it is installed, run the command below against your server, so that initial preview-generation is started and periodic generation of new images on your server is enabled:
+Next, run the command below against your server, so that initial preview-generation is started and periodic generation of new images on your server is enabled:
 
 ```sh
 ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config

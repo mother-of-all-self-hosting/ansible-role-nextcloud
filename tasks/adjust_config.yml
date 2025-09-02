@@ -33,6 +33,11 @@
 - name: Run if Preview Generator is enabled
   when: nextcloud_preview_enabled | bool
   block:
+    - name: Ensure Preview Generator is installed and enabled
+      ansible.builtin.command:
+        cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ app:install previewgenerator"
+      failed_when: false
+
     - name: Adjust Nextcloud configuration values related to Preview Generator
       ansible.builtin.command:
         cmd: |-
