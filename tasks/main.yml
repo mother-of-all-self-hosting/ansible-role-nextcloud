@@ -16,14 +16,6 @@
     - name: Install Nextcloud
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
-- name: Perform Nextcloud configuration adjustment tasks
-  when: nextcloud_enabled | bool
-  tags:
-    - adjust-nextcloud-config
-  block:
-    - name: Adjust Nextcloud configuration
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
-
 - name: Perform Nextcloud occ command tasks
   when: nextcloud_enabled | bool
   tags:
@@ -55,6 +47,14 @@
   block:
     - name: Install Collabola Online as Office application on Nextcloud
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/app_install_collabora.yml"
+
+- name: Perform Nextcloud configuration adjustment tasks
+  when: nextcloud_enabled | bool
+  tags:
+    - adjust-nextcloud-config
+  block:
+    - name: Adjust Nextcloud configuration
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
 
 - name: Perform Nextcloud uninstallation tasks
   when: not nextcloud_enabled | bool
