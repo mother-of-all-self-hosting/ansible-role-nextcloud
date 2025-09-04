@@ -61,12 +61,14 @@
         cmd: "rmdir {{ nextcloud_data_path }}"
       register: nextcloud_data_path_deletion_result
       changed_when: nextcloud_data_path_deletion_result.rc == 0
+      failed_when: false
 
     - name: Ensure Nextcloud base path does not exist if empty
       ansible.builtin.command:
         cmd: "rmdir {{ nextcloud_base_path }}"
       register: nextcloud_base_path_deletion_result
       changed_when: nextcloud_base_path_deletion_result.rc == 0
+      failed_when: false
 
     - name: Ensure Nextcloud container network does not exist via community.docker.docker_network
       when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
