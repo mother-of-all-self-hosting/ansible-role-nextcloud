@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-- name: Ensure Nextcloud is started
+- name: Ensure Nextcloud service is started
   ansible.builtin.service:
     name: "{{ nextcloud_identifier }}-server"
     state: started

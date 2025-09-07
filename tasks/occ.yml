@@ -9,7 +9,7 @@
     msg: "The `command` variable needs to be provided via --extra-vars"
   when: "command is not defined"
 
-- name: Ensure Nextcloud is started
+- name: Ensure Nextcloud service is started
   ansible.builtin.service:
     name: "{{ nextcloud_identifier }}-server"
     state: started

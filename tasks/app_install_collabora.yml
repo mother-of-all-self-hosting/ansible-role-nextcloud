@@ -12,7 +12,7 @@
     - nextcloud_app_collabora_wopi_url
     - nextcloud_app_collabora_wopi_allowlist
 
-- name: Ensure Nextcloud is started
+- name: Ensure Nextcloud service is started
   ansible.builtin.service:
     name: "{{ nextcloud_identifier }}-server"
     state: started
