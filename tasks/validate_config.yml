@@ -38,6 +38,7 @@
     - { "old": "nextcloud_collabora_app_wopi_allowlist", "new": "nextcloud_app_collabora_wopi_allowlist" }
     - { "old": "nextcloud_auto_app_update_enabled", "new": "nextcloud_app_autoupdate_enabled" }
     - { "old": "nextcloud_auto_app_update_schedule", "new": "nextcloud_app_autoupdate_schedule" }
+    - { "old": "nextcloud_http_header_content_permission_policy", "new": "nextcloud_http_header_permissions_policy" }
 
 - name: Fail if required Nextcloud settings not defined
   ansible.builtin.fail:
