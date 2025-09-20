@@ -334,7 +334,7 @@ Running it sets up the variables and calls the generate-all script, that will al
 
 ### Connecting to LDAP server
 
-Nextcloud ships with an LDAP application to allow LDAP (including Active Directory) users log in to the Nextcloud instance with their LDAP credentials.
+Nextcloud ships with an LDAP application to allow LDAP (including Active Directory) users to log in to the Nextcloud instance with their LDAP credentials.
 
 #### Manual configuration
 
