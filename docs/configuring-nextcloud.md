@@ -332,6 +332,63 @@ Running it sets up the variables and calls the generate-all script, that will al
     /usr/bin/env docker exec mash-nextcloud-server php /var/www/html/occ preview:generate-all
     ```
 
+### Connecting to LDAP server
+
+Nextcloud ships with an LDAP application to allow LDAP (including Active Directory) users log in to the Nextcloud instance with their LDAP credentials.
+
+#### Manual configuration
+
+To configure the application manually, first enable the application on the Apps page in the Nextcloud instance, and then go to your Admin page where you can find the control panel with four tabs to configure the application.
+
+Before proceeding, it is recommended to have a look at [this section](https://docs.nextcloud.com/server/latest/admin_manual/configuration_user/user_auth_ldap.html#server-tab) on the admin manual about how the application is expected to be configured for your needs. On [this page](https://docs.nextcloud.com/server/stable/admin_manual/configuration_user/user_auth_ldap_api.html#configuration-keys) is a list of the configuration keys available for LDAP configuration API as well.
+
+#### Automatic configuration
+
+It is also possible to configure the LDAP application for your LDAP server automatically.
+
+First, add the following configuration for Nextcloud to your `vars.yml` file (adapt to your needs):
+
+```yaml
+# Specify the name of a admin group whose members also have administrative privileges on Nextcloud
+# Example: lldap_admin
+nextcloud_ldap_admin_group: ""
+
+# Specify Distinguished Name (DN) of a user who has search privileges in the LDAP directory
+# Example: uid=agent,ou=people,{{ nextcloud_ldap_base }}
+nextcloud_ldap_agent_name: ""
+
+# Specify the base DN of LDAP, from where all users and groups can be reached
+# Example: dc=example,dc=com
+nextcloud_ldap_base: ""
+
+# Specify the hostname of the LDAP server
+# Example: ldap://mash-lldap
+nextcloud_ldap_host: ""
+
+# Specify the base for users. It defaults to `nextcloud_ldap_base` if not specified
+# Example: ou=people,{{ nextcloud_ldap_base }}
+nextcloud_ldap_base_users: ""
+
+# Specify the base for group. It defaults to `nextcloud_ldap_base` if not specified
+# Example: ou=groups,{{ nextcloud_ldap_base }}
+nextcloud_ldap_base_groups: ""
+```
+
+For other settings, check variables starting with `nextcloud_ldap_*` on [`defaults/main.yml`](../defaults/main.yml) and modify values per your needs and installation.
+
+>[!NOTE]
+>
+> - Only `nextcloud_ldap_host` is mandatory. If your LDAP server requires authentication, it is necessary to specify `nextcloud_ldap_agent_name` as well. Note that search privilege is sufficient for the bind user.
+> - The default values on `defaults/main.yml` are based on documentation at Nextcloud All-in-One repository available at [this page](https://github.com/nextcloud/all-in-one/tree/main/community-containers/lldap), intended for being used to connect to a [LLDAP](https://github.com/lldap/lldap/) server. For details about configuring LLDAP, [its guide](https://github.com/lldap/lldap/blob/main/README.md#general-configuration-guide) is worth reading.
+
+After adding and modifying those variables, you can make use of the command below to run tasks specified on [`tasks/ldap.yml`](../tasks/ldap.yml):
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=set-ldap-config-nextcloud -e agent_password=PASSWORD_OF_BIND_USER_HERE
+```
+
+To `agent_password`, set the password of the bind user (on this case: `agent`).
+
 ### Using the occ command
 
 It is possible to run occ command, Nextcloud's command line interface, by running the `occ-nextcloud` tag, setting the `command` extra variable.

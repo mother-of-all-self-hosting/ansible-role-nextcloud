@@ -40,6 +40,14 @@
     - name: Run mimetype migrations on Nextcloud
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
 
+- name: Perform LDAP configuration tasks for Nextcloud
+  when: nextcloud_enabled | bool
+  tags:
+    - set-ldap-config-nextcloud
+  block:
+    - name: Run LDAP configuration tasks based on Nextcloud AIO stack's default settings
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/ldap.yml"
+
 - name: Perform Collabora Online Development Edition installation tasks for Nextcloud
   when: nextcloud_enabled | bool
   tags:

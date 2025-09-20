@@ -532,6 +532,42 @@ nextcloud_preview_preview_max_y:
 # Specify JPEG quality for preview images. The value is 80, based on the one by the upstream project.
 nextcloud_preview_app_jpeg_quality: 80
 
+# Specify configurations for Nextcloud's LDAP application ("LDAP user and group backend", `user_ldap`)
+#
+# Note they are referred by LDAP configuration tasks defined on tasks/ldap.yml, neither used
+# for environment variables nor for configuration parameters.
+#
+# The values are based on documentation at Nextcloud All-in-One repository
+# available at https://github.com/nextcloud/all-in-one/tree/main/community-containers/lldap,
+# intended for being used to integrate LLDAP. Feel free to modify them per your needs and installation.
+#
+# The LDAP application can also manually configured without using these variables.
+nextcloud_ldap_admin_group: ""
+nextcloud_ldap_agent_name: ""
+nextcloud_ldap_base: ""
+nextcloud_ldap_host: ""
+nextcloud_ldap_port: 3890
+nextcloud_ldap_tls: 0
+nextcloud_ldap_turn_on_password_change: 0
+nextcloud_ldap_base_users: ""
+nextcloud_ldap_email_attribute: mail
+nextcloud_ldap_gid_number: gidNumber
+nextcloud_ldap_login_filter: "(&(|(objectclass=person))(|(uid=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))"
+nextcloud_ldap_login_filter_email: 1
+nextcloud_ldap_login_filter_username: 1
+nextcloud_ldap_user_avatar_rule: default
+nextcloud_ldap_user_display_name: cn
+nextcloud_ldap_user_filter: "(|(objectclass=person))"
+nextcloud_ldap_user_filter_mode: 0
+nextcloud_ldap_user_filter_objectclass: person
+nextcloud_ldap_base_groups: ""
+nextcloud_ldap_group_display_name: cn
+nextcloud_ldap_group_filter: "(&(|(objectclass=groupOfUniqueNames)))"
+nextcloud_ldap_group_filter_mode: 0
+nextcloud_ldap_group_filter_objectclass: groupOfUniqueNames
+nextcloud_ldap_group_member_assoc_attr: uniqueMember
+nextcloud_use_member_of_to_detect_membership: 1
+
 nextcloud_environment_variables_smtp_host: ""
 nextcloud_environment_variables_smtp_port: 587
 

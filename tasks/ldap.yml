@@ -1,0 +1,98 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2024 - 2025 Simon L.
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+# The command for setting up LDAP application: `ansible-playbook -i inventory/hosts setup.yml --tags=set-ldap-config-nextcloud -e agent_password=PASSWORD_OF_BIND_USER_HERE`
+
+- name: Fail if required LDAP settings not defined
+  ansible.builtin.fail:
+    msg: >-
+      You need to define a required configuration setting (`{{ item }}`).
+  when: "lookup('vars', item, default='') | string | length == 0"
+  with_items:
+    - nextcloud_ldap_host
+
+- name: Ensure Nextcloud service is started
+  ansible.builtin.service:
+    name: "{{ nextcloud_identifier }}-server"
+    state: started
+    daemon_reload: true
+  register: nextcloud_start
+
+- name: Wait a while, so that Nextcloud can manage to start
+  ansible.builtin.pause:
+    seconds: 7
+  when: nextcloud_start.changed | bool
+
+- name: Enable "LDAP user and group backend" (`user_ldap`) application
+  ansible.builtin.shell: |
+    docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings app:enable user_ldap
+  failed_when: false
+  register: user_ldap
+
+- name: Run Nextcloud occ command to create an empty LDAP configuration
+  ansible.builtin.shell: |
+    docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ ldap:create-empty-config -p
+  failed_when: false
+  register: nextcloud_ldap_config_creation_result
+
+- name: Set a fact for the configuration ID
+  ansible.builtin.set_fact:
+    nextcloud_ldap_configid: "{{ nextcloud_ldap_config_creation_result.stdout }}"
+
+- name: Set a fact for the command to run `ldap:set-config`
+  ansible.builtin.set_fact:
+    nextcloud_ldap_set_config: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ ldap:set-config {{ nextcloud_ldap_configid }}"
+
+- name: Run Nextcloud `ldap:set-config` command to set the LDAP agent password
+  ansible.builtin.shell: |
+    {{ nextcloud_ldap_set_config }} ldapAgentPassword {{ agent_password }}
+  no_log: true # Hide raw password
+
+- name: Run Nextcloud `ldap:set-config` commands to set the LDAP configuration
+  # See https://github.com/nextcloud/all-in-one/tree/main/community-containers/lldap
+  ansible.builtin.shell: |
+    {{ nextcloud_ldap_set_config }} ldapAdminGroup                {{ nextcloud_ldap_admin_group }}
+    {{ nextcloud_ldap_set_config }} ldapAgentName                "{{ nextcloud_ldap_agent_name }}"
+    {{ nextcloud_ldap_set_config }} ldapBase                     "{{ nextcloud_ldap_base }}"
+    {{ nextcloud_ldap_set_config }} ldapHost                     "{{ nextcloud_ldap_host }}"
+    {{ nextcloud_ldap_set_config }} ldapPort                      {{ nextcloud_ldap_port }}
+    {{ nextcloud_ldap_set_config }} ldapTLS                       {{ nextcloud_ldap_tls }}
+    {{ nextcloud_ldap_set_config }} turnOnPasswordChange          {{ nextcloud_ldap_turn_on_password_change }}
+    {{ nextcloud_ldap_set_config }} ldapBaseUsers                "{{ nextcloud_ldap_base_users }}"
+    {{ nextcloud_ldap_set_config }} ldapEmailAttribute            {{ nextcloud_ldap_email_attribute }}
+    {{ nextcloud_ldap_set_config }} ldapGidNumber                 {{ nextcloud_ldap_gid_number }}
+    {{ nextcloud_ldap_set_config }} ldapLoginFilter              "{{ nextcloud_ldap_login_filter }}"
+    {{ nextcloud_ldap_set_config }} ldapLoginFilterEmail          {{ nextcloud_ldap_login_filter_email }}
+    {{ nextcloud_ldap_set_config }} ldapLoginFilterUsername       {{ nextcloud_ldap_login_filter_username }}
+    {{ nextcloud_ldap_set_config }} ldapUserAvatarRule            {{ nextcloud_ldap_user_avatar_rule }}
+    {{ nextcloud_ldap_set_config }} ldapUserDisplayName           {{ nextcloud_ldap_user_display_name }}
+    {{ nextcloud_ldap_set_config }} ldapUserFilter               "{{ nextcloud_ldap_user_filter }}"
+    {{ nextcloud_ldap_set_config }} ldapUserFilterMode            {{ nextcloud_ldap_user_filter_mode }}
+    {{ nextcloud_ldap_set_config }} ldapUserFilterObjectclass     {{ nextcloud_ldap_user_filter_objectclass }}
+    {{ nextcloud_ldap_set_config }} ldapBaseGroups               "{{ nextcloud_ldap_base_groups }}"
+    {{ nextcloud_ldap_set_config }} ldapGroupDisplayName          {{ nextcloud_ldap_group_display_name }}
+    {{ nextcloud_ldap_set_config }} ldapGroupFilter              "{{ nextcloud_ldap_group_filter }}"
+    {{ nextcloud_ldap_set_config }} ldapGroupFilterMode           {{ nextcloud_ldap_group_filter_mode }}
+    {{ nextcloud_ldap_set_config }} ldapGroupFilterObjectclass    {{ nextcloud_ldap_group_filter_objectclass }}
+    {{ nextcloud_ldap_set_config }} ldapGroupMemberAssocAttr      {{ nextcloud_ldap_group_member_assoc_attr }}
+    {{ nextcloud_ldap_set_config }} useMemberOfToDetectMembership {{ nextcloud_use_member_of_to_detect_membership }}
+  failed_when: false
+
+- name: Run Nextcloud `ldap:test-config` command to test the LDAP configuration
+  ansible.builtin.shell: |
+    docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ ldap:test-config {{ nextcloud_ldap_configid }}
+  register: nextcloud_ldap_config_test_result
+
+- name: Fail if the Nextcloud LDAP configuration test failed
+  ansible.builtin.fail:
+    msg: Configuration test failed.
+  when: nextcloud_ldap_config_test_result.rc != 0
+
+- name: Run Nextcloud `ldap:set-config` command to activate the LDAP configuration if the test passed
+  ansible.builtin.shell: |
+    {{ nextcloud_ldap_set_config }} ldapConfigurationActive 1
+  when: nextcloud_ldap_config_test_result.rc == 0
