@@ -544,6 +544,7 @@ nextcloud_preview_app_jpeg_quality: 80
 # The LDAP application can also manually configured without using these variables.
 nextcloud_ldap_admin_group: ""
 nextcloud_ldap_agent_name: ""
+nextcloud_ldap_agent_name_uid: ""
 nextcloud_ldap_base: ""
 nextcloud_ldap_host: ""
 nextcloud_ldap_port: 3890
