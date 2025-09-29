@@ -488,12 +488,10 @@ nextcloud_database_mysql_hostname: ""
 nextcloud_database_mysql_port: 3306
 nextcloud_database_mysql_username: nextcloud
 nextcloud_database_mysql_password: ""
-
-nextcloud_database_hostname: ""
-nextcloud_database_port: 5432
-nextcloud_database_username: nextcloud
-nextcloud_database_password: ""
-
+nextcloud_database_postgres_hostname: ""
+nextcloud_database_postgres_port: 5432
+nextcloud_database_postgres_username: nextcloud
+nextcloud_database_postgres_password: ""
 nextcloud_database_name: nextcloud
 
 # Redis integration.
