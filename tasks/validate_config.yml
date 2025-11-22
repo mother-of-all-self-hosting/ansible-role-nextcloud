@@ -98,6 +98,18 @@
     - nextcloud_environment_variables_mail_from_address
     - nextcloud_environment_variables_mail_domain
 
+- name: Run if Preview Generator is enabled
+  when: nextcloud_preview_enabled | bool
+  block:
+    - name: Fail if Preview Generator settings required for Nextcloud are not defined
+      ansible.builtin.fail:
+        msg: >-
+          You need to define a required configuration setting (`{{ item }}`).
+      when: "lookup('vars', item, default='') | string | length == 0"
+      with_items:
+        - nextcloud_preview_preview_max_x
+        - nextcloud_preview_preview_max_y
+
 - name: Run if Traefik is enabled
   when: nextcloud_container_labels_traefik_enabled | bool
   block:
