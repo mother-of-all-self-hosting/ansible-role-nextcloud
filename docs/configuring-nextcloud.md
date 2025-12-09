@@ -11,10 +11,13 @@ SPDX-FileCopyrightText: 2022 Warren Bailey
 SPDX-FileCopyrightText: 2023 - 2024 MASH project contributors
 SPDX-FileCopyrightText: 2023 Antonis Christofides
 SPDX-FileCopyrightText: 2023 Felix Stupp
-SPDX-FileCopyrightText: 2023 Gergely Horváth
+SPDX-FileCopyrightText: 2023 - 2024 Gergely Horváth
+SPDX-FileCopyrightText: 2023 Julian-Samuel Gebühr
+SPDX-FileCopyrightText: 2023 Niels Bouma
 SPDX-FileCopyrightText: 2023 Pierre 'McFly' Marty
 SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
 SPDX-FileCopyrightText: 2024 Philipp Homann
+SPDX-FileCopyrightText: 2025 IUCCA
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
@@ -87,6 +90,31 @@ For other settings, check variables such as `nextcloud_database_mysql_*` and `ne
 
 >[!NOTE]
 > It is possible to convert a SQLite database to a MySQL, MariaDB or PostgreSQL database with the Nextcloud command line tool. See [this page](docs.nextcloud.com/server/latest/admin_manual/configuration_database/db_conversion.html) on the documentation for details.
+
+### Adjusting Traefik configuration for long-running uploads (optional; recommended)
+
+We recommend **adjusting your Traefik configuration** to allow long-running uploads (which may be necessary for uploading large files over slow connections to Nextcloud).
+
+```yml
+########################################################################
+#                                                                      #
+# traefik                                                              #
+#                                                                      #
+########################################################################
+
+# Your regular Traefik configuration here.
+
+# Increase some timeouts to allow for longer image uploads for Nextcloud.
+traefik_config_entrypoint_web_transport_respondingTimeouts_readTimeout: 1800s
+traefik_config_entrypoint_web_transport_respondingTimeouts_writeTimeout: 1800s
+traefik_config_entrypoint_web_transport_respondingTimeouts_idleTimeout: 1800s
+
+########################################################################
+#                                                                      #
+# /traefik                                                             #
+#                                                                      #
+########################################################################
+```
 
 ### Editing default configuration parameters (optional)
 
