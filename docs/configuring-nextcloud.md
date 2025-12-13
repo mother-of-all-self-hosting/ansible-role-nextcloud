@@ -270,10 +270,11 @@ If you use the MASH playbook, the shortcut commands with the [`just` program](ht
 ## Usage
 
 After running the command for installation, the Nextcloud instance becomes available at the URL specified with `nextcloud_hostname` and `nextcloud_path_prefix`. With the configuration above, the service is hosted at `https://example.com`.
+To complete the setup, visit the instance in your browser, choose the credentials for the admin account and confirm the installation.
 
 ### Update configuration
 
-Before logging in to the instance, update the configuration (URL paths, trusted reverse-proxies, etc.) by running the command below:
+After finalizing the installation, update the configuration (URL paths, trusted reverse-proxies, etc.) by running the command below:
 
 ```sh
 ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
