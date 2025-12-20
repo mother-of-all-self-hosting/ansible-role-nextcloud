@@ -254,12 +254,15 @@ nextcloud_container_labels_traefik_http_middlewares_custom: []
 
 # nextcloud_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
 # See `../templates/labels.j2` for details.
+# To add your own custom labels, use `nextcloud_container_labels_additional_labels_custom`
 #
 # Example:
-# nextcloud_container_labels_additional_labels: |
+# nextcloud_container_labels_additional_labels_custom: |
 #   my.label=1
 #   another.label="here"
-nextcloud_container_labels_additional_labels: ""
+nextcloud_container_labels_additional_labels: "{{ nextcloud_container_labels_additional_labels_auto | combine(nextcloud_container_labels_additional_labels_custom) }}"
+nextcloud_container_labels_additional_labels_auto: {}
+nextcloud_container_labels_additional_labels_custom: {}
 
 # A list of extra arguments to pass to the container (`docker run` command)
 nextcloud_container_extra_arguments: "{{ nextcloud_container_extra_arguments_auto + nextcloud_container_extra_arguments_custom }}"
