@@ -567,6 +567,9 @@ nextcloud_ldap_group_filter_objectclass: groupOfUniqueNames
 nextcloud_ldap_group_member_assoc_attr: uniqueMember
 nextcloud_use_member_of_to_detect_membership: 1
 
+# Specify the timezone
+nextcloud_environment_variables_tz: UTC
+
 nextcloud_environment_variables_smtp_host: ""
 nextcloud_environment_variables_smtp_port: 587
 
