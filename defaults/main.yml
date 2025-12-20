@@ -262,7 +262,9 @@ nextcloud_container_labels_traefik_http_middlewares_custom: []
 nextcloud_container_labels_additional_labels: ""
 
 # A list of extra arguments to pass to the container (`docker run` command)
-nextcloud_container_extra_arguments: []
+nextcloud_container_extra_arguments: "{{ nextcloud_container_extra_arguments_auto + nextcloud_container_extra_arguments_custom }}"
+nextcloud_container_extra_arguments_auto: []
+nextcloud_container_extra_arguments_custom: []
 
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
