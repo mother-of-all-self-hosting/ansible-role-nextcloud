@@ -264,7 +264,7 @@ nextcloud_container_labels_additional_labels: "{{ nextcloud_container_labels_add
 nextcloud_container_labels_additional_labels_auto: {}
 nextcloud_container_labels_additional_labels_custom: {}
 
-# A list of extra arguments to pass to the container (`docker run` command)
+# A list of extra arguments to pass to the container (`docker create` command)
 nextcloud_container_extra_arguments: "{{ nextcloud_container_extra_arguments_auto + nextcloud_container_extra_arguments_custom }}"
 nextcloud_container_extra_arguments_auto: []
 nextcloud_container_extra_arguments_custom: []
