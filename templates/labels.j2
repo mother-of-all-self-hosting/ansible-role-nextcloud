@@ -36,4 +36,6 @@ traefik.http.routers.{{ nextcloud_identifier }}.tls.certResolver={{ nextcloud_co
 traefik.http.services.{{ nextcloud_identifier }}.loadbalancer.server.port={{ nextcloud_container_http_port }}
 {% endif %}
 
-{{ nextcloud_container_labels_additional_labels }}
+{% for arg in nextcloud_container_labels_additional_labels %}
+{{ arg }}
+{% endfor %}
