@@ -31,11 +31,10 @@
     cmd: |-
       docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ db:add-missing-indices
 
-- name: Disable AppAPI application
-  when: not nextcloud_app_app_api_enabled | bool
+- name: Adjust AppAPI application
   ansible.builtin.command:
     cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ app:disable app_api
+      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ app:"{{ 'enable' if nextcloud_app_app_api_enabled else 'disable' }}" app_api
 
 - name: Run mimetype migrations on Nextcloud
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
