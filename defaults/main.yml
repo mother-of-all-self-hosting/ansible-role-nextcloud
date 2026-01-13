@@ -485,6 +485,9 @@ nextcloud_app_autoupdate_schedule: "*-*-* 00:00:00"
 nextcloud_app_collabora_wopi_url: ""
 nextcloud_app_collabora_wopi_allowlist: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16"
 
+# Enable AppAPI application to install External Apps (Ex-Apps)
+nextcloud_app_app_api_enabled: false
+
 # Specify database to use
 # Valid values: mysql, postgres, sqlite
 nextcloud_database_type: postgres
