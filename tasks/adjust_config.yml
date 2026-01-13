@@ -33,7 +33,7 @@
 
 - name: Disable AppAPI application
   when: not nextcloud_app_app_api_enabled | bool
-  nsible.builtin.command:
+  ansible.builtin.command:
     cmd: |-
       docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ app:disable app_api
 
