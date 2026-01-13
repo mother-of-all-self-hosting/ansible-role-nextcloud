@@ -35,6 +35,8 @@
   ansible.builtin.command:
     cmd: |-
       docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ app:"{{ 'enable' if nextcloud_app_app_api_enabled else 'disable' }}" app_api
+  register: nextcloud_app_app_api_enabled_result
+  changed_when: "'.' in nextcloud_app_api_enabled_result.stdout"
 
 - name: Run mimetype migrations on Nextcloud
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
