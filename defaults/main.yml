@@ -112,7 +112,7 @@ nextcloud_customized_container_src_path: "{{ nextcloud_base_path }}/customized-c
 
 # Controls whether the nextcloud-apache container exposes its HTTP port (tcp/80 in the container).
 #
-# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:37150"), or empty string to not expose.
+# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
 nextcloud_container_http_host_bind_port: ""
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
