@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2023 Gergely Horváth
 # SPDX-FileCopyrightText: 2023 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2024 MASH project contributors
+# SPDX-FileCopyrightText: 2026 Timofej Luitle
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -29,6 +30,13 @@
   ansible.builtin.command:
     cmd: |-
       docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ db:add-missing-indices
+
+- name: Configure AppAPI installation
+  ansible.builtin.command:
+    cmd: |-
+      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ app:"{{ 'enable' if nextcloud_app_app_api_enabled else 'disable' }}" app_api
+  register: nextcloud_app_app_api_enabled_result
+  changed_when: "'.' in nextcloud_app_app_api_enabled_result.stdout"
 
 - name: Run mimetype migrations on Nextcloud
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
