@@ -15,6 +15,7 @@ nextcloud_enabled: true
 
 nextcloud_identifier: nextcloud
 nextcloud_base_path: "/{{ nextcloud_identifier }}"
+nextcloud_customized_container_src_path: "{{ nextcloud_base_path }}/customized-container-src"
 nextcloud_data_path: "{{ nextcloud_base_path }}/data"
 nextcloud_redis_session_ini_path: "{{ nextcloud_base_path }}/redis-session.ini"
 
@@ -107,8 +108,6 @@ nextcloud_container_image_customized: "localhost/nextcloud:{{ nextcloud_containe
 
 # nextcloud_container_image_final holds the name of the Nextcloud image to run depending on whether or not customizations are enabled.
 nextcloud_container_image_final: "{{ nextcloud_container_image_customized if nextcloud_container_image_customizations_enabled | bool else nextcloud_container_image }}"
-
-nextcloud_customized_container_src_path: "{{ nextcloud_base_path }}/customized-container-src"
 
 # Controls whether the nextcloud-apache container exposes its HTTP port (tcp/80 in the container).
 #
