@@ -25,7 +25,7 @@ nextcloud_version: 32.0.5
 nextcloud_uid: ""
 nextcloud_gid: ""
 
-# Specify URI scheme
+# The scheme used for serving Nextcloud.
 nextcloud_scheme: https
 
 # The hostname at which Nextcloud is served.
