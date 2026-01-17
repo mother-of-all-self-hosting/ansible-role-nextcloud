@@ -109,7 +109,7 @@ nextcloud_container_image_customized: "localhost/nextcloud:{{ nextcloud_containe
 # nextcloud_container_image_final holds the name of the Nextcloud image to run depending on whether or not customizations are enabled.
 nextcloud_container_image_final: "{{ nextcloud_container_image_customized if nextcloud_container_image_customizations_enabled | bool else nextcloud_container_image }}"
 
-# Controls whether the nextcloud-apache container exposes its HTTP port (tcp/80 in the container).
+# Specify how the container publishes its HTTP port (as defined by `nextcloud_container_http_port`).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
 nextcloud_container_http_host_bind_port: ""
