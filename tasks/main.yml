@@ -46,7 +46,7 @@
   tags:
     - configure-oidc-provider-nextcloud
   block:
-    - name: Configure OIDC Provider app with defined OIDC clients 
+    - name: Configure OIDC Provider app with defined OIDC clients
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/oidc.yml"
 
 - name: Perform LDAP configuration tasks for Nextcloud

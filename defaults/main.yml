@@ -546,9 +546,9 @@ nextcloud_preview_app_jpeg_quality: 80
 
 # OIDC Provider configuration
 #
-# Used by tasks/oidc.yml to provide OpenID Connect authentication via the OIDC Provider app 
+# Used by tasks/oidc.yml to provide OpenID Connect authentication via the OIDC Provider app
 # Find its documentation at https://github.com/H2CK/oidc/wiki/User-Documentation
-# Configure each OIDC client via its respective role variables, respecting naming convention. 
+# Configure each OIDC client via its respective role variables, respecting naming convention.
 #
 # Specify a list of which mash services will connect as OIDC clients, e.g. [forgejo, mobilizon].
 nextcloud_oidc_clients_list: []
