@@ -1,0 +1,144 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2026 Timofej Luitle
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Configure OIDC Provider app
+  block:
+    - name: Enable OIDC Provider app
+      ansible.builtin.command:
+        cmd: |-
+          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ app:enable oidc
+      register: nextcloud_app_oidc_enabled_result
+      changed_when: "'.' in nextcloud_app_oidc_enabled_result.stdout"
+
+    - name: Configure defined scope claims
+      ansible.builtin.command:
+        cmd: |-
+          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ config:app:set oidc {{ item }} --value "{{ nextcloud_oidc_claim_value }}"
+      vars:
+        nextcloud_oidc_claim_value: "{{ lookup('vars', 'nextcloud_oidc_' + item, default='gid') }}"
+      register: nextcloud_oidc_claim_value_result
+      changed_when: nextcloud_oidc_claim_value_result.stdout != "Config value were not updated"
+      loop:
+        - group_claim_value
+        - role_claim_value
+
+- name: Fail if required variables not defined for OIDC clients
+  when:
+    - lookup('vars', item[0] + '_oidc_client_enabled') | bool
+    - lookup('vars', var_name, default='') == ''
+  ansible.builtin.fail:
+    msg: >-
+      You need to define a required configuration setting (`{{ var_name }}`).
+  vars:
+    var_name: "{{ item[0] + '_oidc_' + item[1] }}"
+  loop: "{{ nextcloud_oidc_clients_list | product(['client_name', 'redirect_uris']) | list }}"
+
+- name: Check registered OIDC clients against defined client_id
+  block:
+    - name: List configured OIDC clients
+      ansible.builtin.shell: |
+        docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:list
+      register: nextcloud_oidc_clients_result
+      changed_when: false
+
+    - name: Inspect installed OIDC clients
+      ansible.builtin.set_fact:
+        nextcloud_oidc_clients_{{ item }}: '{{ nextcloud_oidc_clients | json_query(nextcloud_oidc_clients_query) }}'
+      vars:
+        nextcloud_oidc_clients       : "{{ nextcloud_oidc_clients_result.stdout | from_json }}"
+        nextcloud_oidc_clients_query : "[?client_id==`{{ lookup('vars', item + '_oidc_client_id') }}`] | [0]"
+      loop: "{{ nextcloud_oidc_clients_list }}"
+
+- name: Verify installed OIDC clients
+  when:
+    - lookup('vars', item + '_oidc_client_enabled') | bool
+    - client_conf                      != ""
+    - client_conf_redirect_uris_spaces == "0"
+    - client_conf_redirect_uris        == lookup('vars', item + '_oidc_redirect_uris') | default(false)
+    - client_conf.name                 == lookup('vars', item + '_oidc_client_name')   | default(false)
+    - client_conf.jwt_alg              == lookup('vars', item + '_oidc_algorithm')     | default(false)
+    - client_conf.flow_type            == lookup('vars', item + '_oidc_flow')          | default(false)
+    - client_conf.type                 == lookup('vars', item + '_oidc_type')          | default(false)
+    - client_conf.token_type           == lookup('vars', item + '_oidc_token_type')    | default(false)
+    - client_conf.allowed_scopes       == lookup('vars', item + '_oidc_scopes')        | default(false)
+    - client_conf.email_regex          == lookup('vars', item + '_oidc_email_regex')   | default(false)
+    - client_conf.client_secret        == lookup('vars', item + '_oidc_client_secret') | default(false)
+    - client_conf.resource_url         == lookup('vars', item + '_oidc_resource_url')  | default(false)
+  ansible.builtin.set_fact:
+    "{{ item }}_oidc_client_verified" : true
+  vars:
+    client_conf                       : "{{ lookup('vars', 'nextcloud_oidc_clients_' + item) }}"
+    client_conf_redirect_uris_spaces  : "{{ client_conf.redirect_uris | join('') | regex_findall(' ') | length }}"
+    client_conf_redirect_uris         : "{{ client_conf.redirect_uris | join(' ') }}"
+  loop: "{{ nextcloud_oidc_clients_list }}"
+
+- name: Remove incorrect OIDC clients
+  block:
+    - name: Remove disabled or misconfigured OIDC client
+      when:
+        - lookup('vars', item + '_oidc_client_id')         != ''
+        - lookup('vars', 'nextcloud_oidc_clients_' + item) != ''
+        - not lookup('vars', item + '_oidc_client_enabled', default=false) or not lookup('vars', item + '_oidc_client_verified', default=false)
+      ansible.builtin.shell: |
+        docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:remove \
+          "{{ lookup('vars', item + '_oidc_client_id') }}"
+      register: nextcloud_oidc_remove_clients_result
+      changed_when: nextcloud_oidc_remove_clients_result.rc == 0
+      loop: "{{ nextcloud_oidc_clients_list }}"
+
+    - name: Register removal of OIDC client
+      when: nextcloud_oidc_remove_client_rc == "0"
+      ansible.builtin.set_fact:
+        nextcloud_oidc_clients_{{ item }}  : ""
+      vars:
+        nextcloud_oidc_remove_client_rc    : "{{ nextcloud_oidc_remove_clients_result | json_query(nextcloud_oidc_remove_client_query) }}"
+        nextcloud_oidc_remove_client_query : 'results[?item==`{{ item }}`].rc | [0]'
+      loop: "{{ nextcloud_oidc_clients_list }}"
+
+    - name: Discover OIDC clients with the same name
+      ansible.builtin.set_fact:
+        nextcloud_oidc_homonyms_{{ item }}: '{{ nextcloud_oidc_clients | json_query(nextcloud_oidc_homonyms_query) }}'
+      vars:
+        nextcloud_oidc_clients        : "{{ nextcloud_oidc_clients_result.stdout | from_json }}"
+        nextcloud_oidc_homonyms_query : "[?name==`{{ lookup('vars', item + '_oidc_client_name') }}` && client_id!=`{{ lookup('vars', item + '_oidc_client_id') }}`].client_id"
+      loop: "{{ nextcloud_oidc_clients_list }}"
+
+    - name: Remove homonymous OIDC clients with deviant client_id
+      when: lookup('vars', 'nextcloud_oidc_homonyms_' + item) | length > 0
+      ansible.builtin.shell: |
+        {% for homonym_client_id in homonyms_list %}
+        {% if homonym_client_id != defined_client_id %}
+        docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:remove \
+          "{{ homonym_client_id }}"
+        {% endif %}
+        {% endfor %}
+      vars:
+        homonyms_list: "{{ lookup('vars', 'nextcloud_oidc_homonyms_' + item) }}"
+        defined_client_id: "{{ lookup('vars', item + '_oidc_client_id') }}"
+      register: nextcloud_oidc_remove_homonyms_result
+      changed_when: nextcloud_oidc_remove_homonyms_result.rc == 0
+      loop: "{{ nextcloud_oidc_clients_list }}"
+
+- name: Install correct OIDC clients
+  when:
+    - lookup('vars', item + '_oidc_client_enabled') | bool
+    - lookup('vars', 'nextcloud_oidc_clients_' + item) == ""
+  ansible.builtin.shell: |
+    docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:create \
+      --algorithm="{{ lookup('vars', item + '_oidc_algorithm') }}" \
+      --flow="{{ lookup('vars', item + '_oidc_flow') }}" \
+      --type="{{ lookup('vars', item + '_oidc_type') }}" \
+      --token_type="{{ lookup('vars', item + '_oidc_token_type') }}" \
+      --allowed_scopes="{{ lookup('vars', item + '_oidc_scopes') }}" \
+      --email_regex="{{ lookup('vars', item + '_oidc_email_regex') }}" \
+      --client_id="{{ lookup('vars', item + '_oidc_client_id') }}" \
+      --client_secret="{{ lookup('vars', item + '_oidc_client_secret') }}" \
+      --resource_url="{{ lookup('vars', item + '_oidc_resource_url') }}" \
+      "{{ lookup('vars', item + '_oidc_client_name') }}" \
+      {{ lookup('vars', item + '_oidc_redirect_uris') }}
+  register: nextcloud_oidc_create_clients_result
+  changed_when: nextcloud_oidc_create_clients_result.rc == 0
+  loop: "{{ nextcloud_oidc_clients_list }}"

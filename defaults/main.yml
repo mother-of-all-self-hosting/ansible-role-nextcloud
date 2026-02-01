@@ -544,6 +544,18 @@ nextcloud_preview_preview_max_y:
 # Specify JPEG quality for preview images. The value is 80, based on the one by the upstream project.
 nextcloud_preview_app_jpeg_quality: 80
 
+# OIDC Provider configuration
+#
+# Used by tasks/oidc.yml to provide OpenID Connect authentication via the OIDC Provider app 
+# Find its documentation at https://github.com/H2CK/oidc/wiki/User-Documentation
+# Configure each OIDC client via its respective role variables, respecting naming convention. 
+#
+# Specify a list of which mash services will connect as OIDC clients, e.g. [forgejo, mobilizon].
+nextcloud_oidc_clients_list: []
+# Define whether the groups/roles claims provide GIDs or displaynames ("gid" or "displayname").
+nextcloud_oidc_group_claim_type: "gid"
+nextcloud_oidc_role_claim_type: "gid"
+
 # Specify configurations for Nextcloud's LDAP application ("LDAP user and group backend", `user_ldap`)
 #
 # Note they are referred by LDAP configuration tasks defined on tasks/ldap.yml, neither used
