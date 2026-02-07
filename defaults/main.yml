@@ -121,7 +121,8 @@ nextcloud_container_http_host_bind_port: ""
 nextcloud_container_http_port: 80
 
 # A list of additional container networks that the container would be connected to.
-# The playbook does not create these networks, so make sure they already exist.
+# The role does not create these networks, so make sure they already exist.
+# Use this to expose this container to another reverse proxy, which runs in a different container network.
 nextcloud_container_additional_networks: "{{ nextcloud_container_additional_networks_auto + nextcloud_container_additional_networks_custom }}"
 nextcloud_container_additional_networks_auto: []
 nextcloud_container_additional_networks_custom: []
