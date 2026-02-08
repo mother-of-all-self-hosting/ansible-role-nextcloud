@@ -6,3 +6,7 @@
 nextcloud_url: "{{ nextcloud_scheme }}://{{ nextcloud_hostname }}{{ nextcloud_path_prefix }}"
 
 nextcloud_redis_is_configured: "{{ nextcloud_redis_hostname != '' }}"
+
+nextcloud_config_dbpassword: "{{ ({'postgres': nextcloud_database_postgres_password, 'mysql': nextcloud_database_mysql_password})[nextcloud_database_type] }}"
+nextcloud_config_dbhost: "{{ ({'postgres': (nextcloud_database_postgres_hostname ~ ':' ~ nextcloud_database_postgres_port), 'mysql': (nextcloud_database_mysql_hostname ~ ':' ~ nextcloud_database_mysql_port)})[nextcloud_database_type] }}"
+nextcloud_config_dbname: "{{ nextcloud_database_name }}"

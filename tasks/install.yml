@@ -40,6 +40,29 @@
     - env
     - labels
 
+- name: Check if Nextcloud config.php exists
+  ansible.builtin.stat:
+    path: "{{ nextcloud_data_path }}/config/config.php"
+  register: nextcloud_config_php_stat
+
+- name: Ensure Nextcloud config.php database settings are up-to-date
+  when: "nextcloud_config_php_stat.stat.exists and nextcloud_database_type != 'sqlite'"
+  ansible.builtin.lineinfile:
+    path: "{{ nextcloud_data_path }}/config/config.php"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  no_log: "{{ item.no_log }}"
+  with_items:
+    - regexp: "^\\s*'dbpassword'\\s*=>"
+      line: "  'dbpassword' => '{{ nextcloud_config_dbpassword }}',"
+      no_log: true
+    - regexp: "^\\s*'dbhost'\\s*=>"
+      line: "  'dbhost' => '{{ nextcloud_config_dbhost }}',"
+      no_log: false
+    - regexp: "^\\s*'dbname'\\s*=>"
+      line: "  'dbname' => '{{ nextcloud_config_dbname }}',"
+      no_log: false
+
 - name: Ensure Nextcloud Preview Generator files are present
   when: "nextcloud_preview_enabled | bool"
   ansible.builtin.template:
