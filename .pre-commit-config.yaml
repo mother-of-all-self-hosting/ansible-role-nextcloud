@@ -22,7 +22,9 @@ repos:
     rev: v0.47.0
     hooks:
       - id: markdownlint
-        args: [--disable=MD013]  # https://github.com/DavidAnson/markdownlint/blob/main/doc/md013.md
+        args:
+          - --disable=MD013 # https://github.com/DavidAnson/markdownlint/blob/main/doc/md013.md
+          - --disable=MD028 # https://github.com/DavidAnson/markdownlint/blob/main/doc/md028.md
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:

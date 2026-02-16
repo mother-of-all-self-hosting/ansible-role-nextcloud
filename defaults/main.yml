@@ -494,6 +494,18 @@ nextcloud_app_collabora_wopi_allowlist: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/
 # Enable AppAPI application to install External Apps (Ex-Apps)
 nextcloud_app_app_api_enabled: false
 
+# Enable OIDC Provider App for Nextcloud
+# This application allows to use your Nextcloud Login at other services supporting OpenID Connect.
+nextcloud_app_oidc_enable: false
+# Define whether the groups/roles claims provide GIDs or displaynames ("gid" or "displayname").
+nextcloud_oidc_group_claim_type: "gid"
+nextcloud_oidc_role_claim_type: "gid"
+# Specify which mash roles will connect as OIDC clients, e.g. [forgejo, mobilizon].
+# Configure each OIDC client via its respective role, respecting variable naming convention.
+nextcloud_oidc_clientsa_auto: {}
+nextcloud_oidc_clients_custom: {}
+nextcloud_oidc_clients: "{{ nextcloud_oidc_clientsa_auto | combine(nextcloud_oidc_clients_custom, recursive=true) }}"
+
 # Specify database to use
 # Valid values: mysql, postgres, sqlite
 nextcloud_database_type: postgres
