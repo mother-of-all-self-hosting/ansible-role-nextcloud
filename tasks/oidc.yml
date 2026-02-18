@@ -3,6 +3,18 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
+- name: Ensure Nextcloud service is started
+  ansible.builtin.service:
+    name: "{{ nextcloud_identifier }}-server"
+    state: started
+    daemon_reload: true
+  register: nextcloud_start
+
+- name: Wait a while, so that Nextcloud can manage to start
+  ansible.builtin.pause:
+    seconds: 7
+  when: nextcloud_start.changed | bool
+
 - name: Configure OIDC Provider app
   block:
     - name: Ensure OIDC Provider app is installed
