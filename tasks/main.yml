@@ -42,7 +42,7 @@
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
 
 - name: Perform OIDC configuration task for Nextcloud OIDC Provider app
-  when: nextcloud_enabled | bool
+  when: nextcloud_enabled | bool and nextcloud_app_oidc_enabled | bool
   tags:
     - configure-oidc-provider-nextcloud
   block:

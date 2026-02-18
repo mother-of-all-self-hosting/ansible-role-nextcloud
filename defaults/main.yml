@@ -494,17 +494,19 @@ nextcloud_app_collabora_wopi_allowlist: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/
 # Enable AppAPI application to install External Apps (Ex-Apps)
 nextcloud_app_app_api_enabled: false
 
-# Enable OIDC Provider App for Nextcloud
-# This application allows to use your Nextcloud Login at other services supporting OpenID Connect.
-nextcloud_app_oidc_enable: false
+# Enable the OIDC Provider App for Nextcloud (https://github.com/H2CK/oidc).
+# This application allows using your Nextcloud login at other services supporting OpenID Connect.
+# See docs/configuring-oidc-provider.md for usage instructions.
+nextcloud_app_oidc_enabled: false
 # Define whether the groups/roles claims provide GIDs or displaynames ("gid" or "displayname").
 nextcloud_oidc_group_claim_type: "gid"
 nextcloud_oidc_role_claim_type: "gid"
-# Specify which mash roles will connect as OIDC clients, e.g. [forgejo, mobilizon].
-# Configure each OIDC client via its respective role, respecting variable naming convention.
-nextcloud_oidc_clientsa_auto: {}
+# A dictionary of OIDC clients to configure.
+# To add your own, use `nextcloud_oidc_clients_custom`.
+# See docs/configuring-oidc-provider.md for the full list of supported options per client.
+nextcloud_oidc_clients_auto: {}
 nextcloud_oidc_clients_custom: {}
-nextcloud_oidc_clients: "{{ nextcloud_oidc_clientsa_auto | combine(nextcloud_oidc_clients_custom, recursive=true) }}"
+nextcloud_oidc_clients: "{{ nextcloud_oidc_clients_auto | combine(nextcloud_oidc_clients_custom, recursive=true) }}"
 
 # Specify database to use
 # Valid values: mysql, postgres, sqlite
@@ -555,18 +557,6 @@ nextcloud_preview_preview_max_y:
 
 # Specify JPEG quality for preview images. The value is 80, based on the one by the upstream project.
 nextcloud_preview_app_jpeg_quality: 80
-
-# OIDC Provider configuration
-#
-# Used by tasks/oidc.yml to provide OpenID Connect authentication via the OIDC Provider app
-# Find its documentation at https://github.com/H2CK/oidc/wiki/User-Documentation
-# Configure each OIDC client via its respective role variables, respecting naming convention.
-#
-# Specify a list of which mash services will connect as OIDC clients, e.g. [forgejo, mobilizon].
-nextcloud_oidc_clients_list: []
-# Define whether the groups/roles claims provide GIDs or displaynames ("gid" or "displayname").
-nextcloud_oidc_group_claim_type: "gid"
-nextcloud_oidc_role_claim_type: "gid"
 
 # Specify configurations for Nextcloud's LDAP application ("LDAP user and group backend", `user_ldap`)
 #

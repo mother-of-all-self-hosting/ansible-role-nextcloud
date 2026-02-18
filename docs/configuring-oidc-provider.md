@@ -12,7 +12,13 @@ The `oidc.yml` task provided in this role will request a list of all installed O
 
 ## Basic usage
 
-To configure an OIDC client for a service, add an entry to the `nextcloud_oidc_clients` dictionary:
+First, enable the OIDC Provider app:
+
+```yml
+nextcloud_app_oidc_enabled: true
+```
+
+Then, add an entry to the `nextcloud_oidc_clients` dictionary for each service you want to configure as an OIDC client:
 
 ```yml
 nextcloud_oidc_clients:

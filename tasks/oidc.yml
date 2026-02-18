@@ -1,4 +1,3 @@
-# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2026 Timofej Luitle
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -50,7 +49,7 @@
     - name: Discover OIDC clients with defined client_id
       when: item_conf | length > 0
       ansible.builtin.set_fact:
-        nextcloud_oidc_client_conf       : "{{ nextcloud_oidc_client_conf | default([]) | combine(client_conf) }}"
+        nextcloud_oidc_client_conf       : "{{ nextcloud_oidc_client_conf | default({}) | combine(client_conf) }}"
       vars:
         client_conf                      : "{{ { item: item_conf } }}"
         item_conf                        : "{{ nextcloud_oidc_clients_installed | json_query(nextcloud_oidc_clients_query) }}"
@@ -62,8 +61,8 @@
     - name: Discover OIDC clients with defined client_name and other client_id
       when: item_homonyms | length > 0
       ansible.builtin.set_fact:
-        nextcloud_oidc_homonyms           : "{{ nextcloud_oidc_homonyms           | default([]) | combine(homonyms)           }}"
-        nextcloud_oidc_homonyms_redundant : "{{ nextcloud_oidc_homonyms_redundant | default([]) | combine(homonyms_redundant) }}"
+        nextcloud_oidc_homonyms           : "{{ nextcloud_oidc_homonyms           | default({}) | combine(homonyms)           }}"
+        nextcloud_oidc_homonyms_redundant : "{{ nextcloud_oidc_homonyms_redundant | default({}) | combine(homonyms_redundant) }}"
       vars:
         homonyms                          : "{{ { item: item_homonyms } }}"
         homonyms_redundant                : "{{ { item: item_homonyms } }}"
@@ -79,8 +78,8 @@
         - nextcloud_oidc_client_conf[item] | default('') | length < 1
         - nextcloud_oidc_homonyms[item]    | default([]) | length > 0
       ansible.builtin.set_fact:
-        nextcloud_oidc_client_conf        : "{{ nextcloud_oidc_client_conf        | default([]) | combine(client_conf)        }}"
-        nextcloud_oidc_homonyms_redundant : "{{ nextcloud_oidc_homonyms_redundant | default([]) | combine(homonyms_redundant) }}"
+        nextcloud_oidc_client_conf        : "{{ nextcloud_oidc_client_conf        | default({}) | combine(client_conf)        }}"
+        nextcloud_oidc_homonyms_redundant : "{{ nextcloud_oidc_homonyms_redundant | default({}) | combine(homonyms_redundant) }}"
       vars:
         client_conf                       : "{{ { item: item_conf } }}"
         homonyms_redundant                : "{{ { item: nextcloud_oidc_homonyms[item][:-1] } }}"
@@ -93,8 +92,8 @@
   block:
     - name: Set OIDC client configuration variables
       ansible.builtin.set_fact:
-        nextcloud_oidc_client_vars : "{{ nextcloud_oidc_client_vars | default([]) |   combine(client_vars)  }}"
-        nextcloud_oidc_client_conf : "{{ nextcloud_oidc_client_conf | default([]) |   combine(client_conf)  }}"
+        nextcloud_oidc_client_vars : "{{ nextcloud_oidc_client_vars | default({}) |   combine(client_vars)  }}"
+        nextcloud_oidc_client_conf : "{{ nextcloud_oidc_client_conf | default({}) |   combine(client_conf)  }}"
         nextcloud_oidc_protonyms   : "{{ nextcloud_oidc_protonyms   | default([]) + [ item_vars.client_id ] }}"
       vars:
         client_conf     : "{{ { item: item_conf } }}"
@@ -228,7 +227,7 @@
     - name: Discover OIDC clients with installed client_name
       when: item_inst | length > 0
       ansible.builtin.set_fact:
-        nextcloud_oidc_client_inst: "{{ nextcloud_oidc_client_inst | default([]) | combine(client_inst) }}"
+        nextcloud_oidc_client_inst: "{{ nextcloud_oidc_client_inst | default({}) | combine(client_inst) }}"
       vars:
         client_inst                      : "{{ { item: item_inst } }}"
         item_inst                        : "{{ nextcloud_oidc_clients_installed | json_query(nextcloud_oidc_clients_query) }}"
