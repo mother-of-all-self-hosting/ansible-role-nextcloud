@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2026 Timofej Luitle
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -39,6 +40,14 @@
   block:
     - name: Run mimetype migrations on Nextcloud
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
+
+- name: Perform OIDC configuration task for Nextcloud OIDC Provider app
+  when: nextcloud_enabled | bool and nextcloud_app_oidc_enabled | bool
+  tags:
+    - configure-oidc-provider-nextcloud
+  block:
+    - name: Configure OIDC Provider app with defined OIDC clients
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/oidc.yml"
 
 - name: Perform LDAP configuration tasks for Nextcloud
   when: nextcloud_enabled | bool
