@@ -19,8 +19,7 @@ DefaultDependencies=no
 [Service]
 Type=simple
 Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
-ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ nextcloud_identifier }}-server 2>/dev/null || true'
-ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ nextcloud_identifier }}-server 2>/dev/null || true'
+ExecStartPre={{ devture_systemd_docker_base_host_command_sh }} -c '{{ nextcloud_container_cleanup_command | trim | replace("\n", " ") }}'
 
 {#
   `redis-session.ini` is mounted from the host, because the container's entrypoint tries to modify `/usr/local/etc/php/conf.d/redis-session.ini`
