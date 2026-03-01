@@ -19,7 +19,7 @@ DefaultDependencies=no
 [Service]
 Type=simple
 Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
-ExecStartPre={{ devture_systemd_docker_base_host_command_sh }} -c 'i=0; while [ "$i" -lt 10 ]; do {{ devture_systemd_docker_base_host_command_docker }} rm -f {{ nextcloud_identifier }}-server >/dev/null 2>&1 || true; if ! {{ devture_systemd_docker_base_host_command_docker }} inspect --type=container {{ nextcloud_identifier }}-server >/dev/null 2>&1; then exit 0; fi; i=$((i + 1)); sleep 1; done; echo "Failed to remove stale container {{ nextcloud_identifier }}-server" >&2; exit 1'
+ExecStartPre={{ devture_systemd_docker_base_host_command_sh }} -c '{{ nextcloud_container_cleanup_command | trim | replace("\n", " ") }}'
 
 {#
   `redis-session.ini` is mounted from the host, because the container's entrypoint tries to modify `/usr/local/etc/php/conf.d/redis-session.ini`
