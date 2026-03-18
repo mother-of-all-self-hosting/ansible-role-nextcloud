@@ -46,7 +46,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --mount type=bind,src={{ nextcloud_redis_session_ini_path }},dst=/usr/local/etc/php/conf.d/redis-session.ini \
       {% endif %}
       {% for volume in nextcloud_container_additional_volumes %}
-      --mount type={{ volume.type | default('bind' if '/' in volume.src else 'volume') }},src={{ volume.src }},dst={{ volume.dst }}{{ (',' + volume.options) if volume.options else '' }} \
+      --mount type={{ volume.type | default('bind' if '/' in volume.src else 'volume') }},src={{ volume.src }},dst={{ volume.dst }}{{ (',' + volume.options) if volume.options | default('') else '' }} \
       {% endfor %}
       --tmpfs=/tmp:rw,noexec,nosuid,size={{ nextcloud_container_tmpfs_tmp_size }} \
       --tmpfs=/var/run/apache2:rw,noexec,nosuid,size={{ nextcloud_container_tmpfs_run_size }} \
