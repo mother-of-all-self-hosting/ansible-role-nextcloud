@@ -543,7 +543,7 @@ nextcloud_oidc_clients_auto: {}
 nextcloud_oidc_clients_custom: {}
 nextcloud_oidc_clients: "{{ nextcloud_oidc_clients_auto | combine(nextcloud_oidc_clients_custom, recursive=true) }}"
 
-# Specify database to use
+# Specify a database driver to use
 # Valid values: mysql, postgres, sqlite
 nextcloud_database_type: postgres
 
