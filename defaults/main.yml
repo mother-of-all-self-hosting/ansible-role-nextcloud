@@ -1,8 +1,11 @@
-# SPDX-FileCopyrightText: 2023 - 2024 MASH project contributors
-# SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2023 Gergely Horváth
+# SPDX-FileCopyrightText: 2023, 2024 Nikita Chernyi
+# SPDX-FileCopyrightText: 2023-2025 MASH project contributors
+# SPDX-FileCopyrightText: 2023-2026 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2024 Julian-Samuel Gebühr
 # SPDX-FileCopyrightText: 2024 Philipp Homann
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+# SPDX-FileCopyrightText: 2024 Sergio Durigan Junior
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 # SPDX-FileCopyrightText: 2026 Timofej Luitle
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -369,6 +372,58 @@ nextcloud_container_cleanup_command: |
   echo "Failed to remove stale container {{ nextcloud_identifier }} after {{ nextcloud_container_cleanup_timeout_seconds }} attempts" >&2;
   exit 1
 
+########################################################################
+#                                                                      #
+# database                                                             #
+#                                                                      #
+########################################################################
+
+# Specify a database driver to use
+# Valid values: mysql, postgres, sqlite
+nextcloud_database_type: postgres
+
+# Specify database configuration
+nextcloud_database_mysql_hostname: ""
+nextcloud_database_mysql_port: 3306
+nextcloud_database_mysql_username: nextcloud
+nextcloud_database_mysql_password: ""
+nextcloud_database_postgres_hostname: ""
+nextcloud_database_postgres_port: 5432
+nextcloud_database_postgres_username: nextcloud
+nextcloud_database_postgres_password: ""
+nextcloud_database_name: nextcloud
+
+# TODO: Enable Unix socket connection to a MySQL compatible server
+
+# Control if the database connection to Postgres is made via a Unix socket
+nextcloud_database_postgres_socket_enabled: true
+
+# Specify the path to the Postgres Unix socket path inside the Nextcloud container
+nextcloud_database_postgres_socket_path_container: /run-postgres
+
+# Specify the path to the Postgres Unix socket path on the host (bind-mount source)
+nextcloud_database_postgres_socket_path_host: ""
+
+# Specify database host address or absolute path for Unix socket
+nextcloud_environment_variables_postgres_host: "{{ nextcloud_database_postgres_socket_path_container if nextcloud_database_postgres_socket_enabled else nextcloud_database_postgres_hostname }}"
+
+# Specify dbhost value on config.php
+# See: https://docs.nextcloud.com/server/stable/admin_manual/configuration_database/linux_database_configuration.html
+# Note the value is dynamically replaced on installing. cf. install.yml
+nextcloud_config_dbhost: "{{
+  ({
+    'postgres': (nextcloud_database_postgres_socket_path_container if nextcloud_database_postgres_socket_enabled else (nextcloud_database_postgres_hostname ~ ':' ~ nextcloud_database_postgres_port)),
+    'mysql': (nextcloud_database_mysql_hostname ~ ':' ~ nextcloud_database_mysql_port)
+  })[nextcloud_database_type] }}"
+
+nextcloud_config_dbname: "{{ nextcloud_database_name }}"
+
+########################################################################
+#                                                                      #
+# /database                                                            #
+#                                                                      #
+########################################################################
+
 # Controls whether the nextcloud-apache container's memory usage
 # is limited and to what extent.
 #
@@ -542,20 +597,6 @@ nextcloud_oidc_role_claim_type: "gid"
 nextcloud_oidc_clients_auto: {}
 nextcloud_oidc_clients_custom: {}
 nextcloud_oidc_clients: "{{ nextcloud_oidc_clients_auto | combine(nextcloud_oidc_clients_custom, recursive=true) }}"
-
-# Specify a database driver to use
-# Valid values: mysql, postgres, sqlite
-nextcloud_database_type: postgres
-
-nextcloud_database_mysql_hostname: ""
-nextcloud_database_mysql_port: 3306
-nextcloud_database_mysql_username: nextcloud
-nextcloud_database_mysql_password: ""
-nextcloud_database_postgres_hostname: ""
-nextcloud_database_postgres_port: 5432
-nextcloud_database_postgres_username: nextcloud
-nextcloud_database_postgres_password: ""
-nextcloud_database_name: nextcloud
 
 # Redis integration.
 nextcloud_redis_hostname: ""

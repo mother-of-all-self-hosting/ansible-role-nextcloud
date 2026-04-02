@@ -1,22 +1,23 @@
 <!--
-SPDX-FileCopyrightText: 2020 - 2024 MDAD project contributors
-SPDX-FileCopyrightText: 2020 - 2025 Slavi Pantaleev
 SPDX-FileCopyrightText: 2020 Aaron Raimist
 SPDX-FileCopyrightText: 2020 Chris van Dijk
 SPDX-FileCopyrightText: 2020 Dominik Zajac
 SPDX-FileCopyrightText: 2020 Mickaël Cornière
+SPDX-FileCopyrightText: 2020-2024 MDAD project contributors
+SPDX-FileCopyrightText: 2020-2025 Slavi Pantaleev
 SPDX-FileCopyrightText: 2022 François Darveau
 SPDX-FileCopyrightText: 2022 Julian Foad
 SPDX-FileCopyrightText: 2022 Warren Bailey
-SPDX-FileCopyrightText: 2023 - 2024 MASH project contributors
 SPDX-FileCopyrightText: 2023 Antonis Christofides
 SPDX-FileCopyrightText: 2023 Felix Stupp
-SPDX-FileCopyrightText: 2023 - 2024 Gergely Horváth
 SPDX-FileCopyrightText: 2023 Julian-Samuel Gebühr
 SPDX-FileCopyrightText: 2023 Niels Bouma
 SPDX-FileCopyrightText: 2023 Pierre 'McFly' Marty
-SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
+SPDX-FileCopyrightText: 2023, 2024 Gergely Horváth
+SPDX-FileCopyrightText: 2023, 2024 MASH project contributors
 SPDX-FileCopyrightText: 2024 Philipp Homann
+SPDX-FileCopyrightText: 2024 Thomas Miceli
+SPDX-FileCopyrightText: 2024-2026 Suguru Hirahara
 SPDX-FileCopyrightText: 2025 IUCCA
 
 SPDX-License-Identifier: AGPL-3.0-or-later
@@ -74,9 +75,11 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 >[!NOTE]
 > Changing the hostname after the first installation is currently not supported by Nextcloud. See [this page](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/domain_change.html) on the documentation as well.
 
-### Configure database
+### Configuring database
 
-By default Nextcloud is configured to use Postgres, but you can choose other databases such as MySQL (MariaDB) and SQLite.
+#### Specify database (optional)
+
+You can specify a database used by Nextcloud. By default it is configured to use Postgres.
 
 To use MariaDB, add the following configuration to your `vars.yml` file:
 
@@ -90,6 +93,30 @@ For other settings, check variables such as `nextcloud_database_mysql_*` and `ne
 
 >[!NOTE]
 > It is possible to convert a SQLite database to a MySQL, MariaDB or PostgreSQL database with the Nextcloud command line tool. See [this page](docs.nextcloud.com/server/latest/admin_manual/configuration_database/db_conversion.html) on the documentation for details.
+
+#### Configuring connection to the database server (optional)
+
+>[!NOTE]
+> The connection to the MySQL compatible database via the Unix socket is not yet available.
+
+By default the role is configured to establish connection with the Postgres server via the Unix socket. You can mount the Unix socket by adding the following configuration to your `vars.yml` file:
+
+```yaml
+# Specify the path to the Postgres Unix socket path on the host (bind-mount source)
+nextcloud_database_postgres_socket_path_host: ""
+```
+
+Setting it enables to connect to the Postgres server via Unix socket mounted in the container at `/run-postgres/.s.PGSQL.5432`.
+
+If TCP connection is preferred, connection via the Unix socket can be disabled by adding the following configuration to your `vars.yml` file:
+
+```yaml
+# Disable the connection to Postgres server via a Unix socket
+nextcloud_database_postgres_socket_enabled: false
+
+nextcloud_database_postgres_hostname: YOUR_POSTGRES_SERVER_HOSTNAME_HERE
+nextcloud_database_postgres_port: 5432
+```
 
 ### Adjusting Traefik configuration for long-running uploads (optional; recommended)
 
