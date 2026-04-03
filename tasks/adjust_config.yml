@@ -20,6 +20,20 @@
         cmd: |-
           docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:set trusted_proxies 0 --type=string --value={{ nextcloud_reverse_proxy_container_network_subnet_result.stdout }}
 
+- name: Adjust Nextcloud configuration (parameters for Redis)
+  block:
+    - name: Set Nextcloud configuration for Redis if it is configured
+      when: nextcloud_redis_is_configured
+      ansible.builtin.command:
+        cmd: |-
+          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:set redis --type json --value '{"host":"{{ nextcloud_environment_variables_redis_host }}","port":{{ nextcloud_redis_port }}{% if nextcloud_redis_password != '' %},"password":"{{ nextcloud_redis_password }}"{% endif %}}'
+
+    - name: Delete Nextcloud configuration for Redis if it is not configured
+      when: "not nextcloud_redis_is_configured | bool"
+      ansible.builtin.command:
+        cmd: |-
+          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:delete redis
+
 - name: Adjust Nextcloud configuration (custom parameters)
   ansible.builtin.command:
     cmd: |-
