@@ -530,6 +530,11 @@ nextcloud_config_parameters_default: |
   {{
     ([
       {
+        'key': 'dbhost',
+        'value': nextcloud_config_dbhost,
+        'type': 'string',
+      },
+      {
         'key': 'default_language',
         'value': nextcloud_config_parameter_default_language,
         'type': 'string',
