@@ -96,26 +96,26 @@ For other settings, check variables such as `nextcloud_database_mysql_*` and `ne
 
 #### Configuring connection to the database server (optional)
 
->[!NOTE]
-> The connection to the MySQL compatible database via the Unix socket is not yet available.
-
-By default the role is configured to establish connection with the Postgres server via the Unix socket. You can mount the Unix socket by adding the following configuration to your `vars.yml` file:
+By default the role is configured to establish connection with the database server via the Unix socket. You can mount the Unix socket by adding the following configuration to your `vars.yml` file:
 
 ```yaml
+# Specify the path to the MySQL compatible server's Unix socket path on the host (bind-mount source)
+nextcloud_database_mysql_socket_path_host: ""
+
 # Specify the path to the Postgres Unix socket path on the host (bind-mount source)
 nextcloud_database_postgres_socket_path_host: ""
 ```
 
-Setting it enables to connect to the Postgres server via Unix socket mounted in the container at `/run-postgres/.s.PGSQL.5432`.
+Setting it enables to connect to the database server via Unix socket mounted in the container.
 
 If TCP connection is preferred, connection via the Unix socket can be disabled by adding the following configuration to your `vars.yml` file:
 
 ```yaml
-# Disable the connection to Postgres server via a Unix socket
-nextcloud_database_postgres_socket_enabled: false
+# Disable the connection to the MySQL compatible server via a Unix socket
+nextcloud_database_mysql_socket_enabled: false
 
-nextcloud_database_postgres_hostname: YOUR_POSTGRES_SERVER_HOSTNAME_HERE
-nextcloud_database_postgres_port: 5432
+# Disable the connection to the Postgres server via a Unix socket
+nextcloud_database_postgres_socket_enabled: false
 ```
 
 ### Adjusting Traefik configuration for long-running uploads (optional; recommended)

@@ -393,7 +393,14 @@ nextcloud_database_postgres_username: nextcloud
 nextcloud_database_postgres_password: ""
 nextcloud_database_name: nextcloud
 
-# TODO: Enable Unix socket connection to a MySQL compatible server
+# Control if the database connection to MySQL is made via a Unix socket
+nextcloud_database_mysql_socket_enabled: true
+
+# Specify the path to the MySQL Unix socket path inside the Nextcloud container
+nextcloud_database_mysql_socket_path_container: /run-mysqld
+
+# Specify the path to the MySQL Unix socket path on the host (bind-mount source)
+nextcloud_database_mysql_socket_path_host: ""
 
 # Control if the database connection to Postgres is made via a Unix socket
 nextcloud_database_postgres_socket_enabled: true
@@ -405,6 +412,7 @@ nextcloud_database_postgres_socket_path_container: /run-postgres
 nextcloud_database_postgres_socket_path_host: ""
 
 # Specify database host address or absolute path for Unix socket
+nextcloud_environment_variables_mysql_host: "{{ 'localhost:' + nextcloud_database_mysql_socket_path_container + '/mysqld.sock' if nextcloud_database_mysql_socket_enabled else nextcloud_database_mysql_hostname }}"
 nextcloud_environment_variables_postgres_host: "{{ nextcloud_database_postgres_socket_path_container if nextcloud_database_postgres_socket_enabled else nextcloud_database_postgres_hostname }}"
 
 # Specify dbhost value on config.php
@@ -413,7 +421,7 @@ nextcloud_environment_variables_postgres_host: "{{ nextcloud_database_postgres_s
 nextcloud_config_dbhost: "{{
   ({
     'postgres': (nextcloud_database_postgres_socket_path_container if nextcloud_database_postgres_socket_enabled else (nextcloud_database_postgres_hostname ~ ':' ~ nextcloud_database_postgres_port)),
-    'mysql': (nextcloud_database_mysql_hostname ~ ':' ~ nextcloud_database_mysql_port)
+    'mysql': ('localhost:' + nextcloud_database_mysql_socket_path_container + '/mysqld.sock' if nextcloud_database_mysql_socket_enabled else (nextcloud_database_mysql_hostname ~ ':' ~ nextcloud_database_mysql_port)),
   })[nextcloud_database_type] }}"
 
 nextcloud_config_dbpassword: "{{ ({'postgres': nextcloud_database_postgres_password, 'mysql': nextcloud_database_mysql_password})[nextcloud_database_type] }}"
