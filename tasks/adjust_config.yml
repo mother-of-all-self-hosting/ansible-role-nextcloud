@@ -34,6 +34,15 @@
         cmd: |-
           docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:delete redis
 
+    - name: Delete Nextcloud configuration for external caching if Redis is not configured
+      when: "not nextcloud_redis_is_configured | bool"
+      ansible.builtin.command:
+        cmd: |-
+          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:delete {{ item }}
+      with_items:
+        - memcache.distributed
+        - memcache.locking
+
 - name: Adjust Nextcloud configuration (custom parameters)
   ansible.builtin.command:
     cmd: |-
