@@ -61,7 +61,7 @@
       line: "  'dbhost' => '{{ nextcloud_config_dbhost }}',"
       no_log: false
     - regexp: "^\\s*'dbname'\\s*=>"
-      line: "  'dbname' => '{{ nextcloud_config_dbname }}',"
+      line: "  'dbname' => '{{ nextcloud_database_name }}',"
       no_log: false
   register: nextcloud_config_file_result
 
