@@ -190,7 +190,7 @@ Refer to [this page](https://docs.nextcloud.com/server/latest/admin_manual/confi
 
 Nextcloud recommends to set up memory caching for improving performance and preventing file locking problems. You can use [APCu](https://pecl.php.net/package/APCu), [Memcached](https://www.memcached.org/), and [Redis](https://redis.io/).
 
-To enable Redis for Nextcloud, add the following configuration to your `vars.yml` file, so that the Nextcloud instance will connect to the server. Note that the role is by default configured to establish connection with the Redis server via the Unix socket.
+To enable the Redis database for Nextcloud, add the following configuration to your `vars.yml` file. Note that the role is by default configured to establish connection with the Redis server via the Unix socket.
 
 ```yaml
 # Specify the path to the Redis Unix socket path on the host (bind-mount source)
