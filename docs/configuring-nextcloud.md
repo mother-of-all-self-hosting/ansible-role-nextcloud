@@ -190,7 +190,7 @@ Refer to [this page](https://docs.nextcloud.com/server/latest/admin_manual/confi
 
 Nextcloud recommends to set up memory caching for improving performance and preventing file locking problems. You can use [APCu](https://pecl.php.net/package/APCu), [Memcached](https://www.memcached.org/), and [Redis](https://redis.io/).
 
-To enable the Redis database for Nextcloud, add the following configuration to your `vars.yml` file. Note that the role is by default configured to establish connection with the Redis server via the Unix socket.
+To enable the Redis database for Nextcloud, add the following configuration to your `vars.yml` file. Note that the role is by default configured to establish connection with the Redis database via the Unix socket.
 
 ```yaml
 # Specify the path to the Redis Unix socket path on the host (bind-mount source)
@@ -216,7 +216,7 @@ See below for details:
 - <https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/caching_configuration.html>
 - <https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#memory-caching-backend-configuration>
 
-If you are looking for an Ansible role for Redis, you can check out [ansible-role-redis](https://github.com/mother-of-all-self-hosting/ansible-role-redis) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team. The roles for [KeyDB](https://keydb.dev/) ([ansible-role-keydb](https://github.com/mother-of-all-self-hosting/ansible-role-keydb)) and [Valkey](https://valkey.io/) ([ansible-role-valkey](https://github.com/mother-of-all-self-hosting/ansible-role-valkey)) are available as well.
+If you are looking for an Ansible role for Redis, you can check out [ansible-role-redis](https://github.com/mother-of-all-self-hosting/ansible-role-redis) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team. The role for Valkey ([ansible-role-valkey](https://github.com/mother-of-all-self-hosting/ansible-role-valkey)) is available as well.
 
 ### Configuring the mailer (optional)
 
