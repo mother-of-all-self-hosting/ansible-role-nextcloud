@@ -70,6 +70,8 @@
   tags:
     - adjust-nextcloud-config
   block:
+    - name: Validate Nextcloud configuration
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
     - name: Adjust Nextcloud configuration
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
 
