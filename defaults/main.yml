@@ -447,7 +447,7 @@ nextcloud_redis_port: "{{ '0' if nextcloud_redis_socket_enabled else '6379' }}"
 nextcloud_redis_is_configured: "{{ nextcloud_redis_hostname !='' or nextcloud_redis_socket_path_host != '' }}"
 
 # Control if the connection to Redis is made via a Unix socket
-nextcloud_redis_socket_enabled: true
+nextcloud_redis_socket_enabled: false
 
 # Specify the path to the Redis Unix socket path inside the Nextcloud container
 nextcloud_redis_socket_path_container: /run-valkey
