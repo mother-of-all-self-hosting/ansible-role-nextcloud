@@ -394,7 +394,7 @@ nextcloud_database_postgres_password: ""
 nextcloud_database_name: nextcloud
 
 # Control if the database connection to MySQL is made via a Unix socket
-nextcloud_database_mysql_socket_enabled: true
+nextcloud_database_mysql_socket_enabled: false
 
 # Specify the path to the MySQL Unix socket path inside the Nextcloud container
 nextcloud_database_mysql_socket_path_container: /run-mysqld
@@ -403,7 +403,7 @@ nextcloud_database_mysql_socket_path_container: /run-mysqld
 nextcloud_database_mysql_socket_path_host: ""
 
 # Control if the database connection to Postgres is made via a Unix socket
-nextcloud_database_postgres_socket_enabled: true
+nextcloud_database_postgres_socket_enabled: false
 
 # Specify the path to the Postgres Unix socket path inside the Nextcloud container
 nextcloud_database_postgres_socket_path_container: /run-postgres
