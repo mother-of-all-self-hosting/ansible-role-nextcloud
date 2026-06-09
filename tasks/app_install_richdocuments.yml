@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-- name: Fail if required Nextcloud Office application settings not defined
+- name: Fail if required Nextcloud Office (Collabora) application settings not defined
   ansible.builtin.fail:
     msg: >-
       You need to define a required configuration setting (`{{ item }}`).
@@ -25,26 +25,26 @@
     seconds: 7
   when: nextcloud_start.changed | bool
 
-- name: Ensure Nextcloud Office application installed and enabled
+- name: Ensure Nextcloud Office (Collabora) application installed and enabled
   ansible.builtin.command:
     cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings app:install richdocuments"
   register: nextcloud_app_richdocuments_result
   changed_when: "nextcloud_app_richdocuments_result.rc == 0 and 'installed' in nextcloud_app_richdocuments_result.stdout"
   failed_when: "nextcloud_app_richdocuments_result.rc != 0 and 'richdocuments already installed' not in nextcloud_app_richdocuments_result.stdout"
 
-- name: Fail if Nextcloud Office application failed to install
+- name: Fail if Nextcloud Office (Collabora) application failed to install
   ansible.builtin.fail:
-    msg: "Nextcloud Office application failed to install. Full error: {{ nextcloud_app_richdocuments_result }}"
+    msg: "Nextcloud Office (Collabora) application failed to install. Full error: {{ nextcloud_app_richdocuments_result }}"
   when: "nextcloud_app_richdocuments_result.rc != 0 and nextcloud_app_richdocuments_result.stdout != 'richdocuments already installed'"
 
-- name: Check existence of a WOPI client container network in Docker for Nextcloud Office application
+- name: Check existence of a WOPI client container network in Docker for Nextcloud Office (Collabora) application
   when: nextcloud_app_richdocuments_wopi_client_network != ''
   ansible.builtin.command:
     cmd: "{{ devture_systemd_docker_base_host_command_docker }} network inspect {{ nextcloud_app_richdocuments_wopi_client_network }} --format {%raw%}'{{ (index .IPAM.Config 0).Subnet }}'{%endraw%}"
   register: nextcloud_app_richdocuments_wopi_client_network_subnet
   changed_when: false
 
-- name: Ensure Nextcloud Office application configured
+- name: Ensure Nextcloud Office (Collabora) application configured
   ansible.builtin.command:
     cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:app:set richdocuments {{ item.key }} --value=\"{{ item.value }}\""
   with_items:

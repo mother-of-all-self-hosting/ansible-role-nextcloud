@@ -338,9 +338,9 @@ ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
 
 You can open the URL with a web browser to log in to the instance. See [this official guide](https://docs.nextcloud.com/server/latest/admin_manual/contents.html) to get started.
 
-### Configuring Nextcloud Office application (optional)
+### Configuring Nextcloud Office (Collabora) application (optional)
 
-With this role it is possible to install and configure the [Nextcloud Office application](https://apps.nextcloud.com/apps/richdocuments). The Nextcloud instance works as a WOPI (Web Application Open Platform Interface) Host, which requires a WOPI-like Client such as a [Collabora Online Development Edition (CODE)](https://www.collaboraonline.com/code/).
+With this role it is possible to install and configure the [Nextcloud Office (Collabora) application](https://apps.nextcloud.com/apps/richdocuments). The Nextcloud instance works as a WOPI (Web Application Open Platform Interface) Host, which requires a WOPI-like Client such as a [Collabora Online Development Edition (CODE)](https://www.collaboraonline.com/code/).
 
 To integrate the application with an existing CODE instance, add the following configuration to your `vars.yml` file:
 
@@ -348,7 +348,7 @@ To integrate the application with an existing CODE instance, add the following c
 nextcloud_app_richdocuments_wopi_client_url: YOUR_CODE_INSTANCE_URL_HERE
 ```
 
-Then, run this command to install and configure the Nextcloud Office application on your Nextcloud instance:
+Then, run this command to install and configure the Nextcloud Office (Collabora) application on your Nextcloud instance:
 
 ```sh
 ansible-playbook -i inventory/hosts setup.yml --tags=install-nextcloud-app-richdocuments
@@ -356,7 +356,7 @@ ansible-playbook -i inventory/hosts setup.yml --tags=install-nextcloud-app-richd
 
 Open the URL `https://example.com/settings/admin/richdocuments` to have the instance set up the connection with the CODE instance.
 
-You should then be able to open any document (`.doc`, `.odt`, `.pdf`, etc.) and create new ones in Nextcloud Files with the Nextcloud Office application.
+You should then be able to open any document (`.doc`, `.odt`, `.pdf`, etc.) and create new ones in Nextcloud Files with the Nextcloud Office (Collabora) application.
 
 >[!NOTE]
 >
@@ -365,7 +365,7 @@ You should then be able to open any document (`.doc`, `.odt`, `.pdf`, etc.) and 
 
 #### Setting a default file format (optional)
 
-By default the Nextcloud Office application is configured to use OpenDocument Format (ODF) for new files, following [the latest documentation](https://github.com/nextcloud/richdocuments/blob/0aebcc63f86fb0ec1091832f8c14ef60148dbd74/docs/app_settings.md).
+By default the Nextcloud Office (Collabora) application is configured to use OpenDocument Format (ODF) for new files, following [the latest documentation](https://github.com/nextcloud/richdocuments/blob/0aebcc63f86fb0ec1091832f8c14ef60148dbd74/docs/app_settings.md).
 
 To have it use Office Open XML (OOXML) of Microsoft instead, add the following configuration to your `vars.yml` file:
 
