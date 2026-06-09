@@ -338,6 +338,33 @@ ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
 
 You can open the URL with a web browser to log in to the instance. See [this official guide](https://docs.nextcloud.com/server/latest/admin_manual/contents.html) to get started.
 
+### Configuring Nextcloud Office application (optional)
+
+With this role it is possible to install and configure the [Nextcloud Office application](https://apps.nextcloud.com/apps/eurooffice). This requires an [Euro-Office](https://github.com/Euro-Office/DocumentServer) instance.
+
+To integrate the application with an existing Euro-Office instance, add the following configuration to your `vars.yml` file:
+
+```yaml
+# Specify the Euro-Office server address address
+nextcloud_app_eurooffice_documentserverurl: https://example.com
+
+# Specify the JSON web token used for the request to the Euro-Office server
+nextcloud_app_eurooffice_jwt_secret: YOUR_JWT_SECRET_ON_EURO_OFFICE_INSTANCE_HERE
+```
+
+Then, run this command to install and configure the Nextcloud Office application on your Nextcloud instance:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=install-nextcloud-app-eurooffice
+```
+
+You should then be able to open any document (`.doc`, `.odt`, `.pdf`, etc.) and create new ones in Nextcloud Files with the Nextcloud Office application.
+
+Open the URL `https://example.com/settings/admin/eurooffice` to configure the application. Refer to [this page](https://github.com/Euro-Office/eurooffice-nextcloud/blob/main/README.md#common-settings) for details about available settings.
+
+>[!NOTE]
+> If you are looking for an Ansible role for Euro-Office, you can check out [ansible-role-eurooffice](https://radicle.network/nodes/iris.radicle.network/rad%3Az4SSf2SU2YwBaMmCFBJnM5KqorU9T) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
+
 ### Configuring Nextcloud Office (Collabora) application (optional)
 
 With this role it is possible to install and configure the [Nextcloud Office (Collabora) application](https://apps.nextcloud.com/apps/richdocuments). The Nextcloud instance works as a WOPI (Web Application Open Platform Interface) Host, which requires a WOPI-like Client such as a [Collabora Online Development Edition (CODE)](https://www.collaboraonline.com/code/).

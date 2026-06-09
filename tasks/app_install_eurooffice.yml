@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Ensure Nextcloud service is started
+  ansible.builtin.service:
+    name: "{{ nextcloud_identifier }}-server"
+    state: started
+    daemon_reload: true
+  register: nextcloud_start
+
+- name: Wait a while, so that Nextcloud can manage to start
+  ansible.builtin.pause:
+    seconds: 7
+  when: nextcloud_start.changed | bool
+
+- name: Ensure Nextcloud Office application installed and enabled
+  ansible.builtin.command:
+    cmd: |-
+      {{ devture_systemd_docker_base_host_command_docker }} exec
+      --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+      {{ nextcloud_identifier }}-server
+      php /var/www/html/occ --no-warnings app:install eurooffice
+  register: nextcloud_app_eurooffice_result
+  changed_when: "nextcloud_app_eurooffice_result.rc == 0 and 'installed' in nextcloud_app_eurooffice_result.stdout"
+  failed_when: "nextcloud_app_eurooffice_result.rc != 0 and 'eurooffice already installed' not in nextcloud_app_eurooffice_result.stdout"
+
+- name: Fail if Nextcloud Office application failed to install
+  ansible.builtin.fail:
+    msg: "Nextcloud Office application failed to install. Full error: {{ nextcloud_app_eurooffice_result }}"
+  when: "nextcloud_app_eurooffice_result.rc != 0 and nextcloud_app_eurooffice_result.stdout != 'eurooffice already installed'"
+
+- name: Ensure Nextcloud Office application configured
+  ansible.builtin.command:
+    cmd: |-
+      {{ devture_systemd_docker_base_host_command_docker }} exec
+      --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+      {{ nextcloud_identifier }}-server
+      php /var/www/html/occ --no-warnings config:app:set eurooffice {{ item.key }} --value="{{ item.value }}"
+  with_items:
+    - key: DocumentServerUrl
+      value: "{{ nextcloud_app_eurooffice_documentserverurl }}"
+    - key: jwt_secret
+      value: "{{ nextcloud_app_eurooffice_jwt_secret }}"
+  register: nextcloud_app_eurooffice_config_set_result
+  changed_when: "'is now set to' in nextcloud_app_eurooffice_config_set_result.stdout and 'Config value were not updated' not in nextcloud_app_eurooffice_config_set_result.stdout"

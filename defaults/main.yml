@@ -623,6 +623,13 @@ nextcloud_app_autoupdate_enabled: false
 # Learn more here: https://man.archlinux.org/man/systemd.time.7
 nextcloud_app_autoupdate_schedule: "*-*-* 00:00:00"
 
+# Specify the Euro-Office server address address
+# Example: https://example.com
+nextcloud_app_eurooffice_documentserverurl: ""
+
+# Specify the JSON web token used for the request to the Euro-Office server
+nextcloud_app_eurooffice_jwt_secret: ""
+
 # Specify document format used for new files
 nextcloud_app_richdocuments_doc_format: odf
 

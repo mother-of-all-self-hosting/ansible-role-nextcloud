@@ -59,6 +59,14 @@
     - name: Run LDAP configuration tasks based on Nextcloud AIO stack's default settings
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/ldap.yml"
 
+- name: Perform Nextcloud Office application configuration tasks for Nextcloud
+  when: nextcloud_enabled | bool
+  tags:
+    - install-nextcloud-app-eurooffice
+  block:
+    - name: Install Nextcloud Office application
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/app_install_eurooffice.yml"
+
 - name: Perform Nextcloud Office (Collabora) application configuration tasks for Nextcloud
   when: nextcloud_enabled | bool
   tags:
