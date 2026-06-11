@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2023 Gergely Horváth
 # SPDX-FileCopyrightText: 2023 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2024 MASH project contributors
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
 # SPDX-FileCopyrightText: 2026 Timofej Luitle
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -18,7 +19,10 @@
     - name: Adjust Nextcloud configuration (set trusted_proxies)
       ansible.builtin.command:
         cmd: |-
-          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:set trusted_proxies 0 --type=string --value={{ nextcloud_reverse_proxy_container_network_subnet_result.stdout }}
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ --no-warnings config:system:set trusted_proxies 0 --type=string --value={{ nextcloud_reverse_proxy_container_network_subnet_result.stdout }}
 
 - name: Adjust Nextcloud configuration (parameters for Redis)
   block:
@@ -26,19 +30,28 @@
       when: nextcloud_redis_is_configured
       ansible.builtin.command:
         cmd: |-
-          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:set redis --type json --value '{"host":"{{ nextcloud_environment_variables_redis_host }}","port":{{ nextcloud_redis_port }}{% if nextcloud_redis_password != '' %},"password":"{{ nextcloud_redis_password }}"{% endif %}}'
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ --no-warnings config:system:set redis --type json --value '{"host":"{{ nextcloud_environment_variables_redis_host }}","port":{{ nextcloud_redis_port }}{% if nextcloud_redis_password != '' %},"password":"{{ nextcloud_redis_password }}"{% endif %}}'
 
     - name: Delete Nextcloud configuration for Redis if it is not configured
       when: "not nextcloud_redis_is_configured | bool"
       ansible.builtin.command:
         cmd: |-
-          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:delete redis
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ --no-warnings config:system:delete redis
 
     - name: Delete Nextcloud configuration for external caching if Redis is not configured
       when: "not nextcloud_redis_is_configured | bool"
       ansible.builtin.command:
         cmd: |-
-          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:delete {{ item }}
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ --no-warnings config:system:delete {{ item }}
       with_items:
         - memcache.distributed
         - memcache.locking
@@ -46,18 +59,27 @@
 - name: Adjust Nextcloud configuration (custom parameters)
   ansible.builtin.command:
     cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:system:set {{ item.key }} --type="{{ item.type }}" --value={{ item.value }}
+      {{ devture_systemd_docker_base_host_command_docker }} exec
+      --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+      {{ nextcloud_identifier }}-server
+      php /var/www/html/occ --no-warnings config:system:set {{ item.key }} --type="{{ item.type }}" --value={{ item.value }}
   with_items: "{{ nextcloud_config_parameters }}"
 
 - name: Update database indices
   ansible.builtin.command:
     cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ db:add-missing-indices
+      {{ devture_systemd_docker_base_host_command_docker }} exec
+      --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+      {{ nextcloud_identifier }}-server
+      php /var/www/html/occ db:add-missing-indices
 
 - name: Configure AppAPI installation
   ansible.builtin.command:
     cmd: |-
-      docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ app:"{{ 'enable' if nextcloud_app_app_api_enabled else 'disable' }}" app_api
+      {{ devture_systemd_docker_base_host_command_docker }} exec
+      --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+      {{ nextcloud_identifier }}-server
+      php /var/www/html/occ app:"{{ 'enable' if nextcloud_app_app_api_enabled else 'disable' }}" app_api
   register: nextcloud_app_app_api_enabled_result
   changed_when: "'.' in nextcloud_app_app_api_enabled_result.stdout"
 
@@ -69,13 +91,20 @@
   block:
     - name: Ensure Preview Generator is installed and enabled
       ansible.builtin.command:
-        cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ app:install previewgenerator"
+        cmd: |-
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ app:install previewgenerator
       failed_when: false
 
     - name: Adjust Nextcloud configuration values related to Preview Generator
       ansible.builtin.command:
         cmd: |-
-          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ {{ item.appType }} --value={{ item.value }} -- {{ item.appConfig }} {{ item.configName }}
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ {{ item.appType }} --value={{ item.value }} -- {{ item.appConfig }} {{ item.configName }}
       with_items:
         - appType: "config:system:set"
           appConfig: ""
@@ -99,7 +128,10 @@
       when: not nextcloud_preview_file_stats.stat.exists
       ansible.builtin.command:
         cmd: |-
-          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ preview:generate-all
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ preview:generate-all
       async: 100000
       poll: 10
 
