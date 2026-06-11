@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-# The command for setting up LDAP application: `ansible-playbook -i inventory/hosts setup.yml --tags=set-ldap-config-nextcloud -e agent_password=PASSWORD_OF_BIND_USER_HERE`
+# The command for setting up LDAP application: `ansible-playbook -i inventory/hosts setup.yml --tags=adjust-ldap-config-nextcloud -e agent_password=PASSWORD_OF_BIND_USER_HERE`
 
 - name: Fail if required LDAP settings not defined
   ansible.builtin.fail:

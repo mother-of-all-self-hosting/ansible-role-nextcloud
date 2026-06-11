@@ -504,7 +504,7 @@ For other settings, check variables starting with `nextcloud_ldap_*` on [`defaul
 After adding and modifying those variables, you can make use of the command below to run tasks specified on [`tasks/ldap.yml`](../tasks/ldap.yml):
 
 ```sh
-ansible-playbook -i inventory/hosts setup.yml --tags=set-ldap-config-nextcloud -e agent_password=PASSWORD_OF_BIND_USER_HERE
+ansible-playbook -i inventory/hosts setup.yml --tags=adjust-ldap-config-nextcloud -e agent_password=PASSWORD_OF_BIND_USER_HERE
 ```
 
 To `agent_password`, set the password of the bind user (on this case: `agent`).

@@ -54,6 +54,7 @@
 - name: Perform LDAP configuration tasks for Nextcloud
   when: nextcloud_enabled | bool
   tags:
+    - adjust-ldap-config-nextcloud
     - set-ldap-config-nextcloud
   block:
     - name: Run LDAP configuration tasks based on Nextcloud AIO stack's default settings
