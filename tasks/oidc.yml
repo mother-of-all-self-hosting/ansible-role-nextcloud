@@ -1,3 +1,4 @@
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
 # SPDX-FileCopyrightText: 2026 Timofej Luitle
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -19,16 +20,21 @@
   block:
     - name: Ensure OIDC Provider app is installed
       ansible.builtin.command:
-        cmd: >-
-          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ app:enable oidc
+        cmd: |-
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ app:enable oidc
       register: nextcloud_app_oidc_enabled_result
       changed_when: "'.' in nextcloud_app_oidc_enabled_result.stdout"
 
     - name: Ensure scope claims are configured correctly
       ansible.builtin.command:
-        cmd: >-
-          docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ config:app:set oidc {{ item }}
-            --value "{{ nextcloud_oidc_claim_value }}"
+        cmd: |-
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ config:app:set oidc {{ item }} --value "{{ nextcloud_oidc_claim_value }}
       vars:
         nextcloud_oidc_claim_value: "{{ lookup('vars', 'nextcloud_oidc_' ~ item, default='gid') }}"
       register: nextcloud_oidc_claim_value_result
@@ -53,8 +59,12 @@
 - name: Check if OIDC clients with defined client_id are already registered
   block:
     - name: List configured OIDC clients
-      ansible.builtin.command: >-
-        docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:list
+      ansible.builtin.command:
+        cmd: |-
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ oidc:list
       register: nextcloud_oidc_clients_result
       changed_when: false
 
@@ -173,8 +183,12 @@
       when:
         - client_conf | length > 0
         - not client_vars.verified
-      ansible.builtin.command: |
-        docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:remove \
+      ansible.builtin.command:
+        cmd: |-
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ oidc:remove \
           "{{ client_conf.client_id }}"
       vars:
         client_vars: "{{ nextcloud_oidc_client_vars[item] }}"
@@ -195,7 +209,7 @@
       when: homonyms_redundant | default([]) | length > 0
       ansible.builtin.shell: |
         {% for homonym_client_id in homonyms_redundant %}
-        docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:remove \
+        {{ devture_systemd_docker_base_host_command_docker }} exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:remove \
           "{{ homonym_client_id }}"
         {% endfor %}
       vars:
@@ -209,7 +223,7 @@
     - client_vars.enabled | bool
     - client_conf | length < 1
   ansible.builtin.command: >-
-    docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:create
+    {{ devture_systemd_docker_base_host_command_docker }} exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:create
            --algorithm="{{ client_vars.jwt_alg        }}"
                 --flow="{{ client_vars.flow_type      }}"
                 --type="{{ client_vars.type           }}"
@@ -231,8 +245,12 @@
 - name: Confirm configuration
   block:
     - name: List installed OIDC clients
-      ansible.builtin.command: >-
-        docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ oidc:list
+      ansible.builtin.command:
+        cmd: |-
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ oidc:list
       register: nextcloud_oidc_clients_result
       changed_when: false
 
