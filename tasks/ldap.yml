@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023 Slavi Pantaleev
-# SPDX-FileCopyrightText: 2024 - 2025 Simon L.
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+# SPDX-FileCopyrightText: 2024, 2025 Simon L.
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -29,13 +29,13 @@
 
 - name: Enable "LDAP user and group backend" (`user_ldap`) application
   ansible.builtin.shell: |
-    docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings app:enable user_ldap
+    {{ devture_systemd_docker_base_host_command_docker }} exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings app:enable user_ldap
   failed_when: false
   register: user_ldap
 
 - name: Run Nextcloud occ command to create an empty LDAP configuration
   ansible.builtin.shell: |
-    docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ ldap:create-empty-config -p
+    {{ devture_systemd_docker_base_host_command_docker }} exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ ldap:create-empty-config -p
   failed_when: false
   register: nextcloud_ldap_config_creation_result
 
@@ -45,7 +45,7 @@
 
 - name: Set a fact for the command to run `ldap:set-config`
   ansible.builtin.set_fact:
-    nextcloud_ldap_set_config: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ ldap:set-config {{ nextcloud_ldap_configid }}"
+    nextcloud_ldap_set_config: "{{ devture_systemd_docker_base_host_command_docker }} exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ ldap:set-config {{ nextcloud_ldap_configid }}"
 
 - name: Run Nextcloud `ldap:set-config` command to set the LDAP agent password
   ansible.builtin.shell: |
@@ -84,7 +84,7 @@
 
 - name: Run Nextcloud `ldap:test-config` command to test the LDAP configuration
   ansible.builtin.shell: |
-    docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ ldap:test-config {{ nextcloud_ldap_configid }}
+    {{ devture_systemd_docker_base_host_command_docker }} exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ ldap:test-config {{ nextcloud_ldap_configid }}
   register: nextcloud_ldap_config_test_result
 
 - name: Fail if the Nextcloud LDAP configuration test failed
