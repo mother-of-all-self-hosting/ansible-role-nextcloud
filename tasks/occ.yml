@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2023 Slavi Pantaleev
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -23,10 +23,21 @@
 
 - name: Run Nextcloud occ command
   ansible.builtin.command:
-    cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ {{ command }}"
+    cmd: |-
+      {{ devture_systemd_docker_base_host_command_docker }} exec
+      --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+      {{ nextcloud_identifier }}-server
+      php /var/www/html/occ {{ command }}
   failed_when: false
-  register: result
+  register: nextcloud_occ_status
 
 - name: Display the Nextcloud occ command result
-  ansible.builtin.debug:
-    msg: "Nextcloud occ command result: {{ result }}"
+  ansible.builtin.set_fact:
+    devture_playbook_runtime_messages_list: |
+      {{
+        devture_playbook_runtime_messages_list | default([])
+        +
+        [
+          nextcloud_occ_status.stdout
+        ]
+      }}
