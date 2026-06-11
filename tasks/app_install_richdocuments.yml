@@ -27,7 +27,11 @@
 
 - name: Ensure Nextcloud Office (Collabora) application installed and enabled
   ansible.builtin.command:
-    cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings app:install richdocuments"
+    cmd: |-
+      {{ devture_systemd_docker_base_host_command_docker }} exec
+      --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+      {{ nextcloud_identifier }}-server
+      php /var/www/html/occ --no-warnings app:install richdocuments
   register: nextcloud_app_richdocuments_result
   changed_when: "nextcloud_app_richdocuments_result.rc == 0 and 'installed' in nextcloud_app_richdocuments_result.stdout"
   failed_when: "nextcloud_app_richdocuments_result.rc != 0 and 'richdocuments already installed' not in nextcloud_app_richdocuments_result.stdout"
@@ -46,7 +50,11 @@
 
 - name: Ensure Nextcloud Office (Collabora) application configured
   ansible.builtin.command:
-    cmd: "docker exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ --no-warnings config:app:set richdocuments {{ item.key }} --value=\"{{ item.value }}\""
+    cmd: |-
+      {{ devture_systemd_docker_base_host_command_docker }} exec
+      --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+      {{ nextcloud_identifier }}-server
+      php /var/www/html/occ --no-warnings config:app:set richdocuments {{ item.key }} --value="{{ item.value }}"
   with_items:
     - key: doc_format
       value: "{{ nextcloud_app_richdocuments_doc_format }}"
