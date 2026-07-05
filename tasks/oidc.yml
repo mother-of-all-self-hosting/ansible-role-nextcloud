@@ -34,7 +34,7 @@
           {{ devture_systemd_docker_base_host_command_docker }} exec
           --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
           {{ nextcloud_identifier }}-server
-          php /var/www/html/occ config:app:set oidc {{ item }} --value "{{ nextcloud_oidc_claim_value }}
+          php /var/www/html/occ config:app:set oidc {{ item }} --value "{{ nextcloud_oidc_claim_value }}"
       vars:
         nextcloud_oidc_claim_value: "{{ lookup('vars', 'nextcloud_oidc_' ~ item, default='gid') }}"
       register: nextcloud_oidc_claim_value_result
