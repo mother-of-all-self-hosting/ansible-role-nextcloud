@@ -222,20 +222,23 @@
   when:
     - client_vars.enabled | bool
     - client_conf | length < 1
-  ansible.builtin.command: >-
-    {{ devture_systemd_docker_base_host_command_docker }} exec --user={{ nextcloud_uid }}:{{ nextcloud_gid }} {{ nextcloud_identifier }}-server php /var/www/html/occ
-    oidc:create
-           --algorithm="{{ client_vars.jwt_alg        }}"
-                --flow="{{ client_vars.flow_type      }}"
-                --type="{{ client_vars.type           }}"
-          --token_type="{{ client_vars.token_type     }}"
+  ansible.builtin.command:
+    cmd: |-
+      {{ devture_systemd_docker_base_host_command_docker }} exec
+      --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+      {{ nextcloud_identifier }}-server
+      php /var/www/html/occ oidc:create
+           --algorithm="{{ client_vars.jwt_alg }}"
+                --flow="{{ client_vars.flow_type }}"
+                --type="{{ client_vars.type }}"
+          --token_type="{{ client_vars.token_type }}"
       --allowed_scopes="{{ client_vars.allowed_scopes }}"
-         --email_regex="{{ client_vars.email_regex    }}"
-           --client_id="{{ client_vars.client_id      }}"
-       --client_secret="{{ client_vars.client_secret  }}"
-        --resource_url="{{ client_vars.resource_url   }}"
-                       "{{ client_vars.name           }}"
-                        {{ client_vars.redirect_uris  }}
+         --email_regex="{{ client_vars.email_regex }}"
+           --client_id="{{ client_vars.client_id }}"
+       --client_secret="{{ client_vars.client_secret }}"
+        --resource_url="{{ client_vars.resource_url }}"
+                       "{{ client_vars.name }}"
+                        {{ client_vars.redirect_uris }}
   vars:
     client_vars: "{{ nextcloud_oidc_client_vars[item] }}"
     client_conf: "{{ nextcloud_oidc_client_conf[item] }}"
