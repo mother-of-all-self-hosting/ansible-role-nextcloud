@@ -49,6 +49,10 @@ Currently these testing scenarios are available:
 
 Tests a standard Nextcloud installation.
 
+### `mariadb`
+
+Tests a standard Nextcloud installation with the MariaDB database.
+
 ### `postgres`
 
 Tests a standard Nextcloud installation with the Postgres database.
