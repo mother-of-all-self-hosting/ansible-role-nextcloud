@@ -22,6 +22,7 @@ jobs:
           - default-valkey
           - mariadb
           - postgres
+          - postgres-valkey
       fail-fast: false
 
     env:

@@ -61,6 +61,10 @@ Tests a standard Nextcloud installation with the MariaDB database.
 
 Tests a standard Nextcloud installation with the Postgres database.
 
+### `postgres-valkey`
+
+Tests a standard Nextcloud installation with the Postgres database and the Valkey cache adapter.
+
 ## Running
 
 By default it is configured to run the scenarios on Ubuntu 26.04.
