@@ -57,6 +57,10 @@ Tests a standard Nextcloud installation with the Valkey cache adapter.
 
 Tests a standard Nextcloud installation with the MariaDB database.
 
+### `mariadb-valkey`
+
+Tests a standard Nextcloud installation with the MariaDB database and the Valkey cache adapter.
+
 ### `postgres`
 
 Tests a standard Nextcloud installation with the Postgres database.
