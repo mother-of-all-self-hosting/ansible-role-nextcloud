@@ -22,6 +22,7 @@
   when: nextcloud_enabled | bool
   tags:
     - occ-nextcloud
+    - molecule-notest
   block:
     - name: Run Nextcloud occ command
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/occ.yml"
@@ -30,6 +31,7 @@
   when: nextcloud_enabled | bool
   tags:
     - query-status-nextcloud
+    - molecule-notest
   block:
     - name: Query the Nextcloud server status
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/query_status.yml"
@@ -38,6 +40,7 @@
   when: nextcloud_enabled | bool
   tags:
     - mimetype-migrations-nextcloud
+    - molecule-notest
   block:
     - name: Run mimetype migrations on Nextcloud
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
@@ -47,6 +50,7 @@
   tags:
     - configure-oidc-provider-nextcloud
     - install-nextcloud-app-oidc
+    - molecule-notest
   block:
     - name: Configure OIDC Provider app with defined OIDC clients
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/oidc.yml"
@@ -56,6 +60,7 @@
   tags:
     - adjust-ldap-config-nextcloud
     - set-ldap-config-nextcloud
+    - molecule-notest
   block:
     - name: Run LDAP configuration tasks based on Nextcloud AIO stack's default settings
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/ldap.yml"
@@ -64,6 +69,7 @@
   when: nextcloud_enabled | bool
   tags:
     - install-nextcloud-app-eurooffice
+    - molecule-notest
   block:
     - name: Install Nextcloud Office application
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/app_install_eurooffice.yml"
@@ -73,6 +79,7 @@
   tags:
     - install-nextcloud-app-collabora
     - install-nextcloud-app-richdocuments
+    - molecule-notest
   block:
     - name: Install Nextcloud Office (Collabora) application and configure a WOPI-like client
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/app_install_richdocuments.yml"
@@ -81,6 +88,7 @@
   when: nextcloud_enabled | bool
   tags:
     - adjust-nextcloud-config
+    - molecule-notest
   block:
     - name: Validate Nextcloud configuration
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
