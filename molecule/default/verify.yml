@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 spatterlight
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Verify Nextcloud systemd service
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Wait for Nextcloud service to become active (up to 180s)
+      ansible.builtin.systemd:
+        name: nextcloud-server.service
+      register: nextcloud_service
+      until: nextcloud_service.status.ActiveState == 'active'
+      retries: 36
+      delay: 5
+
+    - name: Assert Nextcloud service is active
+      ansible.builtin.assert:
+        that: nextcloud_service.status.ActiveState == 'active'
+        fail_msg: "nextcloud-server.service not active ({{ nextcloud_service.status.ActiveState }})"
+        success_msg: "nextcloud-server.service is active"
+
+    - name: Retrieve Nextcloud service log for debugging
+      when: nextcloud_debug_service_enabled | bool
+      ansible.builtin.command:
+        cmd: journalctl -xeu nextcloud-server.service
+      changed_when: false
+
+    - name: Wait for Nextcloud HTTP endpoint to respond (up to 10m)
+      ansible.builtin.uri:
+        url: "http://localhost:80/"
+        method: GET
+        status_code: [200, 302]
+        follow_redirects: none
+      register: nextcloud_endpoint
+      until: nextcloud_endpoint.status in [200, 302]
+      retries: 120
+      delay: 5
+
+    - name: Assert Nextcloud HTTP endpoint responds
+      ansible.builtin.assert:
+        that: nextcloud_endpoint.status in [200, 302]
+        fail_msg: "Nextcloud did not respond as expected ({{ nextcloud_endpoint.status | default('no response') }})"
+        success_msg: "Nextcloud responded with {{ nextcloud_endpoint.status }}"
+
+    - name: Show Nextcloud systemd service status summary
+      ansible.builtin.debug:
+        msg:
+          - "Nextcloud systemd: {{ nextcloud_service.status.ActiveState }}"
+          - "Nextcloud HTTP: {{ nextcloud_endpoint.status }}"
