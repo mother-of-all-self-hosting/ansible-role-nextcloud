@@ -49,6 +49,10 @@ Currently these testing scenarios are available:
 
 Tests a standard Nextcloud installation.
 
+### `default-valkey`
+
+Tests a standard Nextcloud installation with the Valkey cache adapter.
+
 ### `mariadb`
 
 Tests a standard Nextcloud installation with the MariaDB database.
