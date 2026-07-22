@@ -56,8 +56,6 @@
     - { "name": "nextcloud_gid", when: true }
     - { "name": "nextcloud_hostname", when: true }
     - { "name": "nextcloud_container_network", when: true }
-    - { "name": "nextcloud_database_postgres_hostname", when: true }
-    - { "name": "nextcloud_database_postgres_password", when: true }
     - "name": "nextcloud_environment_variables_nextcloud_admin_password"
       when: "{{ nextcloud_environment_variables_nextcloud_admin_user != '' }}"
 
