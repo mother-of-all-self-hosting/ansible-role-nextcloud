@@ -299,6 +299,27 @@ nextcloud_container_image_customizations_samba_enabled: true
 
 With this configuration a customized image with the smbclient package installed will be built.
 
+### Enable video preview generation (optional)
+
+By default, Nextcloud does not generate preview thumbnails for video files, as doing so requires [ffmpeg](https://ffmpeg.org/) to be present.
+
+To enable video preview thumbnails, add the following configuration to your `vars.yml` file:
+
+```yaml
+nextcloud_container_image_customizations_ffmpeg_installation_enabled: true
+```
+
+With this configuration, a customized image with the `ffmpeg` package installed will be built, and Nextcloud will be configured to use it (via the `OC\Preview\Movie` preview provider) for generating video preview thumbnails.
+
+>[!NOTE]
+> This only enables generating previews on-demand. If you would also like to pre-generate thumbnails for existing video files, see the [Preview Generator app](#enable-preview-generator-app-optional) section below.
+
+Then, run the command below against your server, so that the new configuration takes effect:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=setup-all,adjust-nextcloud-config,start
+```
+
 ### Extending the configuration
 
 There are some additional things you may wish to configure about the service.

@@ -86,6 +86,30 @@
 - name: Run mimetype migrations on Nextcloud
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
 
+- name: Adjust Nextcloud configuration for video preview generation (ffmpeg)
+  when: nextcloud_preview_video_enabled | bool
+  block:
+    - name: Enable the ffmpeg-based video preview provider
+      ansible.builtin.command:
+        cmd: |-
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ --no-warnings config:system:set enabledPreviewProviders --type json --value '{{ nextcloud_preview_enabled_preview_providers | to_json }}'
+
+    - name: Adjust Nextcloud configuration values related to video preview generation
+      ansible.builtin.command:
+        cmd: |-
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ --no-warnings config:system:set {{ item.configName }} --type=string --value={{ item.value }}
+      with_items:
+        - configName: "preview_ffmpeg_path"
+          value: "{{ nextcloud_preview_ffmpeg_path }}"
+        - configName: "preview_ffprobe_path"
+          value: "{{ nextcloud_preview_ffprobe_path }}"
+
 - name: Run if Preview Generator is enabled
   when: nextcloud_preview_enabled | bool
   block:
