@@ -20,6 +20,7 @@ SPDX-FileCopyrightText: 2024 Philipp Homann
 SPDX-FileCopyrightText: 2024 Thomas Miceli
 SPDX-FileCopyrightText: 2024-2026 Suguru Hirahara
 SPDX-FileCopyrightText: 2025 IUCCA
+SPDX-FileCopyrightText: 2026 sudo-Tiz
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
@@ -298,6 +299,42 @@ nextcloud_container_image_customizations_samba_enabled: true
 ```
 
 With this configuration a customized image with the smbclient package installed will be built.
+
+### Enable video preview generation (optional)
+
+By default, Nextcloud does not generate preview thumbnails for video files, as doing so requires [ffmpeg](https://ffmpeg.org/) to be present.
+
+To enable video preview thumbnails, add the following configuration to your `vars.yml` file:
+
+```yaml
+nextcloud_container_image_customizations_ffmpeg_installation_enabled: true
+```
+
+With this configuration, a customized image with the `ffmpeg` package installed will be built, and Nextcloud will be configured to use it (via the `OC\Preview\Movie` preview provider) for generating video preview thumbnails.
+
+>[!NOTE]
+> This only enables generating previews on-demand. If you would also like to pre-generate thumbnails for existing video files, see the [Preview Generator app](#enable-preview-generator-app-optional) section below.
+
+Then, run the command below against your server, so that the new configuration takes effect:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=setup-all,adjust-nextcloud-config,start
+```
+
+### Enable additional preview providers (optional)
+
+Besides the [preview providers enabled by Nextcloud out of the box](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#enabledpreviewproviders), you can enable others by adding the following configuration to your `vars.yml` file:
+
+```yaml
+nextcloud_preview_enabled_preview_providers_custom:
+  - "OC\\Preview\\HEIC"
+  - "OC\\Preview\\SVG"
+```
+
+Some providers are disabled by Nextcloud by default due to performance or privacy concerns, and some of them require additional software to be present in the container image. Consult the [documentation](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#enabledpreviewproviders) before enabling them.
+
+>[!NOTE]
+> The role configures the `enabledPreviewProviders` parameter on each run of the configuration-adjustment tasks, so it overrides values set by other means (such as by invoking `occ config:system:set` manually). If you have configured additional preview providers manually before, make sure to list them in `nextcloud_preview_enabled_preview_providers_custom`.
 
 ### Extending the configuration
 

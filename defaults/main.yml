@@ -7,6 +7,7 @@
 # SPDX-FileCopyrightText: 2024 Sergio Durigan Junior
 # SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 # SPDX-FileCopyrightText: 2026 Timofej Luitle
+# SPDX-FileCopyrightText: 2026 sudo-Tiz
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -62,6 +63,8 @@ nextcloud_container_image_customizations_enabled: |
       or
       nextcloud_container_image_customizations_samba_enabled
       or
+      nextcloud_container_image_customizations_ffmpeg_installation_enabled
+      or
       nextcloud_container_image_customizations_packages_to_install | length > 0
     )
   }}
@@ -81,6 +84,13 @@ nextcloud_container_image_customizations_php_imagick_installation_packages: ["li
 nextcloud_container_image_customizations_samba_enabled: false
 nextcloud_container_image_customizations_samba_packages: ["procps", "smbclient"]
 
+# ffmpeg support for generating video preview thumbnails can be enabled using the toggle below, which
+# installs the ffmpeg package, needed for the `OC\Preview\Movie` preview provider to work.
+# See `nextcloud_preview_video_enabled` for enabling the preview provider itself.
+# Also see ../../templates/customizations/Dockerfile.j2
+nextcloud_container_image_customizations_ffmpeg_installation_enabled: false
+nextcloud_container_image_customizations_ffmpeg_installation_packages: ["ffmpeg"]
+
 # A list of packages to install in the customized Nextcloud container image.
 # To add your own, use `nextcloud_container_image_customizations_packages_to_install_custom`
 nextcloud_container_image_customizations_packages_to_install: "{{ (nextcloud_container_image_customizations_packages_to_install_auto + nextcloud_container_image_customizations_packages_to_install_custom) | unique }}"
@@ -89,6 +99,8 @@ nextcloud_container_image_customizations_packages_to_install_auto: |
     (nextcloud_container_image_customizations_php_imagick_installation_packages if nextcloud_container_image_customizations_php_imagick_installation_enabled else [])
     +
     (nextcloud_container_image_customizations_samba_packages if nextcloud_container_image_customizations_samba_enabled else [])
+    +
+    (nextcloud_container_image_customizations_ffmpeg_installation_packages if nextcloud_container_image_customizations_ffmpeg_installation_enabled else [])
   }}
 nextcloud_container_image_customizations_packages_to_install_custom: []
 
@@ -686,6 +698,63 @@ nextcloud_preview_preview_max_y:
 
 # Specify JPEG quality for preview images. The value is 80, based on the one by the upstream project.
 nextcloud_preview_app_jpeg_quality: 80
+
+# Video preview generation (thumbnails for video files) using ffmpeg
+#
+# Enabling this registers the `OC\Preview\Movie` preview provider and configures Nextcloud
+# to use ffmpeg/ffprobe for generating video preview thumbnails.
+#
+# This requires the ffmpeg binary to be present in the container image. By default, this is
+# tied to `nextcloud_container_image_customizations_ffmpeg_installation_enabled`, which builds
+# a customized container image with the ffmpeg package installed.
+# See ../../templates/customizations/Dockerfile.j2
+nextcloud_preview_video_enabled: "{{ nextcloud_container_image_customizations_ffmpeg_installation_enabled }}"
+
+# The preview providers registered when `nextcloud_preview_video_enabled` is enabled.
+nextcloud_preview_video_providers:
+  - "OC\\Preview\\Movie"
+
+# Path to the ffmpeg/ffprobe binaries inside the container, used for generating video previews.
+# These are the paths at which the packages installed via
+# `nextcloud_container_image_customizations_ffmpeg_installation_packages` put their binaries.
+nextcloud_preview_ffmpeg_path: /usr/bin/ffmpeg
+nextcloud_preview_ffprobe_path: /usr/bin/ffprobe
+
+# A list of Nextcloud preview providers to enable (the `enabledPreviewProviders` configuration parameter).
+# To add your own, use `nextcloud_preview_enabled_preview_providers_custom`.
+#
+# Note that this list is applied on each configuration-adjustment run, so it overrides any
+# `enabledPreviewProviders` value configured by other means (e.g. by invoking `occ config:system:set` manually).
+nextcloud_preview_enabled_preview_providers: "{{ (nextcloud_preview_enabled_preview_providers_default + nextcloud_preview_enabled_preview_providers_auto + nextcloud_preview_enabled_preview_providers_custom) | unique }}"
+
+# The preview providers enabled by Nextcloud itself,
+# plus the additional ones that this role enables depending on other feature toggles.
+#
+# Note that the provider names are referenced through variables, instead of being spelled out inline here.
+# Backslashes in Jinja string literals which are evaluated in a block scalar (`|`) end up doubled
+# in the result, which would yield an unusable `OC\\Preview\\Movie` value.
+nextcloud_preview_enabled_preview_providers_default: |
+  {{
+    nextcloud_preview_enabled_preview_providers_upstream
+    +
+    (nextcloud_preview_video_providers if nextcloud_preview_video_enabled | bool else [])
+  }}
+nextcloud_preview_enabled_preview_providers_auto: []
+nextcloud_preview_enabled_preview_providers_custom: []
+
+# The preview providers which Nextcloud enables out of the box.
+# See: https://github.com/nextcloud/server/blob/master/config/config.sample.php
+nextcloud_preview_enabled_preview_providers_upstream:
+  - "OC\\Preview\\PNG"
+  - "OC\\Preview\\JPEG"
+  - "OC\\Preview\\GIF"
+  - "OC\\Preview\\BMP"
+  - "OC\\Preview\\XBitmap"
+  - "OC\\Preview\\Krita"
+  - "OC\\Preview\\WebP"
+  - "OC\\Preview\\MarkDown"
+  - "OC\\Preview\\TXT"
+  - "OC\\Preview\\OpenDocument"
 
 # Specify configurations for Nextcloud's LDAP application ("LDAP user and group backend", `user_ldap`)
 #
