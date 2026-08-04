@@ -710,6 +710,10 @@ nextcloud_preview_app_jpeg_quality: 80
 # See ../../templates/customizations/Dockerfile.j2
 nextcloud_preview_video_enabled: "{{ nextcloud_container_image_customizations_ffmpeg_installation_enabled }}"
 
+# The preview providers registered when `nextcloud_preview_video_enabled` is enabled.
+nextcloud_preview_video_providers:
+  - "OC\\Preview\\Movie"
+
 # Path to the ffmpeg/ffprobe binaries inside the container, used for generating video previews.
 # These are the paths at which the packages installed via
 # `nextcloud_container_image_customizations_ffmpeg_installation_packages` put their binaries.
@@ -735,9 +739,13 @@ nextcloud_preview_enabled_preview_providers_default:
   - "OC\\Preview\\OpenDocument"
 
 # Additional preview providers enabled automatically by this role, depending on other feature toggles.
+#
+# Note that the provider names are referenced through a variable (`nextcloud_preview_video_providers`),
+# instead of being spelled out inline here. Backslashes in Jinja string literals which are evaluated
+# in a block scalar (`|`) end up doubled in the result, which would yield an unusable `OC\\Preview\\Movie` value.
 nextcloud_preview_enabled_preview_providers_auto: |
   {{
-    (['OC\\Preview\\Movie'] if nextcloud_preview_video_enabled | bool else [])
+    (nextcloud_preview_video_providers if nextcloud_preview_video_enabled | bool else [])
   }}
 nextcloud_preview_enabled_preview_providers_custom: []
 
