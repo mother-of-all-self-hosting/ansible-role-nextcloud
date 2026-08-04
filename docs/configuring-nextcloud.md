@@ -321,6 +321,21 @@ Then, run the command below against your server, so that the new configuration t
 ansible-playbook -i inventory/hosts setup.yml --tags=setup-all,adjust-nextcloud-config,start
 ```
 
+### Enable additional preview providers (optional)
+
+Besides the [preview providers enabled by Nextcloud out of the box](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#enabledpreviewproviders), you can enable others by adding the following configuration to your `vars.yml` file:
+
+```yaml
+nextcloud_preview_enabled_preview_providers_custom:
+  - "OC\\Preview\\HEIC"
+  - "OC\\Preview\\SVG"
+```
+
+Some providers are disabled by Nextcloud by default due to performance or privacy concerns, and some of them require additional software to be present in the container image. Consult the [documentation](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#enabledpreviewproviders) before enabling them.
+
+>[!NOTE]
+> The role configures the `enabledPreviewProviders` parameter on each run of the configuration-adjustment tasks, so it overrides values set by other means (such as by invoking `occ config:system:set` manually). If you have configured additional preview providers manually before, make sure to list them in `nextcloud_preview_enabled_preview_providers_custom`.
+
 ### Extending the configuration
 
 There are some additional things you may wish to configure about the service.
