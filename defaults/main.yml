@@ -724,9 +724,24 @@ nextcloud_preview_ffprobe_path: /usr/bin/ffprobe
 # To add your own, use `nextcloud_preview_enabled_preview_providers_custom`.
 nextcloud_preview_enabled_preview_providers: "{{ (nextcloud_preview_enabled_preview_providers_default + nextcloud_preview_enabled_preview_providers_auto + nextcloud_preview_enabled_preview_providers_custom) | unique }}"
 
-# The preview providers enabled by Nextcloud by default.
+# The preview providers enabled by Nextcloud itself,
+# plus the additional ones that this role enables depending on other feature toggles.
+#
+# Note that the provider names are referenced through variables, instead of being spelled out inline here.
+# Backslashes in Jinja string literals which are evaluated in a block scalar (`|`) end up doubled
+# in the result, which would yield an unusable `OC\\Preview\\Movie` value.
+nextcloud_preview_enabled_preview_providers_default: |
+  {{
+    nextcloud_preview_enabled_preview_providers_upstream
+    +
+    (nextcloud_preview_video_providers if nextcloud_preview_video_enabled | bool else [])
+  }}
+nextcloud_preview_enabled_preview_providers_auto: []
+nextcloud_preview_enabled_preview_providers_custom: []
+
+# The preview providers which Nextcloud enables out of the box.
 # See: https://github.com/nextcloud/server/blob/master/config/config.sample.php
-nextcloud_preview_enabled_preview_providers_default:
+nextcloud_preview_enabled_preview_providers_upstream:
   - "OC\\Preview\\PNG"
   - "OC\\Preview\\JPEG"
   - "OC\\Preview\\GIF"
@@ -737,17 +752,6 @@ nextcloud_preview_enabled_preview_providers_default:
   - "OC\\Preview\\MarkDown"
   - "OC\\Preview\\TXT"
   - "OC\\Preview\\OpenDocument"
-
-# Additional preview providers enabled automatically by this role, depending on other feature toggles.
-#
-# Note that the provider names are referenced through a variable (`nextcloud_preview_video_providers`),
-# instead of being spelled out inline here. Backslashes in Jinja string literals which are evaluated
-# in a block scalar (`|`) end up doubled in the result, which would yield an unusable `OC\\Preview\\Movie` value.
-nextcloud_preview_enabled_preview_providers_auto: |
-  {{
-    (nextcloud_preview_video_providers if nextcloud_preview_video_enabled | bool else [])
-  }}
-nextcloud_preview_enabled_preview_providers_custom: []
 
 # Specify configurations for Nextcloud's LDAP application ("LDAP user and group backend", `user_ldap`)
 #
