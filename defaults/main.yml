@@ -722,6 +722,9 @@ nextcloud_preview_ffprobe_path: /usr/bin/ffprobe
 
 # A list of Nextcloud preview providers to enable (the `enabledPreviewProviders` configuration parameter).
 # To add your own, use `nextcloud_preview_enabled_preview_providers_custom`.
+#
+# Note that this list is applied on each configuration-adjustment run, so it overrides any
+# `enabledPreviewProviders` value configured by other means (e.g. by invoking `occ config:system:set` manually).
 nextcloud_preview_enabled_preview_providers: "{{ (nextcloud_preview_enabled_preview_providers_default + nextcloud_preview_enabled_preview_providers_auto + nextcloud_preview_enabled_preview_providers_custom) | unique }}"
 
 # The preview providers enabled by Nextcloud itself,
