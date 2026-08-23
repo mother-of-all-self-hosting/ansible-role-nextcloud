@@ -38,7 +38,7 @@ provisioner:
         nextcloud_hostname: localhost
         nextcloud_container_labels_traefik_enabled: false
         nextcloud_container_http_host_bind_port: 80
-        nextcloud_database_type: sqlite
+        nextcloud_database_type: mysql
         nextcloud_environment_variables_nextcloud_admin_user: user
         nextcloud_environment_variables_nextcloud_admin_password: password
 
