@@ -7,7 +7,6 @@
     {
       "description": "Nextcloud refuses to upgrade across more than one major at a time (34 -> 35 -> 36, never 34 -> 36). Without this, a repository that has fallen behind would be offered a single pull request jumping straight to the newest major, which cannot be applied. One pull request per major keeps the upgrade path walkable.",
       "matchManagers": ["custom.regex"],
-      "matchPackageNames": ["nextcloud"],
       "separateMultipleMajor": true
     },
     {
