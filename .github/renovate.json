@@ -5,6 +5,13 @@
   ],
   "packageRules": [
     {
+      "description": "Nextcloud refuses to upgrade across more than one major at a time (34 -> 35 -> 36, never 34 -> 36). Without this, a repository that has fallen behind would be offered a single pull request jumping straight to the newest major, which cannot be applied. One pull request per major keeps the upgrade path walkable.",
+      "matchManagers": ["custom.regex"],
+      "matchPackageNames": ["nextcloud"],
+      "separateMultipleMajor": true
+    },
+    {
+      "description": "Predates the shared preset and is kept as-is: upstream publishes both bare tags (34.0.3) and Apache-flavored ones (34.0.3-apache), and this restricts which of them are considered. Note that nextcloud_version in defaults/main.yml holds a bare version - the -apache suffix is appended by nextcloud_container_image_tag - so this only bites if the resolved package name ever becomes library/nextcloud.",
       "matchDatasources": ["docker"],
       "matchPackageNames": ["library/nextcloud"],
       "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-apache$"
