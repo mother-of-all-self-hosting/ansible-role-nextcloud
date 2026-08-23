@@ -38,11 +38,11 @@ provisioner:
         nextcloud_hostname: localhost
         nextcloud_container_labels_traefik_enabled: false
         nextcloud_container_http_host_bind_port: 80
-        nextcloud_database_type: postgres
         nextcloud_environment_variables_nextcloud_admin_user: user
         nextcloud_environment_variables_nextcloud_admin_password: password
 
         # Variables required for Nextcloud to connect to the Postgres database (via Unix socket)
+        nextcloud_database_type: postgres
         nextcloud_database_postgres_username: my_database_username
         nextcloud_database_postgres_password: my_database_password
         nextcloud_database_name: nextcloud
