@@ -97,15 +97,12 @@
         fail_msg: "Nextcloud runs on {{ (nextcloud_config_list.stdout | from_json).system.dbtype }}, expected {{ nextcloud_verify_expected_dbtype }}"
         success_msg: "Nextcloud runs on {{ nextcloud_verify_expected_dbtype }}, as the scenario asks for"
 
-    - name: Assert Nextcloud uses the Valkey data-store this scenario wired up
-      when: nextcloud_redis_socket_enabled | default(false) | bool
+    - name: Assert Nextcloud uses APCu as data cache installed by default on Docker image
       ansible.builtin.assert:
         that:
-          - "'redis' in (nextcloud_config_list.stdout | from_json).system"
-          - "'Redis' in (nextcloud_config_list.stdout | from_json).system['memcache.locking']"
-          - "'Redis' in (nextcloud_config_list.stdout | from_json).system['memcache.distributed']"
-        fail_msg: "Nextcloud is not using the Valkey data-store: {{ (nextcloud_config_list.stdout | from_json).system }}"
-        success_msg: "Nextcloud uses the Valkey data-store for distributed caching and locking"
+          - "'APCu' in (nextcloud_config_list.stdout | from_json).system['memcache.local']"
+        fail_msg: "Nextcloud is not using APCu: {{ (nextcloud_config_list.stdout | from_json).system }}"
+        success_msg: "Nextcloud uses APCu as data cache as expected"
 
     # An authenticated request goes all the way through to the user table, so
     # it proves that the administrator account the role asked for really was
