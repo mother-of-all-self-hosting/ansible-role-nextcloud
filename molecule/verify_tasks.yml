@@ -132,7 +132,7 @@
     fail_msg: "The Nextcloud web interface did not render its login page ({{ nextcloud_endpoint.url }})"
     success_msg: "The Nextcloud web interface serves its login page"
 
-- name: Show Nextcloud verification summary
+- name: Show the Nextcloud verification summary
   ansible.builtin.debug:
     msg:
       - "Nextcloud systemd: {{ nextcloud_service.status.ActiveState }}"
