@@ -36,7 +36,7 @@
 - name: Retrieve the Nextcloud systemd service log for debugging
   when: nextcloud_debug_service_enabled | bool
   ansible.builtin.command:
-    cmd: journalctl -xeu nextcloud-server.service
+    cmd: journalctl --no-pager --output=cat --unit=nextcloud-server.service
   changed_when: false
 
 # Nextcloud serves pages long before it is usable: an instance which has
