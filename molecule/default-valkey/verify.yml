@@ -17,5 +17,23 @@
     nextcloud_verify_expected_dbtype: "{{ {'sqlite': 'sqlite3', 'mysql': 'mysql', 'postgres': 'pgsql'}[nextcloud_database_type] }}"
 
   tasks:
-    - name: Run the shared Nextcloud (with Valkey enabled) verification
-      ansible.builtin.include_tasks: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks_valkey.yml"
+    - name: Verify that Nextcloud works
+      block:
+        - name: Run the shared Nextcloud verification
+          ansible.builtin.include_tasks: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
+
+      rescue:
+        # Whatever went wrong, the reason is almost always in the systemd service log.
+        - name: Retrieve the Nextcloud systemd service log
+          ansible.builtin.command:
+            cmd: journalctl --no-pager --output=cat --unit=nextcloud-server.service
+          register: nextcloud_service_log
+          changed_when: false
+
+        - name: Show the Nextcloud systemd service log
+          ansible.builtin.debug:
+            var: nextcloud_service_log.stdout_lines
+
+        - name: Fail because verification did not pass
+          ansible.builtin.fail:
+            msg: "Nextcloud verification failed. The systemd service log is printed above."
