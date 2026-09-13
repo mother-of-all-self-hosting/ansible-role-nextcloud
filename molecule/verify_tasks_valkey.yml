@@ -13,13 +13,14 @@
     file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
     name: nextcloud_defaults
 
-- name: Wait for the Nextcloud systemd service to become active (up to 180s)
+- name: Wait for the Nextcloud systemd services to become active (up to 180s each)
   ansible.builtin.systemd_service:
-    name: nextcloud-server.service
-  register: nextcloud_service
-  until: nextcloud_service.status.ActiveState == 'active'
+    name: "{{ item }}"
+  register: nextcloud_server_services
+  until: nextcloud_server_services.status.ActiveState == 'active'
   retries: 36
   delay: 5
+  loop: "{{ nextcloud_server_verify_units }}"
   # So that giving up is reported by the assertion below rather than as a
   # wall of systemd unit properties.
   failed_when: false
@@ -27,17 +28,20 @@
 # `Restart=always` in the systemd unit means that even a container which crashes
 # and gets restarted reads as active here, so this is a precondition rather than
 # a result.
-- name: Assert the Nextcloud systemd service is active
+- name: Assert the Nextcloud systemd services are active
   ansible.builtin.assert:
-    that: nextcloud_service.status.ActiveState == 'active'
-    fail_msg: "nextcloud-server.service is not active ({{ nextcloud_service.status.ActiveState }})"
-    success_msg: "nextcloud-server.service is active"
+    that: nextcloud_server_services.results | map(attribute='status.ActiveState') | unique | list == ['active']
+    fail_msg: >-
+      Not every service is active:
+      {{ dict(nextcloud-server_verify_units | zip(nextcloud_server_services.results | map(attribute='status.ActiveState'))) }}
+    success_msg: "Every systemd service is active"
 
-- name: Retrieve the Nextcloud systemd service log for debugging
-  when: nextcloud_debug_service_enabled | bool
+- name: Retrieve the Nextcloud systemd services log for debugging
+  when: nextcloud-server_debug_service_enabled | bool
   ansible.builtin.command:
-    cmd: journalctl --no-pager --output=cat --unit=nextcloud-server.service
+    cmd: "journalctl --no-pager --output=cat --unit={{ item }}"
   changed_when: false
+  loop: "{{ nextcloud_server_verify_units }}"
 
 # Nextcloud serves pages long before it is usable: an instance which has
 # not completed its installation happily answers with the setup wizard, and
@@ -144,7 +148,7 @@
 - name: Show the Nextcloud verification summary
   ansible.builtin.debug:
     msg:
-      - "Nextcloud systemd: {{ nextcloud_service.status.ActiveState }}"
+      - "Nextcloud systemd: {% for unit, state in nextcloud_verify_units | zip(nextcloud_services.results | map(attribute='status.ActiveState')) %}{{ unit }} ({{ state }}){% if not loop.last %}, {% endif %}{% endfor %}"
       - "Nextcloud version: {{ nextcloud_status.json.versionstring }} ({{ nextcloud_status.json.version }})"
       - "Nextcloud database: {{ (nextcloud_config_list.stdout | from_json).system.dbtype }}"
       - "Nextcloud API account: {{ nextcloud_ocs_user.json.ocs.data.id }}"

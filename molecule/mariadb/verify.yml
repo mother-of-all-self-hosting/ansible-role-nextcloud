@@ -16,6 +16,10 @@
     # What Nextcloud calls the database type that this scenario asks the role for.
     nextcloud_verify_expected_dbtype: "{{ {'sqlite': 'sqlite3', 'mysql': 'mysql', 'postgres': 'pgsql'}[nextcloud_database_type] }}"
 
+    nextcloud_verify_units:
+      - nextcloud-server.service
+      - mariadb.service
+
   tasks:
     - name: Verify that Nextcloud works
       block:
