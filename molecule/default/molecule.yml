@@ -41,6 +41,7 @@ provisioner:
         nextcloud_environment_variables_nextcloud_admin_user: user
         nextcloud_environment_variables_nextcloud_admin_password: password
         nextcloud_database_type: sqlite
+        nextcloud_redis_socket_enabled: false
   env:
     # Workaround for https://github.com/ansible/molecule/issues/4391
     ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/..:/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles:~/.ansible/roles

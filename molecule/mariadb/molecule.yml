@@ -40,6 +40,7 @@ provisioner:
         nextcloud_container_http_host_bind_port: 80
         nextcloud_environment_variables_nextcloud_admin_user: user
         nextcloud_environment_variables_nextcloud_admin_password: password
+        nextcloud_redis_socket_enabled: false
 
         # Variables required for Nextcloud to connect to the MariaDB database (via Unix socket)
         nextcloud_database_type: mysql
