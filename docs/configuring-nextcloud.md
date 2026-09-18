@@ -344,7 +344,7 @@ Take a look at:
 
 - [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `nextcloud_environment_variables_additional_variables` variable
 
-See its [environment variables](https://github.com/docker-library/docs/blob/master/nextcloud/README.md#auto-configuration-via-environment-variables) for a complete list of Nextcloud's config options that you could put in `nextcloud_environment_variables_additional_variables`.
+See its [environment variables](https://github.com/docker-library/docs/blob/master/nextcloud/README.md#auto-configuration-via-environment-variables) for a complete list of Nextcloud's config options that you can put in `nextcloud_environment_variables_additional_variables`.
 
 ## Installing
 
