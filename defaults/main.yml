@@ -293,6 +293,12 @@ nextcloud_container_extra_arguments: "{{ nextcloud_container_extra_arguments_aut
 nextcloud_container_extra_arguments_auto: []
 nextcloud_container_extra_arguments_custom: []
 
+# A list of extra arguments to pass to the process inside the container
+# Example: ['--SOME_ARGUMENT']
+nextcloud_process_extra_arguments: "{{ nextcloud_process_extra_arguments_auto + nextcloud_process_extra_arguments_custom }}"
+nextcloud_process_extra_arguments_auto: []
+nextcloud_process_extra_arguments_custom: []
+
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
 #
