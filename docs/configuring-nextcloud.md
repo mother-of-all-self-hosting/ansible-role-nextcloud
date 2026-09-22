@@ -40,7 +40,7 @@ To run a Nextcloud instance it is necessary to prepare a database. You can use a
 If you are looking for Ansible roles for a MySQL compatible server or Postgres, you can check out [ansible-role-mariadb](https://github.com/mother-of-all-self-hosting/ansible-role-mariadb) and [ansible-role-postgres](https://github.com/mother-of-all-self-hosting/ansible-role-postgres), both of which are maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
 
 >[!NOTE]
-> Nextcloud recommends MySQL / MariaDB on [this page](https://docs.nextcloud.com/server/latest/admin_manual/configuration_database/linux_database_configuration.html) of the documentation. Note that not all versions of them are recommended. See [this page](https://docs.nextcloud.com/server/latest/admin_manual/installation/system_requirements.html#server) for system requirements.
+> Nextcloud recommends MySQL / MariaDB on [this page](https://docs.nextcloud.com/server/latest/admin_manual/configuration_database/linux_database_configuration.html) of the documentation. Note that not all versions of them are recommended. Refer to [this page](https://docs.nextcloud.com/server/latest/admin_manual/installation/system_requirements.html#server) for system requirements.
 
 ## Adjusting the playbook configuration
 
@@ -75,7 +75,7 @@ nextcloud_hostname: "example.com"
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
 >[!NOTE]
-> Changing the hostname after the first installation is currently not supported by Nextcloud. See [this page](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/domain_change.html) on the documentation as well.
+> Changing the hostname after the first installation is currently not supported by Nextcloud. Refer to [this page](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/domain_change.html) on the documentation as well.
 
 ### Setting username and password for the initial admin user (optional)
 
@@ -107,7 +107,7 @@ Set `mysql` for MySQL compatible database or `sqlite` for SQLite, respectively.
 For other settings, check variables such as `nextcloud_database_mysql_*` and `nextcloud_database_*` on [`defaults/main.yml`](../defaults/main.yml).
 
 >[!NOTE]
-> It is possible to convert a SQLite database to a MySQL, MariaDB or PostgreSQL database with the Nextcloud command line tool. See [this page](docs.nextcloud.com/server/latest/admin_manual/configuration_database/db_conversion.html) on the documentation for details.
+> It is possible to convert a SQLite database to a MySQL, MariaDB or PostgreSQL database with the Nextcloud command line tool. Refer to [this page](docs.nextcloud.com/server/latest/admin_manual/configuration_database/db_conversion.html) on the documentation for details.
 
 #### Configuring connection to the database server (optional)
 
@@ -373,7 +373,7 @@ ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
 >[!NOTE]
 > You should re-run the command every time the Nextcloud version is updated.
 
-You can open the URL with a web browser to log in to the instance. See [this official guide](https://docs.nextcloud.com/server/latest/admin_manual/contents.html) to get started.
+You can open the URL with a web browser to log in to the instance. Refer to [this official guide](https://docs.nextcloud.com/server/latest/admin_manual/contents.html) to get started.
 
 ### Configuring Nextcloud Office application (optional)
 
@@ -550,7 +550,7 @@ To `agent_password`, set the password of the bind user (on this case: `agent`).
 
 This role can optionally enable and configure the [OpenID Connect Provider app](https://apps.nextcloud.com/apps/oidc), so that users can login to other services using their Nextcloud accounts via OAuth2.
 
-See [this page](./configuring-oidc-provider.md) for details about how to set it up.
+Refer to [this page](./configuring-oidc-provider.md) for details about how to set it up.
 
 ### Using the occ command
 
@@ -562,7 +562,7 @@ For example, you can install (and enable) [Forms](https://apps.nextcloud.com/app
 ansible-playbook -i inventory/hosts setup.yml --tags=occ-nextcloud -e command="'app:install forms'"
 ```
 
-See [this page](https://docs.nextcloud.com/server/latest/admin_manual/occ_command.html) for the list of available commands.
+Refer to [this page](https://docs.nextcloud.com/server/latest/admin_manual/occ_command.html) for the list of available commands.
 
 ## Maintenance
 
@@ -584,7 +584,7 @@ For example, if you want to upgrade from version 29 to 31, you will have to upgr
 
 Also, **wait for background migrations to finish after major upgrades**. They are scheduled to run as a cronjob, and the schedule is defined by the `nextcloud_cron_schedule` variable.
 
-See [this section](https://github.com/docker-library/docs/blob/master/nextcloud/README.md#update-to-a-newer-version) on the documentation of the Docker image, as well as [this page](https://docs.nextcloud.com/server/latest/admin_manual/maintenance/upgrade.html#approaching-upgrades) on the documentation for details.
+Refer to [this section](https://github.com/docker-library/docs/blob/master/nextcloud/README.md#update-to-a-newer-version) on the documentation of the Docker image, as well as [this page](https://docs.nextcloud.com/server/latest/admin_manual/maintenance/upgrade.html#approaching-upgrades) on the documentation for details.
 
 ## Troubleshooting
 
