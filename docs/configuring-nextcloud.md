@@ -238,10 +238,10 @@ If you are looking for an Ansible role for Redis, you can check out [ansible-rol
 You can configure a SMTP mailer by adding the following configuration to your `vars.yml` file as below (adapt to your needs):
 
 ```yaml
-# Set the hostname of the SMTP server
+# Specify the hostname of the SMTP server
 nextcloud_environment_variables_smtp_host: ""
 
-# Set the port number of the SMTP server
+# Specify the port number of the SMTP server
 nextcloud_environment_variables_smtp_port: 587
 
 # Specify the localpart of the sender (localpart@domain)
@@ -250,10 +250,10 @@ nextcloud_environment_variables_mail_from_address: ""
 # Specify the domain for the external SMTP server if it is different from the domain where Nextcloud is installed
 nextcloud_environment_variables_mail_domain: ""
 
-# Set the username for the SMTP server
+# Specify the username for the SMTP server
 nextcloud_environment_variables_smtp_name: ""
 
-# Set the password for the SMTP server
+# Specify the password for the SMTP server
 nextcloud_environment_variables_smtp_password: ""
 
 # Set `ssl` or `tls` if one of them is used for communication with the SMTP server
