@@ -83,12 +83,11 @@ It is possible to create an initial user with administrator privileges by adding
 
 ```yaml
 nextcloud_environment_variables_nextcloud_admin_user: ADMIN_USER_USERNAME_HERE
-
 nextcloud_environment_variables_nextcloud_admin_password: ADMIN_USER_PASSWORD_HERE
 ```
 
 >[!NOTE]
-> Changing those values does not update them once the user is created.
+> Subsequent changes to them will not affect the existing user. The password can be updated on the Nextcloud's UI.
 
 ### Configuring database
 
