@@ -121,26 +121,29 @@
           php /var/www/html/occ app:install previewgenerator
       failed_when: false
 
-    - name: Adjust Nextcloud configuration values related to Preview Generator
+    - name: Adjust Nextcloud system configuration values related to Preview Generator
       ansible.builtin.command:
         cmd: |-
           {{ devture_systemd_docker_base_host_command_docker }} exec
           --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
           {{ nextcloud_identifier }}-server
-          php /var/www/html/occ {{ item.appType }} --value={{ item.value }} -- {{ item.appConfig }} {{ item.configName }}
+          php /var/www/html/occ --no-warnings config:system:set {{ item.configName }} --type=integer --value={{ item.value }}
       with_items:
-        - appType: "config:system:set"
-          appConfig: ""
-          configName: "preview_max_x"
+        - configName: "preview_max_x"
           value: "{{ nextcloud_preview_preview_max_x }}"
-        - appType: "config:system:set"
-          appConfig: ""
-          configName: "preview_max_y"
+        - configName: "preview_max_y"
           value: "{{ nextcloud_preview_preview_max_y }}"
-        - appType: "config:app:set"
-          appConfig: "preview"
-          configName: "jpeg_quality"
-          value: "{{ nextcloud_preview_app_jpeg_quality }}"
+
+    # The value is intentionally not given an explicit `--type`.
+    # Existing installations already have it stored as `mixed` and changing the type requires interactive confirmation.
+    # Nextcloud reads it fine as `mixed` anyway.
+    - name: Adjust Nextcloud app configuration values related to Preview Generator
+      ansible.builtin.command:
+        cmd: |-
+          {{ devture_systemd_docker_base_host_command_docker }} exec
+          --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
+          {{ nextcloud_identifier }}-server
+          php /var/www/html/occ --no-warnings config:app:set preview jpeg_quality --value={{ nextcloud_preview_app_jpeg_quality }}
 
     - name: "Check if the file created after the first run exists"
       ansible.builtin.stat:
