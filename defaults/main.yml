@@ -397,7 +397,7 @@ nextcloud_container_cleanup_command: |
 
 # Specify a database driver to use
 # Valid values: mysql, postgres, sqlite
-nextcloud_database_type: postgres
+nextcloud_database_type: ""
 
 # Specify database configuration
 nextcloud_database_mysql_hostname: ""
