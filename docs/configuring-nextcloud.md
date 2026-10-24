@@ -401,7 +401,7 @@ You should then be able to open any document (`.doc`, `.odt`, `.pdf`, etc.) and 
 Open the URL `https://example.com/settings/admin/eurooffice` to configure the application. Refer to [this page](https://github.com/Euro-Office/eurooffice-nextcloud/blob/main/README.md#common-settings) for details about available settings.
 
 >[!NOTE]
-> If you are looking for an Ansible role for Euro-Office, you can check out [ansible-role-eurooffice](https://radicle.network/nodes/iris.radicle.network/rad%3Az4SSf2SU2YwBaMmCFBJnM5KqorU9T) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
+> If you are looking for an Ansible role for Euro-Office, you can check out [ansible-role-eurooffice](https://radicle.network/nodes/progressiv.radicle.garden/rad%3Az4SSf2SU2YwBaMmCFBJnM5KqorU9T) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
 
 ### Configuring Nextcloud Office (Collabora) application (optional)
 
