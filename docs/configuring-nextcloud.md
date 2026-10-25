@@ -619,7 +619,9 @@ Nextcloud's built-in web log viewer requires file logging. To use it, add the fo
 nextcloud_config_parameter_log_type: file
 ```
 
-With file logging, application logs are written to `nextcloud.log` in Nextcloud's data directory. Switching the logging backend does not remove existing log files. Audit and Flow logs have separate settings and are not configured by `nextcloud_config_parameter_log_type`.
+With file logging, application logs are written to `nextcloud.log` in Nextcloud's data directory, unless a custom `logfile` path is configured. Audit and Flow logs have separate settings and are not configured by `nextcloud_config_parameter_log_type`.
+
+When `nextcloud_config_parameter_log_type` is not `file`, running `adjust-nextcloud-config` removes `{{ nextcloud_data_path }}/data/nextcloud.log` and its `nextcloud.log.1` rotation, discarding their contents. Logs in custom locations must be removed manually.
 
 ### Query the server status
 

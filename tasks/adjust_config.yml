@@ -66,6 +66,15 @@
       php /var/www/html/occ --no-warnings config:system:set {{ item.key }} --type="{{ item.type }}" --value={{ item.value }}
   with_items: "{{ nextcloud_config_parameters }}"
 
+- name: Ensure default Nextcloud file logs are absent when using another logging backend
+  when: nextcloud_config_parameter_log_type != 'file'
+  ansible.builtin.file:
+    path: "{{ nextcloud_data_path }}/data/{{ item }}"
+    state: absent
+  with_items:
+    - nextcloud.log
+    - nextcloud.log.1
+
 - name: Update database indices
   ansible.builtin.command:
     cmd: |-
