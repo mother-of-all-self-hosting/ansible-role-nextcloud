@@ -591,7 +591,35 @@ Refer to [this section](https://github.com/docker-library/docs/blob/master/nextc
 
 ### Check the service's logs
 
-You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu nextcloud-server` (or how you/your playbook named the service, e.g. `mash-nextcloud-server`).
+To keep logging consistent with sibling roles, this role defaults to sending Nextcloud's application logs to [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by setting `nextcloud_config_parameter_log_type: errorlog` which sends these logs through PHP's error logging. The stock Apache container image sends these messages to stderr, which the systemd service captures in the journal. Refer to [Nextcloud's logging documentation](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/logging_configuration.html) for details about the available backends.
+
+To view logs from web requests, log in to the server with SSH and run:
+
+```sh
+journalctl -fu nextcloud-server
+```
+
+Background job logs appear under the cron service instead:
+
+```sh
+journalctl -fu nextcloud-cron
+```
+
+Replace the service names with those used by your playbook, e.g. `mash-nextcloud-server` and `mash-nextcloud-cron`. Manually invoked `occ` commands write application logs to the caller's stderr.
+
+To apply the logging configuration to an existing instance, run:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
+```
+
+Nextcloud's built-in web log viewer requires file logging. To use it, add the following configuration to your `vars.yml` file and run the configuration adjustment command above:
+
+```yaml
+nextcloud_config_parameter_log_type: file
+```
+
+With file logging, application logs are written to `nextcloud.log` in Nextcloud's data directory. Switching the logging backend does not remove existing log files. Audit and Flow logs have separate settings and are not configured by `nextcloud_config_parameter_log_type`.
 
 ### Query the server status
 

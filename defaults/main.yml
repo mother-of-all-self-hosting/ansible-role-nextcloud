@@ -514,9 +514,11 @@ nextcloud_config_parameter_default_timezone: UTC
 nextcloud_config_parameter_url: "{{ nextcloud_scheme }}://{{ nextcloud_hostname }}{{ nextcloud_path_prefix }}"
 
 # Specify the log type
+# The default uses PHP error logging, which the stock Apache image sends to stderr and systemd-journald.
+# Use `file` to retain Nextcloud's built-in web log viewer.
 # Valid values: file, syslog, errorlog, systemd
 # See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#log-type
-nextcloud_config_parameter_log_type: file
+nextcloud_config_parameter_log_type: errorlog
 
 # Specify loglevel
 # Valid values: 0, 1, 2, 3, 4
