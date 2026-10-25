@@ -37,7 +37,12 @@
       {{
         devture_playbook_runtime_messages_list | default([])
         +
-        [
-          nextcloud_occ_status.stdout
-        ]
+        (
+          [
+            nextcloud_occ_status.stdout,
+            nextcloud_occ_status.stderr
+          ]
+          | reject('equalto', '')
+          | list
+        )
       }}
