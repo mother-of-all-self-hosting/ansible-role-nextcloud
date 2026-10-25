@@ -520,6 +520,12 @@ nextcloud_config_parameter_url: "{{ nextcloud_scheme }}://{{ nextcloud_hostname 
 # See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#log-type
 nextcloud_config_parameter_log_type: errorlog
 
+# Specify the log type for the optional admin_audit app.
+# Follows the main logging backend by default and can be overridden independently.
+# Valid values: file, syslog, errorlog, systemd
+# See: https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/logging_configuration.html#dedicated-audit-logging-configuration
+nextcloud_config_parameter_log_type_audit: "{{ nextcloud_config_parameter_log_type }}"
+
 # Specify loglevel
 # Valid values: 0, 1, 2, 3, 4
 # See: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#loglevel
@@ -596,6 +602,11 @@ nextcloud_config_parameters_default: |
       {
         'key': 'log_type',
         'value': nextcloud_config_parameter_log_type,
+        'type': 'string',
+      },
+      {
+        'key': 'log_type_audit',
+        'value': nextcloud_config_parameter_log_type_audit,
         'type': 'string',
       },
       {

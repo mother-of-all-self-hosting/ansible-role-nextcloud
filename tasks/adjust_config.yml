@@ -75,6 +75,15 @@
     - nextcloud.log
     - nextcloud.log.1
 
+- name: Ensure default Nextcloud audit logs are absent when using another audit logging backend
+  when: nextcloud_config_parameter_log_type_audit != 'file'
+  ansible.builtin.file:
+    path: "{{ nextcloud_data_path }}/data/{{ item }}"
+    state: absent
+  with_items:
+    - audit.log
+    - audit.log.1
+
 - name: Update database indices
   ansible.builtin.command:
     cmd: |-

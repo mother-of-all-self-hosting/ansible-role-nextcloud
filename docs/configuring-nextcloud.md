@@ -619,9 +619,17 @@ Nextcloud's built-in web log viewer requires file logging. To use it, add the fo
 nextcloud_config_parameter_log_type: file
 ```
 
-With file logging, application logs are written to `nextcloud.log` in Nextcloud's data directory, unless a custom `logfile` path is configured. Audit and Flow logs have separate settings and are not configured by `nextcloud_config_parameter_log_type`.
+With file logging, application logs are written to `nextcloud.log` in Nextcloud's data directory, unless a custom `logfile` path is configured.
 
 When `nextcloud_config_parameter_log_type` is not `file`, running `adjust-nextcloud-config` removes `{{ nextcloud_data_path }}/data/nextcloud.log` and its `nextcloud.log.1` rotation, discarding their contents. Logs in custom locations must be removed manually.
+
+The optional `admin_audit` app uses the same logging backend by default, controlled by `nextcloud_config_parameter_log_type_audit`. To keep audit events in a file while sending the main application logs to the journal, add the following configuration to your `vars.yml` file and run the configuration adjustment command above:
+
+```yaml
+nextcloud_config_parameter_log_type_audit: file
+```
+
+This setting controls the audit logging destination. Enabling the `admin_audit` app and configuring its logging verbosity are separate steps; see [Nextcloud's audit logging documentation](https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/logging_configuration.html#admin-audit-log-optional). When `nextcloud_config_parameter_log_type_audit` is not `file`, `adjust-nextcloud-config` removes the standard `{{ nextcloud_data_path }}/data/audit.log` and `audit.log.1` files, discarding their contents. Audit logs in custom locations must be removed manually. Flow logs have separate settings and are not configured by these logging backend variables.
 
 ### Query the server status
 

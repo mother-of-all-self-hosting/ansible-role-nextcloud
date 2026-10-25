@@ -66,6 +66,12 @@
       nextcloud_config_parameter_log_type must be 'file', 'syslog', 'errorlog', or 'systemd'
   when: "nextcloud_config_parameter_log_type not in ['file', 'syslog', 'errorlog', 'systemd']"
 
+- name: Fail if Nextcloud audit log type is invalid
+  ansible.builtin.fail:
+    msg: >-
+      nextcloud_config_parameter_log_type_audit must be 'file', 'syslog', 'errorlog', or 'systemd'
+  when: "nextcloud_config_parameter_log_type_audit not in ['file', 'syslog', 'errorlog', 'systemd']"
+
 - name: Fail if Nextcloud database type is invalid
   ansible.builtin.fail:
     msg: >-
