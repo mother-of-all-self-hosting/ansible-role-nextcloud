@@ -6,28 +6,41 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
+# The base path, the customized container source path and the preview path are owned by root:
+# a systemd timer runs the preview generator script from there as root.
+# Whoever owns these paths could rename the script (even a root-owned one) and put another in its place.
 - name: Ensure Nextcloud paths exist
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: "{{ item.state }}"
-    mode: "0700"
-    owner: "{{ nextcloud_uid }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
     group: "{{ nextcloud_gid }}"
   with_items:
     - path: "{{ nextcloud_base_path }}"
       state: directory
+      mode: "0750"
+      owner: root
       when: true
     - path: "{{ nextcloud_data_path }}"
       state: directory
+      mode: "0700"
+      owner: "{{ nextcloud_uid }}"
       when: true
     - path: "{{ nextcloud_customized_container_src_path }}"
       state: directory
-      when: "{{ nextcloud_container_image_customizations_enabled }}"
+      mode: "0750"
+      owner: root
+      when: "{{ nextcloud_container_image_customizations_enabled | bool or nextcloud_preview_enabled | bool }}"
     - path: "{{ nextcloud_redis_session_ini_path }}"
       state: "{{ 'touch' if nextcloud_redis_is_configured else 'absent' }}"
+      mode: "0700"
+      owner: "{{ nextcloud_uid }}"
       when: true
     - path: "{{ nextcloud_preview_host_folder }}"
       state: "{{ 'directory' if nextcloud_preview_enabled else 'absent' }}"
+      mode: "0750"
+      owner: root
       when: true
   when: item.when | bool
 
@@ -71,6 +84,8 @@
     src: "{{ role_path }}/templates/preview-generator/{{ item }}.j2"
     dest: "{{ nextcloud_preview_host_folder }}/{{ item }}"
     mode: "0740"
+    owner: root
+    group: "{{ nextcloud_gid }}"
   with_items:
     - preview-generator-cron.sh
 
@@ -101,7 +116,7 @@
       ansible.builtin.template:
         src: "{{ role_path }}/templates/customizations/Dockerfile.j2"
         dest: "{{ nextcloud_customized_container_src_path }}/Dockerfile"
-        owner: "{{ nextcloud_uid }}"
+        owner: root
         group: "{{ nextcloud_gid }}"
         mode: "0640"
       register: nextcloud_container_image_customizations_dockerfile_result
