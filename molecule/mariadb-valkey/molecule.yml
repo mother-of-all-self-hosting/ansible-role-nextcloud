@@ -51,8 +51,8 @@ provisioner:
 
         # Variables required for Nextcloud to connect to the MariaDB database (via Unix socket)
         nextcloud_database_type: mysql
-        nextcloud_database_mysql_username: my_database_username
-        nextcloud_database_mysql_password: my_database_password
+        nextcloud_database_mysql_username: /#@my_database_username?%
+        nextcloud_database_mysql_password: /#@my_database_password?%
         nextcloud_database_name: nextcloud
         nextcloud_database_mysql_socket_enabled: true
         nextcloud_database_mysql_socket_path_host: "{{ mariadb_run_path }}"
