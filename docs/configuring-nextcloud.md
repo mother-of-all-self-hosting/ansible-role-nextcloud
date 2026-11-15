@@ -376,6 +376,31 @@ ansible-playbook -i inventory/hosts setup.yml --tags=adjust-nextcloud-config
 
 You can open the URL with a web browser to log in to the instance. Refer to [this official guide](https://docs.nextcloud.com/server/latest/admin_manual/contents.html) to get started.
 
+### Installing and updating apps automatically (optional)
+
+To have apps installed, enabled and updated each time you run the `adjust-nextcloud-config` tag, list their IDs (as shown on [apps.nextcloud.com](https://apps.nextcloud.com)) in your `vars.yml` file:
+
+```yaml
+nextcloud_apps_to_install_custom:
+  - calendar
+  - contacts
+  - notes
+```
+
+Apps removed from the list are not uninstalled.
+
+To also update apps periodically with a systemd timer, add:
+
+```yaml
+nextcloud_app_autoupdate_enabled: true
+
+# systemd OnCalendar definition. The default is every day at 00:00
+nextcloud_app_autoupdate_schedule: "*-*-* 00:00:00"
+```
+
+>[!NOTE]
+> The timer runs `occ app:update --all`, so it updates all installed apps, not only those listed above.
+
 ### Configuring Nextcloud Office application (optional)
 
 With this role it is possible to install and configure the [Nextcloud Office application](https://apps.nextcloud.com/apps/eurooffice). This requires an [Euro-Office](https://github.com/Euro-Office/DocumentServer) instance.
