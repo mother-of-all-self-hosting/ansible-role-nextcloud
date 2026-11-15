@@ -646,6 +646,10 @@ nextcloud_config_parameters_custom: []
 # Learn more here: https://man.archlinux.org/man/systemd.time.7
 nextcloud_cron_schedule: "*:0/15:0"
 
+# List of Nextcloud app IDs which get installed, enabled and updated on each run
+# Example: ['calendar', 'contacts', 'notes']
+nextcloud_apps_auto_install: []
+
 # Enable auto updates for Nextcloud apps
 nextcloud_app_autoupdate_enabled: false
 
