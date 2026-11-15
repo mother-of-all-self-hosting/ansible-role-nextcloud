@@ -179,6 +179,13 @@
     - nextcloud_environment_variables_mail_from_address
     - nextcloud_environment_variables_mail_domain
 
+- name: Fail if AppAPI is listed in nextcloud_apps_to_install while disabled via its dedicated setting
+  ansible.builtin.fail:
+    msg: >-
+      AppAPI (`app_api`) is listed in `nextcloud_apps_to_install`, but `nextcloud_app_app_api_enabled` is not enabled.
+      Remove `app_api` from the list and set `nextcloud_app_app_api_enabled: true` instead.
+  when: "'app_api' in nextcloud_apps_to_install and not nextcloud_app_app_api_enabled | bool"
+
 - name: Run if Preview Generator is enabled
   when: nextcloud_preview_enabled | bool
   block:

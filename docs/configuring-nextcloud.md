@@ -389,7 +389,7 @@ nextcloud_apps_to_install_custom:
 
 Apps removed from the list are not uninstalled.
 
-To also update apps periodically with a systemd timer, add:
+To also update apps periodically with a systemd timer, add the following configuration and run the [installation command](#installing):
 
 ```yaml
 nextcloud_app_autoupdate_enabled: true

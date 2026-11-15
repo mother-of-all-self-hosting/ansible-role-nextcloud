@@ -92,15 +92,20 @@
       {{ nextcloud_identifier }}-server
       php /var/www/html/occ db:add-missing-indices
 
-- name: Configure AppAPI installation
+# Apps are updated before being enabled, because an already downloaded but disabled app
+# (e.g. one disabled during a Nextcloud upgrade) may only be enableable after an update.
+# Apps which are not downloaded yet are skipped here and get the latest version when enabled.
+- name: Ensure Nextcloud apps are up to date
   ansible.builtin.command:
     cmd: |-
       {{ devture_systemd_docker_base_host_command_docker }} exec
       --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
       {{ nextcloud_identifier }}-server
-      php /var/www/html/occ app:"{{ 'enable' if nextcloud_app_app_api_enabled else 'disable' }}" app_api
-  register: nextcloud_app_app_api_enabled_result
-  changed_when: "'.' in nextcloud_app_app_api_enabled_result.stdout"
+      php /var/www/html/occ --no-warnings app:update {{ item }}
+  register: nextcloud_apps_update_result
+  changed_when: "(item ~ ' updated') in nextcloud_apps_update_result.stdout_lines"
+  failed_when: "nextcloud_apps_update_result.rc != 0 and (item ~ ' not installed') not in nextcloud_apps_update_result.stdout_lines"
+  loop: "{{ nextcloud_apps_to_install }}"
 
 # `app:enable` also downloads and installs apps which are not installed yet.
 - name: Ensure Nextcloud apps are installed and enabled
@@ -114,16 +119,15 @@
   changed_when: "'already enabled' not in nextcloud_apps_enable_result.stdout"
   loop: "{{ nextcloud_apps_to_install }}"
 
-- name: Ensure Nextcloud apps are up to date
+- name: Configure AppAPI installation
   ansible.builtin.command:
     cmd: |-
       {{ devture_systemd_docker_base_host_command_docker }} exec
       --user={{ nextcloud_uid }}:{{ nextcloud_gid }}
       {{ nextcloud_identifier }}-server
-      php /var/www/html/occ --no-warnings app:update {{ item }}
-  register: nextcloud_apps_update_result
-  changed_when: "(item ~ ' updated') in nextcloud_apps_update_result.stdout_lines"
-  loop: "{{ nextcloud_apps_to_install }}"
+      php /var/www/html/occ app:"{{ 'enable' if nextcloud_app_app_api_enabled else 'disable' }}" app_api
+  register: nextcloud_app_app_api_enabled_result
+  changed_when: "'.' in nextcloud_app_app_api_enabled_result.stdout"
 
 - name: Run mimetype migrations on Nextcloud
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/mimetype_migrations.yml"
