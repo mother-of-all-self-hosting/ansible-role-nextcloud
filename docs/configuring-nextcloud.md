@@ -381,7 +381,7 @@ You can open the URL with a web browser to log in to the instance. Refer to [thi
 To have apps installed, enabled and updated each time you run the `adjust-nextcloud-config` tag, list their IDs (as shown on [apps.nextcloud.com](https://apps.nextcloud.com)) in your `vars.yml` file:
 
 ```yaml
-nextcloud_apps_auto_install:
+nextcloud_apps_to_install_custom:
   - calendar
   - contacts
   - notes
@@ -399,7 +399,7 @@ nextcloud_app_autoupdate_schedule: "*-*-* 00:00:00"
 ```
 
 >[!NOTE]
-> The timer runs `occ app:update --all`, so it updates all installed apps, not only those in `nextcloud_apps_auto_install`.
+> The timer runs `occ app:update --all`, so it updates all installed apps, not only those listed above.
 
 ### Configuring Nextcloud Office application (optional)
 
